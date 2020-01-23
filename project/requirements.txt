@@ -1,0 +1,15 @@
+arrow
+django
+pillow
+django-cors-headers
+requests
+djangorestframework
+gpxpy
+uwsgi
+psycopg2-binary
+django-allauth
+django-bootstrap3
+raven
+lxml
+cssselect
+django-rest-knox
