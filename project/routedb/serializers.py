@@ -22,6 +22,8 @@ class RouteSerializer(serializers.ModelSerializer):
     route_data = serializers.JSONField(source='route')
     map_bounds = serializers.JSONField(source='raster_map.bounds', allow_null=True)
     id = serializers.ReadOnlyField(source='uid')
+    athlete = serializers.ReadOnlyField(source='athlete.username')
+
     def validate_map_bounds(self, value):
         try:
             assert isinstance(value, dict)
@@ -75,7 +77,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'name', 'tz', 'route_data', 'map_image', 'map_bounds')
+        fields = ('id', 'athlete', 'name', 'tz', 'route_data', 'map_image', 'map_bounds')
 
 class RouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')
@@ -83,7 +85,7 @@ class RouteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'data_url', 'start_time', 'name')
+        fields = ('id', 'data_url', 'start_time', 'tz', 'name')
 
 class UserSerializer(serializers.ModelSerializer):
     routes = RouteListSerializer(many=True)
