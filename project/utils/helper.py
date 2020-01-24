@@ -7,10 +7,14 @@ import requests
 
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import is_aware, make_aware
-
 from utils.globalmaptiles import GlobalMercator
 from utils.random_strings import generate_random_string
+from timezonefinder import TimezoneFinder
 
+
+def tz_at_coords(lat, lng):
+    tf = TimezoneFinder()
+    return tf.timezone_at(lng=lng, lat=lat)
 
 def get_aware_datetime(date_str):
     ret = parse_datetime(date_str)
