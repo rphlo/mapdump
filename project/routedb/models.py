@@ -18,7 +18,7 @@ from django.utils.timezone import now, utc
 
 from PIL import Image
 from utils.gps_data_encoder import GeoLocation, GeoLocationSeries
-from utils.helper import random_key, time_base64
+from utils.helper import tz_at_coords, random_key, time_base64
 from utils.storages import OverwriteImageStorage
 from utils.validators import (validate_corners_coordinates, validate_latitude,
                               validate_longitude, validate_nice_slug)
@@ -208,8 +208,11 @@ class Route(models.Model):
         return reverse('route_detail', kwargs={'uid': self.uid})
 
     @property
-    def public_url(self):
-        return 'https://myroutechoices.com/map/{}'.format(self.uid)
+    def tz(self):
+        return tz_at_coords(
+            self.route[0]['latlon][0],
+            self.route[0]['latlon][1],
+        )
 
     class Meta:
         ordering = ['-start_time']

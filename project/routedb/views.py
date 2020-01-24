@@ -1,3 +1,4 @@
+import urllib
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.shortcuts import get_object_or_404
@@ -74,7 +75,7 @@ class RouteCreate(generics.CreateAPIView):
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = 'username'
-    
+
     def get_queryset(self):
         username = self.kwargs['username']
         return User.objects.filter(username=username)
@@ -86,7 +87,7 @@ class RouteDetail(generics.RetrieveDestroyAPIView):
 
     def get_queryset(self):
         if self.request.method not in SAFE_METHODS:
-            return super().get_queryset().filter(athlete=self.request.user)
+            return super().get_queryset().filter(athlete_id=self.request.user.id)
         return super().get_queryset()
 
 

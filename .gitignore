@@ -19,5 +19,5 @@ static/*
 htmlcov/*
 env/*
 project/project/local_settings.py
-logs/*
+log/*
 var/*

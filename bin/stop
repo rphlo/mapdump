@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BASEDIR=$(dirname $DIR)
+UWSGI=${BASEDIR}/env/bin/uwsgi
+PID_FILE=${BASEDIR}/var/django.pid
+INI_FILE=${BASEDIR}/bin/uwsgi.ini
+
+if [[ -e $PID_FILE ]];
+then
+  echo 'stopping'
+  kill -INT `cat $PID_FILE`
+  $UWSGI --stop $PID_FILE
+else
+  echo 'proccess not running'
+fi
