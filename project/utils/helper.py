@@ -10,11 +10,15 @@ from django.utils.timezone import is_aware, make_aware
 from utils.globalmaptiles import GlobalMercator
 from utils.random_strings import generate_random_string
 from timezonefinder import TimezoneFinder
-
+import reverse_geocoder
 
 def tz_at_coords(lat, lng):
     tf = TimezoneFinder()
     return tf.timezone_at(lng=lng, lat=lat)
+
+def country_at_coords(lat, lng):
+    res = reverse_geocoder.search((lat, lng))
+    return res[0].get('cc')
 
 def get_aware_datetime(date_str):
     ret = parse_datetime(date_str)

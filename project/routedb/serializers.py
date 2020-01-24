@@ -79,7 +79,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'tz', 'route_data', 'map_thumbnail', 'map_image', 'map_bounds')
+        fields = ('id', 'athlete', 'name', 'tz', 'country', 'route_data', 'map_thumbnail', 'map_image', 'map_bounds')
 
 class RouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')
@@ -88,7 +88,7 @@ class RouteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'data_url', 'start_time', 'tz', 'name', 'map_thumbnail')
+        fields = ('id', 'data_url', 'start_time', 'tz', 'country', 'name', 'map_thumbnail')
 
 class UserSerializer(serializers.ModelSerializer):
     routes = RouteListSerializer(many=True)

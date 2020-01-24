@@ -18,7 +18,7 @@ from django.utils.timezone import now, utc
 
 from PIL import Image
 from utils.gps_data_encoder import GeoLocation, GeoLocationSeries
-from utils.helper import tz_at_coords, random_key, time_base64
+from utils.helper import tz_at_coords, random_key, time_base64, country_at_coords
 from utils.storages import OverwriteImageStorage
 from utils.validators import (validate_corners_coordinates, validate_latitude,
                               validate_longitude, validate_nice_slug)
@@ -247,6 +247,13 @@ class Route(models.Model):
     @property
     def tz(self):
         return tz_at_coords(
+            self.route[0]['latlon'][0],
+            self.route[0]['latlon'][1],
+        )
+
+    @property
+    def country(self):
+        return country_at_coords(
             self.route[0]['latlon'][0],
             self.route[0]['latlon'][1],
         )

@@ -10,3 +10,4 @@ django-allauth
 raven
 django-rest-knox
 timezonefinder
+reverse_geocoder
