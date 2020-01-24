@@ -167,9 +167,12 @@ class RasterMap(models.Model):
             value['bottom_left'][0], value['bottom_left'][1],
         )
 
+
+    @property
     def thumbnail_url(self):
         return '{}_256x256'.format(self.image.url)
 
+    @property
     def thumbnail(self):
         orig = self.image.storage.open(
             self.image.name,
@@ -177,7 +180,7 @@ class RasterMap(models.Model):
         ).read()
         img = Image.open(BytesIO(orig))
         if img.mode != 'RGBA':
-            img = img.convert('RGBA') 
+            img = img.convert('RGB') 
         img = img.transform(
             (256, 256),
             Image.QUAD,
@@ -193,7 +196,7 @@ class RasterMap(models.Model):
             )
         )
         img_out = Image.new(
-            'RGBA',
+            'RGB',
             img.size, 
             (255, 255, 255, 0)
         )

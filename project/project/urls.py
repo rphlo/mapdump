@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from routedb.views import map_download
+from routedb.views import map_download, map_thumbnail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,14 +23,14 @@ urlpatterns = [
     path('v1/', include('routedb.urls')),
     re_path(
         r'^media/maps/(?P<hash>[-0-9a-zA-Z_])/(?P<hash2>[-0-9a-zA-Z_])/'
-        r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_[a-zA-Z0-9-_]+',
-        map_download,
-        name='map_download',
+        r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_([a-zA-Z0-9-_]+)(_256x256)$',
+        map_thumbnail,
+        name='map_thumbnail',
     ),
     re_path(
         r'^media/maps/(?P<hash>[-0-9a-zA-Z_])/(?P<hash2>[-0-9a-zA-Z_])/'
-        r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_[a-zA-Z0-9-_]+_256x256',
+        r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_[a-zA-Z0-9-_]+$',
         map_download,
-        name='map_thumbnail',
+        name='map_download',
     ),
 ]
