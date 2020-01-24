@@ -18,11 +18,13 @@ class RelativeURLField(serializers.ReadOnlyField):
         return url
 
 class RouteSerializer(serializers.ModelSerializer):
-    map_image = serializers.ImageField(source='raster_map.image', allow_null=True)
+    map_image = serializers.ImageField(source='raster_map.image')
+    map_thumbnail = serializers.ReadOnlyField(source='raster_map.thumbnail_url')
     route_data = serializers.JSONField(source='route')
-    map_bounds = serializers.JSONField(source='raster_map.bounds', allow_null=True)
+    map_bounds = serializers.JSONField(source='raster_map.bounds')
     id = serializers.ReadOnlyField(source='uid')
     athlete = serializers.ReadOnlyField(source='athlete.username')
+
 
     def validate_map_bounds(self, value):
         try:
@@ -43,7 +45,7 @@ class RouteSerializer(serializers.ModelSerializer):
             assert len(value) > 0
             for x in value:
                 assert 'time' in x
-                assert isinstance(x['time'], (float, int))
+                assert isinstance(x['time'], (type(None), float, int))
                 assert 'latlon' in x
                 assert isinstance(x['latlon'], list)
                 assert len(x['latlon']) == 2

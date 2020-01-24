@@ -167,6 +167,40 @@ class RasterMap(models.Model):
             value['bottom_left'][0], value['bottom_left'][1],
         )
 
+    def thumbnail_url(self):
+        return '{}_256x256'.format(self.image.url)
+
+    def thumbnail(self):
+        orig = self.image.storage.open(
+            self.image.name,
+            'rb'
+        ).read()
+        img = Image.open(BytesIO(orig))
+        if img.mode != 'RGBA':
+            img = img.convert('RGBA') 
+        img = img.transform(
+            (256, 256),
+            Image.QUAD,
+            (
+                int(self.width) / 2 - 256,
+                int(self.height) / 2 - 256,
+                int(self.width) / 2 - 256,
+                int(self.height) / 2 + 256,
+                int(self.width) / 2 + 256,
+                int(self.height) / 2 + 256,
+                int(self.width) / 2 + 256,
+                int(self.height) / 2 - 256
+            )
+        )
+        img_out = Image.new(
+            'RGBA',
+            img.size, 
+            (255, 255, 255, 0)
+        )
+        img_out.paste(img, (0, 0))
+        img.close()
+        return img_out
+
     def __str__(self):
         return 'map <{}>'.format(self.uid)
 

@@ -103,3 +103,14 @@ def map_download(request, id, *args, **kwargs):
         filename='{}.{}'.format(raster_map.uid, raster_map.mime_type[6:]),
         mime=raster_map.mime_type
     )
+
+
+def map_thumnail(request, id, *args, **kwargs):
+    raster_map = get_object_or_404(
+        RasterMap,
+        uid=id,
+    )
+    image = raster_map.thumbnail
+    response = HttpResponse(mimetype='image/png')
+    image.save(response, 'JPEG')
+    return response
