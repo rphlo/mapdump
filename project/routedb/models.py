@@ -227,9 +227,11 @@ class Route(models.Model):
     route_json = models.TextField()
     raster_map = models.ForeignKey(RasterMap, blank=True, null=True, on_delete=models.SET_NULL)
     start_time = models.DateTimeField(editable=False)
+    country = models.CharField(max_length=2)
     
     def save(self, *args, **kwargs):
         self.start_time = datetime.fromtimestamp(self.route[0]['time'], utc)
+        self.country = self.country_code
         super().save(*args, **kwargs)
     
     @property
@@ -252,7 +254,7 @@ class Route(models.Model):
         )
 
     @property
-    def country(self):
+    def country_code(self):
         return country_at_coords(
             self.route[0]['latlon'][0],
             self.route[0]['latlon'][1],

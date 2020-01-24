@@ -24,7 +24,7 @@ class RouteSerializer(serializers.ModelSerializer):
     map_bounds = serializers.JSONField(source='raster_map.bounds')
     id = serializers.ReadOnlyField(source='uid')
     athlete = serializers.ReadOnlyField(source='athlete.username')
-
+    country = serializers.ReadOnlyField()
 
     def validate_map_bounds(self, value):
         try:
@@ -84,6 +84,7 @@ class RouteSerializer(serializers.ModelSerializer):
 class RouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')
     id = serializers.ReadOnlyField(source='uid')
+    country = serializers.ReadOnlyField()
     map_thumbnail = RelativeURLField(source='raster_map.thumbnail_url')
 
     class Meta:
