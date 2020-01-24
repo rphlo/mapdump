@@ -210,8 +210,8 @@ class Route(models.Model):
     @property
     def tz(self):
         return tz_at_coords(
-            self.route[0]['latlon][0],
-            self.route[0]['latlon][1],
+            self.route[0]['latlon'][0],
+            self.route[0]['latlon'][1],
         )
 
     class Meta:
