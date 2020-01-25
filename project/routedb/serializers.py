@@ -17,13 +17,18 @@ class RelativeURLField(serializers.ReadOnlyField):
         url = request and request.build_absolute_uri(value) or ''
         return url
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name')
+
 class RouteSerializer(serializers.ModelSerializer):
     map_image = serializers.ImageField(source='raster_map.image')
     map_thumbnail = RelativeURLField(source='raster_map.thumbnail_url')
     route_data = serializers.JSONField(source='route')
     map_bounds = serializers.JSONField(source='raster_map.bounds')
     id = serializers.ReadOnlyField(source='uid')
-    athlete = serializers.ReadOnlyField(source='athlete.username')
+    athlete = UserInfoSerializer(read_only=True)
     country = serializers.ReadOnlyField()
 
     def validate_map_bounds(self, value):
@@ -81,7 +86,7 @@ class RouteSerializer(serializers.ModelSerializer):
         model = Route
         fields = ('id', 'athlete', 'name', 'tz', 'country', 'route_data', 'map_thumbnail', 'map_image', 'map_bounds')
 
-class RouteListSerializer(serializers.ModelSerializer):
+class UserRouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')
     id = serializers.ReadOnlyField(source='uid')
     country = serializers.ReadOnlyField()
@@ -91,8 +96,15 @@ class RouteListSerializer(serializers.ModelSerializer):
         model = Route
         fields = ('id', 'data_url', 'start_time', 'tz', 'country', 'name', 'map_thumbnail')
 
-class UserSerializer(serializers.ModelSerializer):
-    routes = RouteListSerializer(many=True)
+
+class UserMainSerializer(serializers.ModelSerializer):
+    #latest_routes = serializers.SerializerMethodField()
+    routes = UserRouteListSerializer(many=True)
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'routes')
+    
+    #def get_latest_routes(self, obj):
+    #    return UserRouteListSerializer(instance=obj.routes.all()[:5], many=True, context=self.context).data
+
+

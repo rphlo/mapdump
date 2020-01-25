@@ -228,10 +228,12 @@ class Route(models.Model):
     raster_map = models.ForeignKey(RasterMap, blank=True, null=True, on_delete=models.SET_NULL)
     start_time = models.DateTimeField(editable=False)
     country = models.CharField(max_length=2)
-    
+    tz = models.CharField(max_length=32)
+
     def save(self, *args, **kwargs):
         self.start_time = datetime.fromtimestamp(self.route[0]['time'], utc)
-        self.country = self.country_code
+        self.country = self.get_country()
+        self.tz = self.get_tz()
         super().save(*args, **kwargs)
     
     @property
@@ -246,20 +248,25 @@ class Route(models.Model):
     def api_url(self):
         return reverse('route_detail', kwargs={'uid': self.uid})
 
-    @property
-    def tz(self):
+    def get_tz(self):
         return tz_at_coords(
             self.route[0]['latlon'][0],
             self.route[0]['latlon'][1],
         )
 
-    @property
-    def country_code(self):
+    def get_country(self):
         return country_at_coords(
             self.route[0]['latlon'][0],
             self.route[0]['latlon'][1],
         )
 
+    @property
+    def athlete_fullname(self):
+        fullname = '{} {}'.format(self.athlete.first_name, self.athlete.last_name)
+        if not fullname:
+            return self.athlete.username
+        return fullname
+ 
     class Meta:
         ordering = ['-start_time']
         verbose_name = 'route'

@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from rest_framework import generics, parsers, renderers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from routedb.models import RasterMap, Route
-from routedb.serializers import RouteSerializer, UserSerializer
+from routedb.serializers import RouteSerializer, UserMainSerializer
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 
@@ -73,7 +73,7 @@ class RouteCreate(generics.CreateAPIView):
     permission_class = IsAuthenticated
 
 class UserDetail(generics.RetrieveAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserMainSerializer
     lookup_field = 'username'
 
     def get_queryset(self):
