@@ -166,10 +166,6 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 ACCOUNT_ADAPTER = 'utils.adapters.DefaultAccountAdapterCustom'
 URL_FRONT = 'https://drawmyroute.com/'
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
-
-
 
 SLUG_BLACKLIST = [
     '.htaccess', '.htpasswd', '.well-known', '400', '401', '403', '404', '405',
