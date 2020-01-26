@@ -31,6 +31,7 @@ class RouteSerializer(serializers.ModelSerializer):
     athlete = UserInfoSerializer(read_only=True)
     country = serializers.ReadOnlyField()
     tz = serializers.ReadOnlyField()
+    start_time = serializers.ReadOnlyField()
 
     def validate_map_bounds(self, value):
         try:
@@ -85,7 +86,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'tz', 'country', 'route_data', 'map_thumbnail', 'map_image', 'map_bounds')
+        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'country', 'route_data', 'map_thumbnail', 'map_image', 'map_bounds')
 
 class UserRouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')
