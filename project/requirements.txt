@@ -6,8 +6,8 @@ requests
 djangorestframework
 uwsgi
 psycopg2-binary
-django-allauth
 raven
 django-rest-knox
 timezonefinder
 reverse_geocoder
+django-rest-auth[with_social]
