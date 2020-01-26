@@ -30,6 +30,7 @@ class RouteSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='uid')
     athlete = UserInfoSerializer(read_only=True)
     country = serializers.ReadOnlyField()
+    tz = serializers.ReadOnlyField()
 
     def validate_map_bounds(self, value):
         try:
@@ -91,6 +92,8 @@ class UserRouteListSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='uid')
     country = serializers.ReadOnlyField()
     map_thumbnail = RelativeURLField(source='raster_map.thumbnail_url')
+    tz = serializers.ReadOnlyField()
+    start_time = serializers.ReadOnlyField()
 
     class Meta:
         model = Route

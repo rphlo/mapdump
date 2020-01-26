@@ -80,7 +80,7 @@ class UserDetail(generics.RetrieveAPIView):
         username = self.kwargs['username']
         return User.objects.filter(username=username)
 
-class RouteDetail(generics.RetrieveDestroyAPIView):
+class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RouteSerializer
     lookup_field = 'uid'
     queryset = Route.objects.all()
