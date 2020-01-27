@@ -231,7 +231,10 @@ class Route(models.Model):
     tz = models.CharField(max_length=32)
 
     def save(self, *args, **kwargs):
-        self.start_time = datetime.fromtimestamp(self.route[0]['time'], utc)
+        if self.route[0]['time']:
+            self.start_time = datetime.fromtimestamp(self.route[0]['time'], utc)
+        elif self.start_time is None:
+            self.start_time = now()
         self.country = self.get_country()
         self.tz = self.get_tz()
         super().save(*args, **kwargs)
