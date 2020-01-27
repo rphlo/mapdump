@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from rest_framework import generics, parsers, renderers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from routedb.models import RasterMap, Route
-from routedb.serializers import RouteSerializer, UserMainSerializer
+from routedb.serializers import RouteSerializer, UserMainSerializer, LatestRouteListSerializer
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 
@@ -71,6 +71,11 @@ class RouteCreate(generics.CreateAPIView):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
     permission_class = IsAuthenticated
+
+
+class LatestRoutesList(generics.ListAPIView):
+    queryset = Route.objects.all()[:24]
+    serializer_class = LatestRouteListSerializer
 
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserMainSerializer

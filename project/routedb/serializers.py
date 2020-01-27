@@ -100,6 +100,18 @@ class UserRouteListSerializer(serializers.ModelSerializer):
         model = Route
         fields = ('id', 'data_url', 'start_time', 'tz', 'country', 'name', 'map_thumbnail')
 
+class LatestRouteListSerializer(serializers.ModelSerializer):
+    data_url = RelativeURLField(source='api_url')
+    id = serializers.ReadOnlyField(source='uid')
+    country = serializers.ReadOnlyField()
+    map_thumbnail = RelativeURLField(source='raster_map.thumbnail_url')
+    tz = serializers.ReadOnlyField()
+    start_time = serializers.ReadOnlyField()
+    athlete = UserInfoSerializer(read_only=True)
+    class Meta:
+        model = Route
+        fields = ('id', 'data_url', 'start_time', 'tz', 'country', 'name', 'map_thumbnail', 'athlete')
+
 
 class UserMainSerializer(serializers.ModelSerializer):
     #latest_routes = serializers.SerializerMethodField()

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth',
     'rest_auth.registration',
 ]
@@ -245,6 +246,7 @@ SLUG_BLACKLIST = [
     'view', 'void', 'vote', 'webmail', 'webmaster', 'website', 'widget',
     'widgets', 'wiki', 'wpad', 'write', 'www', 'www-data', 'www1', 'www2',
     'www3', 'www4', 'you', 'yourname', 'yourusername', 'zlib', 'traccar',
+    'maps', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation'
 ]
 
 ACCOUNT_AUTHENTICATION_METHOD = "username"
@@ -253,6 +255,11 @@ ACCOUNT_USERNAME_BLACKLIST = SLUG_BLACKLIST
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USERNAME_MIN_LENGTH = 2
 ACCOUNT_USERNAME_VALIDATORS ='utils.validators.custom_username_validators'
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
+OLD_PASSWORD_FIELD_ENABLED = True
 
 try:
     from .local_settings import *

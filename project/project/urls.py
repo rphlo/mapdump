@@ -21,8 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('drf-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('v1/', include('routedb.urls')),
-    path('v1/auth/', include('rest_auth.urls')),
-    path('v1/auth/registration/', include('rest_auth.registration.urls')),
     re_path(
         r'^media/maps/(?P<hash>[-0-9a-zA-Z_])/(?P<hash2>[-0-9a-zA-Z_])/'
         r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_([a-zA-Z0-9-_]+)(_256x256)$',
