@@ -261,6 +261,10 @@ EMAIL_PORT = 1025
 
 OLD_PASSWORD_FIELD_ENABLED = True
 
+REST_KNOX = {
+  'TOKEN_TTL': None,
+}
+
 try:
     from .local_settings import *
 except ImportError:
