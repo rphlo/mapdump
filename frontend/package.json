@@ -1,6 +1,6 @@
 {
   "name": "drawmyroute",
-  "version": "2020020700",
+  "version": "2020020701",
   "api_url": "https://api.drawmyroute.com",
   "private": true,
   "dependencies": {

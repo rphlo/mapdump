@@ -16,13 +16,16 @@ const Login = () => {
       (async () => {
         if (username) {
           try {
-            await fetch(pkg.api_url + '/v1/auth/user/', {
+            const res = await fetch(pkg.api_url + '/v1/auth/user/', {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
                   'Authorization': 'Token ' + api_token,
               }
             })
+            if (res.status !== 200) {
+              throw new Error('not logged in')
+            }
           } catch (e) {
             globalState.setUser({})
           }
