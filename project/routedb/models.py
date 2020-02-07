@@ -23,6 +23,10 @@ from utils.storages import OverwriteImageStorage
 from utils.validators import (validate_corners_coordinates, validate_latitude,
                               validate_longitude, validate_nice_slug)
 
+from django_s3_storage.storage import S3Storage
+
+map_storage = S3Storage(aws_s3_bucket_name='drawmyroute-maps')
+
 
 def map_upload_path(instance=None, file_name=None):
     import os.path
@@ -56,7 +60,8 @@ class RasterMap(models.Model):
     image = models.ImageField(
         upload_to=map_upload_path,
         height_field='height',
-        width_field='width'
+        width_field='width',
+        storage=map_storage,
     )
     height = models.PositiveIntegerField(
         null=True,
@@ -78,7 +83,7 @@ class RasterMap(models.Model):
 
     @property
     def path(self):
-        return self.image.path[len(settings.MEDIA_ROOT) + 1:]
+        return self.image.name
 
     @property
     def data(self):
@@ -166,11 +171,6 @@ class RasterMap(models.Model):
             value['bottom_right'][0], value['bottom_right'][1],
             value['bottom_left'][0], value['bottom_left'][1],
         )
-
-
-    @property
-    def thumbnail_url(self):
-        return '{}_256x256'.format(self.image.url)
 
     @property
     def thumbnail(self):
@@ -270,6 +270,14 @@ class Route(models.Model):
             return self.athlete.username
         return fullname
  
+    @property
+    def image_url(self):
+        return reverse('map_image', kwargs={'uid': self.uid})
+
+    @property
+    def thumbnail_url(self):
+        return reverse('map_thumbnail', kwargs={'uid': self.uid})
+
     class Meta:
         ordering = ['-start_time']
         verbose_name = 'route'

@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'rest_auth',
     'rest_auth.registration',
+
+    'django_s3_storage',
 ]
 
 MIDDLEWARE = [
@@ -88,11 +90,14 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'app_db',
+        'USER': 'app_user',
+        'PASSWORD': 'changeme',
+        'HOST': 'db',
+        'PORT': '',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -264,6 +269,16 @@ OLD_PASSWORD_FIELD_ENABLED = True
 REST_KNOX = {
   'TOKEN_TTL': None,
 }
+
+# The AWS region to connect to.
+AWS_REGION = "us-east-1"
+# The AWS access key to use.
+AWS_ACCESS_KEY_ID = "minio"
+# The AWS secret access key to use.
+AWS_SECRET_ACCESS_KEY = "minio123"
+# The optional AWS session token to use.
+AWS_SESSION_TOKEN = ""
+AWS_S3_ENDPOINT_URL = "http://minio:9000"
 
 try:
     from .local_settings import *

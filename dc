@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -e
+
+project_name=${COMPOSE_PROJECT_NAME:-drawmyroute}
+extra_args=''
+
+if [ "$1" = 'rebuild' ]; then
+    shift
+    "$0" stop $@
+    "$0" rm -f $@
+    "$0" build $@
+    "$0" up -d $@
+    exit
+elif [ "$1" = 'exec' -a $# -eq 2 ]; then
+    extra_args="$* /bin/bash"
+    shift 2
+elif [ "$1" = 'restoredb' ]; then
+    if [ $# -eq 2 ]; then
+        dumpfile=$2
+    else
+        dumpfile=postgres.bak
+    fi
+    echo "Restoring database from $dumpfile..."
+    docker exec -i pz01 \
+        pg_restore -U app_user -d app_db \
+            --clean --if-exists --no-owner < "$dumpfile"
+    exit 0
+elif [ "$1" = 'test' ]; then
+    shift
+    extra_args="run --rm django pytest"
+fi
+
+export GROUPID=$(id -g) USERID=$(id -u)
+exec docker-compose \
+        --file docker/docker-compose.yml \
+        --project-name $project_name \
+        $extra_args \
+        "$@"

@@ -1,0 +1,53 @@
+version: '2'  
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: changeme
+    restart: always
+    expose:
+      - "5432"
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - ../media:/data
+    expose:
+      - "9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../:/app/
+      - ../nginx:/etc/nginx/conf.d
+    links:
+      - minio
+    depends_on:
+      - django
+  django:
+    stop_signal: SIGINT
+    build:
+      context: ..
+      dockerfile: docker/django.dockerfile
+    volumes:
+      - ../:/app/:rw
+    environment:
+      DATABASE_URL: postgres://app_user:changeme@db/app_db
+    expose:
+      - "8000"
+    user: ${USERID}:${GROUPID}
+    links:
+      - redis
+      - minio
+      - db
+  redis:
+    image: redis:latest
+    expose:
+      - "6379"

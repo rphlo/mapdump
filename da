@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./dc exec django /venv/bin/python project/manage.py "$@"

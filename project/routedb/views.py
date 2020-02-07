@@ -12,7 +12,7 @@ from routedb.models import RasterMap, Route
 from routedb.serializers import RouteSerializer, UserMainSerializer, LatestRouteListSerializer
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
-
+from utils.s3 import s3_object_url
 
 
 def x_accel_redirect(request, path, filename='',
@@ -31,6 +31,22 @@ def x_accel_redirect(request, path, filename='',
         response['X-Accel-Redirect'] = urllib.parse.quote(path.encode('utf-8'))
         response['X-Accel-Buffering'] = 'no'
         response['Accept-Ranges'] = 'bytes'
+    response['Content-Type'] = mime
+    response['Content-Disposition'] = 'attachment; filename="{}"'.format(
+        filename.replace('\\', '_').replace('"', '\\"')
+    ).encode('utf-8')
+    return response
+
+
+def serve_from_s3(bucket, request, path, filename='',
+                  mime='application/force-download'):
+    path = re.sub(r'^/internal/', '', path)
+    url = s3_object_url(path, bucket)
+    url = '/s3{}'.format(url[len(settings.AWS_S3_ENDPOINT_URL):])
+    response = HttpResponse('', status=status.HTTP_206_PARTIAL_CONTENT)
+    response['X-Accel-Redirect'] = urllib.parse.quote(url.encode('utf-8'))
+    response['X-Accel-Buffering'] = 'no'
+    response['Accept-Ranges'] = 'bytes'
     response['Content-Type'] = mime
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(
         filename.replace('\\', '_').replace('"', '\\"')
@@ -96,26 +112,27 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
         return super().get_queryset()
 
 
-def map_download(request, id, *args, **kwargs):
-    raster_map = get_object_or_404(
-        RasterMap,
-        uid=id,
+def map_download(request, uid, *args, **kwargs):
+    route = get_object_or_404(
+        Route,
+        uid=uid,
     )
-    file_path = raster_map.path
-    return x_accel_redirect(
+    file_path = route.raster_map.path
+    return serve_from_s3(
+        'drawmyroute-maps',
         request,
         '/internal/' + file_path,
-        filename='{}.{}'.format(raster_map.uid, raster_map.mime_type[6:]),
-        mime=raster_map.mime_type
+        filename='{}.{}'.format(route.name, route.raster_map.mime_type[6:]),
+        mime=route.raster_map.mime_type
     )
 
 
-def map_thumbnail(request, id, *args, **kwargs):
-    raster_map = get_object_or_404(
-        RasterMap,
-        uid=id,
+def map_thumbnail(request, uid, *args, **kwargs):
+    route = get_object_or_404(
+        Route,
+        uid=uid,
     )
-    image = raster_map.thumbnail
+    image = route.raster_map.thumbnail
     response = HttpResponse(content_type='image/jpeg')
     image.save(response, 'JPEG')
     return response
