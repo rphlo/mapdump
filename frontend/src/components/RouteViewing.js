@@ -192,7 +192,7 @@ const RouteViewing = (props) => {
       </Helmet>
       { (!canEdit() || !nameEditing) && <h2 onClick={enableNameEditing}><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span> {name}{canEdit() && <> <i className="fas fa-pen"></i></>}</h2>}
       { canEdit() && nameEditing && <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span> <input type="text" maxLength={52} defaultValue={name} onBlur={saveName}/></h2>}
-      <h4>by <Link to={'/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}</small></h4>
+      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}</small></h4>
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
       <button className="btn btn-sm btn-primary" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download</button>&nbsp;

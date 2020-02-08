@@ -107,7 +107,7 @@ const UserView = ({match}) => {
                 <div className="row">
                 {data.routes.map(r=>(
                 <div key={r.id} className="col-12 col-md-4"><div className="card">
-                    <Link to={'/map/'+r.id}><img className="card-img" src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
+                    <Link to={'/routes/'+r.id}><img className="card-img" src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
                     <div className="card-body">
                     <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
                     <p className="card-text">{moment(r.start_time).utcOffset(r.tz).format('dddd, MMMM Do YYYY, HH:mm')}</p>

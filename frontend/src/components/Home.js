@@ -11,7 +11,7 @@ const Home = () => {
     <div style={{textAlign:'center'}} >
       <Link to="/new"><button className="btn btn-primary"><i className="fas fa-plus"></i> Create New Route</button></Link>
       {username && <><hr/>
-      <Link to={'/'+username}><button className="btn btn-primary"><i className="fas fa-link"></i> Your routes</button></Link>
+      <Link to={'/athletes/'+username}><button className="btn btn-primary"><i className="fas fa-link"></i> Your routes</button></Link>
       </>}
       <hr/>
       <LatestRoutes/>

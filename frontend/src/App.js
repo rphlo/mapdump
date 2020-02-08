@@ -26,9 +26,9 @@ function App() {
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/password-reset" component={PasswordReset} />
           <Route exact path="/password-reset-confirmation/:key" component={PasswordResetConfirmation} />
-          <Route path="/map/:uid" component={RasterMap} />
           <Route path="/verify-email/:key" component={VerifyEmail} />
-          <Route path="/:username" component={UserView} />
+          <Route path="/routes/:uid" component={RasterMap} />
+          <Route path="/athletes/:username" component={UserView} />
       </div>
     </Router>
   </GlobalStateProvider>

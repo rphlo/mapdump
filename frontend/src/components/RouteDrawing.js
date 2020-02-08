@@ -138,7 +138,7 @@ const RouteDrawing = (props) => {
         if (response.status===200 || response.status===201) {
           const res = await response.json(); // parses JSON response into native JavaScript objects
           setSaved(res.id)
-          window.location = '/map/'+res.id
+          window.location = '/routes/'+res.id
         } else {
           window.alert('Something went wrong')
         }
