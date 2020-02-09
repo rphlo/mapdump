@@ -22,7 +22,7 @@ const RouteViewing = (props) => {
   const [imghR, setImghR] = useState()
   const [imgHr, setImgHr] = useState()
   const [imghr, setImghr] = useState()
-  const [imgDataOut, setImgDataOut] = useState('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')
+  const [imgDataOut, setImgDataOut] = useState(null)
   let finalImage = React.createRef();
 
 
@@ -147,6 +147,7 @@ const RouteViewing = (props) => {
     if (togglingHeader) {
       return
     }
+    setImgDataOut(null)
     setIncludeHeader(!includeHeader);
     setTogglingHeader(true)
   }
@@ -154,6 +155,7 @@ const RouteViewing = (props) => {
     if (togglingRoute) {
       return
     }
+    setImgDataOut(null)
     setIncludeRoute(!includeRoute);
     setTogglingRoute(true)
   }
@@ -198,7 +200,8 @@ const RouteViewing = (props) => {
       <button className="btn btn-sm btn-primary" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download</button>&nbsp;
       {canEdit() && <button style={{float:'right'}}className="btn btn-sm btn-danger" onClick={deleteMap}><i className="fas fa-times"></i> Delete</button>}
       <div>
-        <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>
+        {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
+        {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
     </div>
   )

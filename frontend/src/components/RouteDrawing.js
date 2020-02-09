@@ -19,7 +19,7 @@ const RouteDrawing = (props) => {
   const [imghR, setImghR] = useState()
   const [imgHr, setImgHr] = useState()
   const [imghr, setImghr] = useState()
-  const [imgDataOut, setImgDataOut] = useState('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7')
+  const [imgDataOut, setImgDataOut] = useState(null)
   let finalImage = React.createRef();
 
 
@@ -140,7 +140,7 @@ const RouteDrawing = (props) => {
           setSaved(res.id)
           window.location = '/routes/'+res.id
         } else {
-          window.alert('Something went wrong')
+          throw new Error('not ok status')
         }
       } catch (e) {
         setSaving(false)
@@ -171,6 +171,7 @@ const RouteDrawing = (props) => {
     if (togglingHeader) {
       return
     }
+    setImgDataOut(null)
     setIncludeHeader(!includeHeader);
     setTogglingHeader(true)
   }
@@ -178,6 +179,7 @@ const RouteDrawing = (props) => {
     if (togglingRoute) {
       return
     }
+    setImgDataOut(null)
     setIncludeRoute(!includeRoute);
     setTogglingRoute(true)
   }
@@ -200,7 +202,8 @@ const RouteDrawing = (props) => {
       <button className="btn btn-sm btn-primary" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download</button>&nbsp;
       {props.editMode && !saved && username && <><button style={{float:'right'}} className="btn btn-sm btn-success" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
       <div>
-        <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>
+        {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
+        {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
     </div>
   )
