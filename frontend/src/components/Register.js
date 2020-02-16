@@ -1,8 +1,6 @@
 import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
 
-const pkg = require('../../package.json');
-
 const Register = (props) => {
     const globalState = useGlobalState()
     const { username } = globalState.user
@@ -23,7 +21,7 @@ const Register = (props) => {
   
     const onRegister = async (e) => {
       e.preventDefault()
-      const res = await fetch(pkg.api_url+'/v1/auth/registration/', {
+      const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/registration/', {
         method: 'POST',headers: {
           'Content-Type': 'application/json'
         },

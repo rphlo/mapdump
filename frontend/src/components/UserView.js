@@ -5,7 +5,6 @@ import ReactTooltip from "react-tooltip"
 import moment from 'moment';
 import {Helmet} from "react-helmet";
 import 'react-calendar-heatmap/dist/styles.css'
-const pkg = require('../../package.json');
 
 const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
 
@@ -18,7 +17,7 @@ const UserView = ({match}) => {
             return 
         }
         (async ()=> {
-            const res = await fetch(pkg.api_url + '/v1/user/' + match.params.username)
+            const res = await fetch(process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username)
             if(res.status === 200){
                 const rawData = await res.json()
                 setData(rawData)

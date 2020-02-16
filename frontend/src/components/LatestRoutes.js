@@ -2,14 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment';
 
-const pkg = require('../../package.json');
-
 const LatestRoute = () => {
     const [routes, setRoutes] = React.useState([])
 
     React.useEffect(() => {
         (async () => {
-            const res = await fetch(pkg.api_url + '/v1/latest-routes/')
+            const res = await fetch(process.env.REACT_APP_API_URL + '/v1/latest-routes/')
             setRoutes(await res.json())
         })()
     }, [])

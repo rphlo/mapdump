@@ -31,6 +31,12 @@ services:
       - minio
     depends_on:
       - django
+  smtp:
+    image: mailhog/mailhog:latest
+    ports:
+      - "8025:8025"
+    expose:
+      - "1025"
   django:
     stop_signal: SIGINT
     build:
@@ -44,10 +50,13 @@ services:
       - "8000"
     user: ${USERID}:${GROUPID}
     links:
-      - redis
       - minio
       - db
-  redis:
-    image: redis:latest
-    expose:
-      - "6379"
+      - smtp
+  react:
+    build:
+      context: ../frontend
+      dockerfile: ../docker/react.dockerfile
+    ports:
+      - "3000:3000"
+

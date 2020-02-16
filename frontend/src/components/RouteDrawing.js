@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { drawRoute, drawOriginalMap, getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver';
 import useGlobalState from '../utils/useGlobalState'
-const pkg = require('../../package.json');
-
 
 const RouteDrawing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
@@ -127,7 +125,7 @@ const RouteDrawing = (props) => {
       fd.append('route_data', formatRoute(props.route));
       fd.append('name', name);
       try {
-        const response = await fetch(pkg.api_url+'/v1/routes/new', {
+        const response = await fetch(process.env.REACT_APP_API_URL+'/v1/routes/new', {
           method: 'POST',
           headers: {
             'Authorization': 'Token ' + tkn

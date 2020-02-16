@@ -1,8 +1,6 @@
 import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
 
-const pkg = require('../../package.json');
-
 const UserSettings = () => {
     const globalState = useGlobalState()
     const { username: _username, api_token } = globalState.user
@@ -15,7 +13,7 @@ const UserSettings = () => {
 
     React.useEffect(() => {
         (async () => {
-            const res = await fetch(pkg.api_url + '/v1/auth/user/', {
+            const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/user/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,7 +36,7 @@ const UserSettings = () => {
       if (_username !== username) {
           postData.username = username
       }
-      const res = await fetch(pkg.api_url+'/v1/auth/user/', {
+      const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/user/', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

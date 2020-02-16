@@ -6,9 +6,6 @@ import { Link } from 'react-router-dom'
 import moment from 'moment';
 import {Helmet} from "react-helmet";
 
-const pkg = require('../../package.json');
-
-
 const RouteViewing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
@@ -109,7 +106,7 @@ const RouteViewing = (props) => {
     const tkn = api_token
     setSaving(true)
     try {
-      const response = await fetch(pkg.api_url+'/v1/route/'+props.id, {
+      const response = await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
         method: 'PATCH',
         headers: {
           'Authorization': 'Token ' + tkn,
@@ -176,7 +173,7 @@ const RouteViewing = (props) => {
   const deleteMap = async () => {
     const conf = window.confirm('Are you sure?')
     if (conf) {
-      await fetch(pkg.api_url+'/v1/route/'+props.id, {
+      await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
         method: 'DELETE',
         headers: {
           'Authorization': 'Token ' + api_token,

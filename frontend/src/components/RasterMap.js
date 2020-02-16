@@ -1,8 +1,6 @@
 import React from 'react'
 import RouteViewing from './RouteViewing'
 
-const pkg = require('../../package.json');
-
 const RasterMap = ({match, history}) => {
     const [found, setFound] = React.useState(null)
     const [data, setData] = React.useState()
@@ -21,7 +19,7 @@ const RasterMap = ({match, history}) => {
   
     React.useEffect(()=> {
       (async ()=> {
-        const res = await fetch(pkg.api_url + '/v1/route/' + match.params.uid)
+        const res = await fetch(process.env.REACT_APP_API_URL + '/v1/route/' + match.params.uid)
         if(res.status === 200){
           const rawData = await res.json()
           setData({

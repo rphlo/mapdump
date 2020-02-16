@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useGlobalState from '../utils/useGlobalState'
 
-const pkg = require('../../package.json');
-
 const Login = () => {
     const globalState = useGlobalState()
     const { username, api_token } = globalState.user
@@ -16,7 +14,7 @@ const Login = () => {
       (async () => {
         if (username) {
           try {
-            const res = await fetch(pkg.api_url + '/v1/auth/user/', {
+            const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/user/', {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -35,7 +33,7 @@ const Login = () => {
   
     const onLogin = async (e) => {
       e.preventDefault()
-      const res = await fetch(pkg.api_url + '/v1/auth/login', {
+      const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

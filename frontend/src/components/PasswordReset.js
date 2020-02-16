@@ -1,8 +1,6 @@
 import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
 
-const pkg = require('../../package.json');
-
 const PasswordReset = (props) => {
     const globalState = useGlobalState()
     const { username } = globalState.user
@@ -18,7 +16,7 @@ const PasswordReset = (props) => {
   
     const onSubmit = async (e) => {
       e.preventDefault()
-      const res = await fetch(pkg.api_url+'/v1/auth/password/reset/', {
+      const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/password/reset/', {
         method: 'POST',headers: {
           'Content-Type': 'application/json'
         },

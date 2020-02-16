@@ -1,13 +1,11 @@
 import React from 'react'
 
-const pkg = require('../../package.json');
-
 const VerifyEmail = ({match, history}) => {
     const [verified, setVerified] = React.useState(false)
     const [errors, setErrors] = React.useState({})
     React.useEffect(()=>{
         (async () => {
-            const res = await fetch(pkg.api_url + '/v1/auth/registration/verify-email/', {
+            const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/registration/verify-email/', {
                 method: 'POST',headers: {
                 'Content-Type': 'application/json'
                 },
