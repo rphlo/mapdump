@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'utils.context_processors.url_front',
             ],
         },
     },
@@ -170,7 +171,8 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 
 ACCOUNT_ADAPTER = 'utils.adapters.DefaultAccountAdapterCustom'
-URL_FRONT = 'https://drawmyroute.com/'
+
+URL_FRONT = 'http://localhost:3000/'
 
 
 SLUG_BLACKLIST = [
