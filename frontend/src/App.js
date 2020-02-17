@@ -5,6 +5,8 @@ import Home from './components/Home'
 import RasterMap from './components/RasterMap'
 import UserView from './components/UserView'
 import NewMap from './components/NewMap'
+import TOS from './components/TOS'
+import PrivacyPolicy from './components/PrivacyPolicy'
 import Register from './components/Register'
 import VerifyEmail from './components/VerifyEmail'
 import PasswordReset from './components/PasswordReset'
@@ -22,6 +24,8 @@ function App() {
       <div>
           <Route exact path="/" component={Home} />
           <Route exact path="/new" component={NewMap} />
+          <Route exact path="/tos" component={TOS} />
+          <Route exact path="/privacy-policy" component={PrivacyPolicy} />
           <Route exact path="/sign-up" component={Register} />
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/password-reset" component={PasswordReset} />
