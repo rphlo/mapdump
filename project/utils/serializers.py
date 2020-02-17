@@ -1,6 +1,9 @@
 from django.http import HttpRequest
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordResetForm
+from django.template import RequestContext, loader
+from django.core.mail import EmailMultiAlternatives
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -14,6 +17,7 @@ try:
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 
+from rest_auth.serializers import PasswordResetSerializer
 from rest_framework import serializers
 from requests.exceptions import HTTPError
 
@@ -70,3 +74,27 @@ class RegisterSerializer(serializers.Serializer):
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
         return user
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+
+    def send_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None, request=None):
+        """
+        Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
+        """
+        subject = loader.render_to_string(subject_template_name, context)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context, request=self.request)
+
+        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+        email_message.send()
+
+    def save(self,*args, request=None, **kwargs):
+        self.request = request
+        super().save(*args, request=request, **kwargs)
+
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    password_reset_form_class = CustomPasswordResetForm

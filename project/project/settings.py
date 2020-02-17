@@ -73,11 +73,11 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'utils.context_processors.url_front',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'utils.context_processors.url_front',
             ],
         },
     },
@@ -167,7 +167,11 @@ AUTHENTICATION_BACKENDS = ('utils.backends.CaseInsensitiveModelBackend', )
 SITE_ID = 1
 
 REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'utils.serializers.RegisterSerializer'
+    'REGISTER_SERIALIZER': 'utils.serializers.RegisterSerializer',
+}
+
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 'utils.serializers.CustomPasswordResetSerializer',
 }
 
 ACCOUNT_ADAPTER = 'utils.adapters.DefaultAccountAdapterCustom'

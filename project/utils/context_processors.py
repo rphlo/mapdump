@@ -1,10 +1,10 @@
 from django.contrib.sites.models import Site
-from django.config import settings
+from django.conf import settings
 
 
 def url_front(request):
     return {
-        'url_front': settings.URL_FRONT
+        'URL_FRONT': settings.URL_FRONT
     }
 
 
