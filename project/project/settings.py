@@ -172,7 +172,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 ACCOUNT_ADAPTER = 'utils.adapters.DefaultAccountAdapterCustom'
 
-URL_FRONT = 'http://localhost:3000/'
+URL_FRONT = 'http://localhost:3000'
 
 
 SLUG_BLACKLIST = [
