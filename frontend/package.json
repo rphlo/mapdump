@@ -1,6 +1,6 @@
 {
   "name": "drawmyroute",
-  "version": "2020021700",
+  "version": "2020022300",
   "private": true,
   "dependencies": {
     "@sentry/browser": "^5.10.2",
