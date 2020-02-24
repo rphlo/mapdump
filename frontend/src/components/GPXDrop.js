@@ -50,7 +50,7 @@ const GPXDropzone = (props) => {
   ]);
 
   return (
-    <div {...getRootProps({style})}>
+    <div data-testid="dropzone" {...getRootProps({style})}>
       <input {...getInputProps()} multiple={false}/>
       {
         isDragActive ?

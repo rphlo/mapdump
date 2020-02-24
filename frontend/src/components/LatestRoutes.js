@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import moment from 'moment';
 
 const LatestRoute = () => {
-    const [routes, setRoutes] = React.useState([])
+    const [routes, setRoutes] = React.useState(false)
+
 
     React.useEffect(() => {
         (async () => {
@@ -16,7 +17,8 @@ const LatestRoute = () => {
       <>
         <h3>Latest Routes</h3>
         <div className="container" style={{textAlign: 'left'}}>
-            {!routes.length ? 
+            { routes === false && <div style={{textAlign: 'center'}}><span><i class="fa fa-spinner fa-spin"></i> Loading</span></div>}
+            { routes && (!routes.length ? 
                (
                   <div style={{textAlign: 'center'}}><span>No routes have been yet uploaded...</span></div>
                 ) : (
@@ -34,7 +36,7 @@ const LatestRoute = () => {
                     </div>))}
                   </div>
                 )   
-            }
+            )}
         </div>
       </>
     ) 

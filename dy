@@ -1,3 +1,3 @@
 #!/bin/sh
-
-./dc exec react yarn "$@"
+DIR=$(dirname "$0")
+$DIR/dc exec react yarn "$@"
