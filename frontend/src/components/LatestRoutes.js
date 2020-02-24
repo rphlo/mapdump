@@ -26,8 +26,9 @@ const LatestRoute = () => {
                         <p className="card-text">{moment(r.start_time).utcOffset(r.tz).format('dddd, MMMM Do YYYY, HH:mm')}</p>
                         </div>
                     </div>
-                </div>))}
+                </div>))}    
             </div>
+            {!routes.length && <div style={{textAlign: 'center'}}><span>No routes have been yet uploaded</span></div>}
         </div>
         </>
     ) 
