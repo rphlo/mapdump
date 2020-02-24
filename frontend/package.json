@@ -19,8 +19,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "react-tooltip": "^3.11.2",
-    "sax": "^1.2.4",
-    "surge": "^0.21.3"
+    "sax": "^1.2.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -48,7 +47,8 @@
   },
   "devDependencies": {
     "@sentry/cli": "^1.49.0",
+    "cypress": "^4.0.2",
     "dotenv": "^8.2.0",
-    "gh-pages": "^2.2.0"
+    "surge": "^0.21.3"
   }
 }
