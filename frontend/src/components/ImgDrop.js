@@ -51,7 +51,7 @@ const ImageDropzone = (props) => {
   ]);
 
   return (
-    <div {...getRootProps({style})}>
+    <div data-testid="dropzoneImg" {...getRootProps({style})}>
       <input {...getInputProps()} multiple={false}/>
       {
         isDragActive ?
