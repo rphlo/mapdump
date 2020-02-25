@@ -198,7 +198,7 @@ const RouteDrawing = (props) => {
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
       <button className="btn btn-sm btn-primary" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download</button>&nbsp;
-      {props.editMode && !saved && username && <><button style={{float:'right'}} className="btn btn-sm btn-success" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
+      {props.editMode && !saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-success" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
       <div>
         {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
         {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}

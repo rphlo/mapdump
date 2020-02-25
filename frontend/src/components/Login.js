@@ -59,7 +59,7 @@ const Login = () => {
           &nbsp;<button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Logout</button>
         </div>}
       {!username && !wantLogin && (<div style={{textAlign:'right'}}>
-          <button onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Login</button>
+          <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Login</button>
           &nbsp;<Link to='/sign-up'><button className="btn btn-success btn-sm"><i className="fas fa-user-plus"></i> Sign up</button></Link>
         </div>)}
       {!username && wantLogin && (<div><span>&nbsp;</span>
@@ -84,7 +84,7 @@ const Login = () => {
                     <label htmlFor="psw"><i className="fas fa-key"></i> Password</label>
                     <input onChange={(e)=>{setPass(e.target.value)}} type="password" className="form-control" id="psw" placeholder="Password"/>
                   </div>
-                  <button type="submit" className="btn btn-primary btn-block"><i className="fas fa-sign-in-alt"></i>  Login</button>
+                  <button data-testid="submitLoginBtn" type="submit" className="btn btn-primary btn-block"><i className="fas fa-sign-in-alt"></i>  Login</button>
                 </form>
               </div>
               <div className="modal-footer" style={{display:'block', justifyContent:'initial'}}>
