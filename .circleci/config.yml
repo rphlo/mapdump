@@ -9,10 +9,20 @@ jobs:
     steps:
     - checkout
     - run: ./dc build
-    - run: ./dc up -d
     - run: cd frontend
     - run: curl -o- -L https://yarnpkg.com/install.sh | bash
-    - run: yarn run cypress run
+    - run:
+      name: Install  Node.js 8.9.1 with build in nvm tool
+      # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
+      command: |
+        export NVM_DIR="/opt/circleci/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        nvm install v10 && nvm use v10 && nvm alias default v10
+        node -v
+    - run: ~/.yarn/bin/yarn install
+    - run: ./dc up -d
+    - run: while ! curl --output /dev/null --silent --head --fail http://localhost:3000; do sleep 1 && echo -n .; done;
+    - run: ~/.yarn/bin/yarn run cypress run
 workflows:
   build:
     jobs:
