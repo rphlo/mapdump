@@ -23,6 +23,7 @@ describe('Create a new map', function() {
                 cy.get('[data-testid="saveBtn"]').should('not.exist');
                 cy.login()
                 cy.get('[data-testid="saveBtn"]').contains('Save').click()
+                cy.wait(5000)
                 cy.url().should('include', '/routes/')
             });
         });
@@ -73,6 +74,7 @@ describe('Create a new map', function() {
                 cy.get('[data-testid="nextBtn"]').click()
                 cy.contains('Jukola_1st_leg')
                 cy.contains('Download')
+                cy.wait(3000)
                 cy.get('.final-image')
             });
         });
