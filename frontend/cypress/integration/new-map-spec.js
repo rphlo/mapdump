@@ -23,7 +23,7 @@ describe('Create a new map', function() {
                 cy.get('[data-testid="saveBtn"]').should('not.exist');
                 cy.login()
                 cy.get('[data-testid="saveBtn"]').contains('Save').click()
-                cy.wait(5000)
+                cy.wait(10000)
                 cy.url().should('include', '/routes/')
             });
         });
@@ -72,9 +72,9 @@ describe('Create a new map', function() {
                 cy.contains('Corners Coordinates')
                 cy.get('#cornersCoordsInput').type('61.45075,24.18994,61.44656,24.24721,61.42094,24.23851,61.42533,24.18156')
                 cy.get('[data-testid="nextBtn"]').click()
+                cy.wait(10000)
                 cy.contains('Jukola_1st_leg')
                 cy.contains('Download')
-                cy.wait(3000)
                 cy.get('.final-image')
             });
         });
