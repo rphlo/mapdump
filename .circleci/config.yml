@@ -10,13 +10,13 @@ jobs:
     - checkout
     - run: ./dc build
     - run:
-      name: Install  Node.js 10 with build in nvm tool
-      # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
-      command: |
-        export NVM_DIR="/opt/circleci/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-        nvm install v10 && nvm use v10 && nvm alias default v10
-        node -v
+        name: Install Node.js 10 with build in nvm tool
+        # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
+        command: |
+          export NVM_DIR="/opt/circleci/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm install v10 && nvm use v10 && nvm alias default v10
+          node -v
 
     - run: curl -o- -L https://yarnpkg.com/install.sh | bash
     - run: cd frontend
