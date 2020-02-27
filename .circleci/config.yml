@@ -10,7 +10,7 @@ jobs:
     - checkout
     - run: ./dc-compose build
     - run: ./dc up -d
-    - run: cd frontend && yarn run cypress open
+    - run: cd frontend && yarn run cypress start
 workflows:
   build:
     jobs:
