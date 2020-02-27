@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN npm add yarn
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY ./package.json ./yarn.lock ./
+COPY ./frontend/package.json ./frontend/yarn.lock ./
 ## install only the packages defined in the package-lock.json (faster than the normal npm install)
 RUN yarn install
 # Copy the contents of the project to the image

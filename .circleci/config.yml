@@ -10,7 +10,9 @@ jobs:
     - checkout
     - run: ./dc build
     - run: ./dc up -d
-    - run: cd frontend && yarn run cypress start
+    - run: cd frontend
+    - run: curl -o- -L https://yarnpkg.com/install.sh | bash
+    - run: yarn run cypress run
 workflows:
   build:
     jobs:
