@@ -20,6 +20,7 @@ jobs:
           cd frontend
           ~/.yarn/bin/yarn install
           cd ..
+    - run: mkdir media/
     - run: ./dc build
     - run: ./dc up -d
     - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3000)" != "200" ]]; do sleep 5; done' || false
