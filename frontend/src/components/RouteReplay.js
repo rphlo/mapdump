@@ -181,10 +181,16 @@ const RouteReplay = (props) => {
     return date.toISOString().substr(11, 8);
   }
 
+  const hasRouteTime = () => {
+    return !!props.route[0].time
+  }
+
   return (
     <div>
       <Link to={'/routes/'+props.id}><button className="btn btn-sm btn-primary float-right"><i className="fas fa-search"></i> Full route view</button></Link>
       <RouteHeader {...props} />
+    { hasRouteTime() ? (
+    <>
       <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
       <div style={{marginBottom:'5px'}}>
       { !playing ? (
@@ -194,8 +200,12 @@ const RouteReplay = (props) => {
       )}
       <span style={{paddingLeft: '15px'}}><Slider style={{width:'calc(100% - 65px)'}} axis='x' onChange={onChangeProgress} xmin="0" xmax="100" xstep=".1" x={progress}/></span></div>
       <div><span className="badge badge-secondary" style={{fontSize: '1em',fontVariantNumeric: 'tabular-nums'}}>{ getFormattedTimeSinceStart() }</span><span className="badge badge-secondary" style={{fontSize: '1em', marginLeft: '5px'}}>{'x' + speed }</span> <button className="btn btn-sm btn-light" onClick={onSlower}>Slower</button> <button onClick={onFaster} className="btn btn-sm btn-light">Faster</button></div>
-    </div>
-  )
+    </>) : (
+    <>
+      <div className="alert alert-warning"><i className="fas fa-exclamation-triangle"></i> Can not display player as route does not contain time information.</div>
+      <div id="raster_map"></div>
+    </>)}
+  </div>)
 }
 
 export default RouteReplay;

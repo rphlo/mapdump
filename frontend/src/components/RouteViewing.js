@@ -126,9 +126,14 @@ const RouteViewing = (props) => {
     setIncludeRoute(!includeRoute);
     setTogglingRoute(true)
   }
+
+  const hasRouteTime = () => {
+    return !!props.route[0].time
+  }
+
   return (
     <div>
-      <div style={{marginBottom:'5px'}}><Link to={'/routes/' + props.id + '/player'} className="float-right"><button className="btn btn-sm btn-primary"><i className="fas fa-play"></i> Switch to Player View</button></Link></div>
+      <div style={{marginBottom:'5px'}}>{hasRouteTime() && <Link to={'/routes/' + props.id + '/player'} className="float-right"><button className="btn btn-sm btn-primary"><i className="fas fa-play"></i> Switch to Player View</button></Link>}</div>
       <RouteHeader {...props} />
       <button className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
