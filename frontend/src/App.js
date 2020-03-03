@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Login from './components/Login'
 import Home from './components/Home'
 import RasterMap from './components/RasterMap'
+import RasterMapReplay from './components/RasterMapReplay'
 import UserView from './components/UserView'
 import NewMap from './components/NewMap'
 import TOS from './components/TOS'
@@ -30,9 +31,10 @@ function App() {
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/password-reset" component={PasswordReset} />
           <Route exact path="/password-reset-confirmation/:key" component={PasswordResetConfirmation} />
-          <Route path="/verify-email/:key" component={VerifyEmail} />
-          <Route path="/routes/:uid" component={RasterMap} />
-          <Route path="/athletes/:username" component={UserView} />
+          <Route exact path="/verify-email/:key" component={VerifyEmail} />
+          <Route exact path="/routes/:uid/" component={RasterMap} />
+          <Route exact path="/routes/:uid/player" component={RasterMap} />
+          <Route exact path="/athletes/:username" component={UserView} />
       </div>
     </Router>
   </GlobalStateProvider>
