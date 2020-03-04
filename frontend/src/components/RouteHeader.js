@@ -92,7 +92,7 @@ const RouteHeader = (props) => {
         <button type="button" className="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i className="fas fa-ellipsis-v"></i>
         </button>
-        <div className="dropdown-menu">
+        <div className="dropdown-menu dropdown-menu-right">
           <a className={"dropdown-item" + (nameEditing ? ' disabled': '')} href="#" onClick={enableNameEditing}><i className="fa fa-pen"></i> Edit</a>
           <div className="dropdown-divider"></div>
           <a className="dropdown-item" href="#" onClick={deleteMap}><i className="fa fa-trash"></i> Delete</a>
