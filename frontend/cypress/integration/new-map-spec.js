@@ -16,7 +16,7 @@ describe('Create a new map', function() {
                     { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
                 );
                 cy.contains('Loading')
-                cy.contains('Jukola_1st_leg')
+                cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
                 cy.contains('Download')
                 cy.wait(3000)
                 cy.get('.final-image')
@@ -45,7 +45,7 @@ describe('Create a new map', function() {
                     { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
                 );
                 cy.contains('Loading')
-                cy.contains('Jukola_1st_leg')
+                cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
                 cy.contains('Download')
                 cy.wait(3000)
                 cy.get('.final-image')
@@ -73,7 +73,7 @@ describe('Create a new map', function() {
                 cy.get('#cornersCoordsInput').type('61.45075,24.18994,61.44656,24.24721,61.42094,24.23851,61.42533,24.18156')
                 cy.get('[data-testid="nextBtn"]').click()
                 cy.wait(10000)
-                cy.contains('Jukola_1st_leg')
+                cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
                 cy.contains('Download')
                 cy.get('.final-image')
             });
