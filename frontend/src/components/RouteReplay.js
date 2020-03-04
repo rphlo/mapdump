@@ -187,10 +187,10 @@ const RouteReplay = (props) => {
 
   return (
     <div>
-      <Link to={'/routes/'+props.id}><button className="btn btn-sm btn-primary float-right"><i className="fas fa-search"></i> Full route view</button></Link>
       <RouteHeader {...props} />
     { hasRouteTime() ? (
     <>
+      <Link to={'/routes/'+props.id}><button className="btn btn-sm btn-primary float-right" style={{marginBottom:'5px'}}><i className="fas fa-search"></i> Full route view</button></Link>
       <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
       <div style={{marginBottom:'5px'}}>
       { !playing ? (

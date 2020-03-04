@@ -5,10 +5,10 @@ import moment from 'moment';
 import useGlobalState from '../utils/useGlobalState'
 
 const RouteHeader = (props) => {  
-  const [name, setName] = useState();
+  const [name, setName] = useState()
   const [nameEditing, setNameEditing] = useState(false);
   const [saving, setSaving] = useState(false)
-
+  const inputRef = React.useRef(null)
   const globalState = useGlobalState()
   const { username, api_token } = globalState.user
   
@@ -17,10 +17,17 @@ const RouteHeader = (props) => {
   }, [props.name])
 
   const enableNameEditing = (ev) => {
+    ev.preventDefault()
     if (canEdit()) {
       setNameEditing(true);
     }
   }
+
+  useEffect(() => {
+    if (nameEditing) {
+      inputRef.current.focus();
+    }
+  }, [nameEditing]);
 
 
   const save = async (newName) => {
@@ -57,7 +64,8 @@ const RouteHeader = (props) => {
     }
   }
 
-  const deleteMap = async () => {
+  const deleteMap = async (e) => {
+    e.preventDefault()
     const conf = window.confirm('Are you sure?')
     if (conf) {
       await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
@@ -77,9 +85,22 @@ const RouteHeader = (props) => {
           <title>{"DrawMyRoute.com | " + props.name  + " by " + props.athlete.first_name + " " + props.athlete.last_name}</title>
           <meta name="description" content={"Map \""  + props.name + "\" by " + props.athlete.first_name + " " + props.athlete.last_name + " on DrawMyRoute.com"} />
       </Helmet>
-      { (!canEdit() || !nameEditing) && <h2 onClick={enableNameEditing}><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span> {name}{canEdit() && <> <i className="fas fa-pen"></i></>}</h2>}
-      { canEdit() && nameEditing && <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span> <input type="text" maxLength={52} defaultValue={name} onBlur={saveName}/> <i className="fas fa-pen"></i></h2>}
-      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}</small>{ canEdit() && <button style={{float:'right'}} className="btn btn-sm btn-danger" onClick={deleteMap}><i className="fas fa-times"></i> Delete Route</button>}</h4>
+      <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span>&nbsp;
+      { (!canEdit() || !nameEditing) && <>{name}</>}
+      { canEdit() && nameEditing && <input ref={inputRef} type="text" maxLength={52} defaultValue={name} onBlur={saveName}/>}
+      { canEdit() && <div className="btn-group float-right">
+        <button type="button" className="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i className="fas fa-ellipsis-v"></i>
+        </button>
+        <div className="dropdown-menu">
+          <a className={"dropdown-item" + (nameEditing ? ' disabled': '')} href="#" onClick={enableNameEditing}><i className="fa fa-pen"></i> Edit</a>
+          <div className="dropdown-divider"></div>
+          <a className="dropdown-item" href="#" onClick={deleteMap}><i className="fa fa-trash"></i> Delete</a>
+        </div>
+      </div>
+      }
+      </h2>
+      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}</small></h4>
     </div>
   )
 }
