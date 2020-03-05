@@ -14,17 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
-from routedb.views import map_download, map_thumbnail
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('drf-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('v1/', include('routedb.urls')),
-    re_path(
-        r'^media/maps/(?P<hash>[-0-9a-zA-Z_])/(?P<hash2>[-0-9a-zA-Z_])/'
-        r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_[a-zA-Z0-9-_]+$',
-        map_download,
-        name='map_download',
-    ),
 ]
