@@ -36,7 +36,7 @@ const GPXDropzone = (props) => {
     isDragActive,
     isDragAccept,
     isDragReject
-  } = useDropzone({onDrop, accept: '.gpx'})
+  } = useDropzone({onDrop, accept: '.gpx,.tcx'})
 
   const style = useMemo(() => ({
     ...baseStyle,
@@ -50,12 +50,12 @@ const GPXDropzone = (props) => {
   ]);
 
   return (
-    <div {...getRootProps({style})}>
+    <div data-testid="dropzone" {...getRootProps({style})}>
       <input {...getInputProps()} multiple={false}/>
       {
         isDragActive ?
-          <p>Drop a GPX file here ...</p> :
-          <p>Drag 'n' drop a GPX file here, or click to select file</p>
+          <p>Drop a GPX or TCX file here ...</p> :
+          <p>Drag 'n' drop a GPX or TCX file here, or click to select a file</p>
       }
     </div>
   )

@@ -1,5 +1,6 @@
 import React from 'react'
 import RouteViewing from './RouteViewing'
+import RouteReplay from './RouteReplay'
 
 const RasterMap = ({match, history}) => {
     const [found, setFound] = React.useState(null)
@@ -38,27 +39,30 @@ const RasterMap = ({match, history}) => {
           setFound(false)
         }
       })()
-    }, [match])
+    }, [match.params.uid])
   
+    const getComponent = () => {
+      const props = {
+        athlete: data.athlete,
+        history,
+        id: data.id,
+        route: data.route,
+        startTime: data.startTime,
+        tz: data.tz,
+        country: data.country,
+        mapCornersCoords: data.mapBounds,
+        mapDataURL: data.mapImage,
+        onReset: null,
+        name: data.name
+      }
+      if(match.path.slice(-6) === 'player') {
+        return <RouteReplay {...props}/>
+      }
+      return <RouteViewing {...props} />
+    }
     return (
     <div>
-      { found && data &&   
-        <>
-          <RouteViewing
-            athlete={data.athlete}
-            history={history}
-            id={data.id}
-            route={data.route}
-            startTime={data.startTime}
-            tz= {data.tz}
-            country={data.country}
-            mapCornersCoords={data.mapBounds}
-            mapDataURL={data.mapImage}
-            onReset={null}
-            name={data.name}
-            />
-        </>
-      }
+      { found && data && getComponent() }
       { found === false && <h2>Not found</h2> }
     </div>
     );

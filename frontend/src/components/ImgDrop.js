@@ -51,12 +51,12 @@ const ImageDropzone = (props) => {
   ]);
 
   return (
-    <div {...getRootProps({style})}>
+    <div data-testid="dropzoneImg" {...getRootProps({style})}>
       <input {...getInputProps()} multiple={false}/>
       {
         isDragActive ?
           <p>Drop the map here ...</p> :
-          <p>Drag 'n' drop a map here, or click to select file</p>
+          <p>Drag 'n' drop a map here, or click to select a file</p>
       }
     </div>
   )

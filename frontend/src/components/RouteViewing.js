@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { drawRoute, getCorners } from '../utils/drawHelpers'
-import { saveAs } from 'file-saver';
-import useGlobalState from '../utils/useGlobalState'
+import { saveAs } from 'file-saver'
+import RouteHeader from './RouteHeader'
 import { Link } from 'react-router-dom'
-import moment from 'moment';
-import {Helmet} from "react-helmet";
+
 
 const RouteViewing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
-  const [nameEditing, setNameEditing] = useState(false);
   const [name, setName] = useState();
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
-  const [saving, setSaving] = useState(false)
   const [imgData, setImgData] = useState()
   const [imgHR, setImgHR] = useState()
   const [imghR, setImghR] = useState()
@@ -21,10 +18,6 @@ const RouteViewing = (props) => {
   const [imghr, setImghr] = useState()
   const [imgDataOut, setImgDataOut] = useState(null)
   let finalImage = React.createRef();
-
-
-  const globalState = useGlobalState()
-  const { username, api_token } = globalState.user
 
   React.useEffect(() => {
     if (!imgData) {
@@ -98,29 +91,6 @@ const RouteViewing = (props) => {
       separator + round5(corners_coords.bottom_right.lat) + separator + round5(corners_coords.bottom_right.lon) +
       separator + round5(corners_coords.bottom_left.lat) + separator + round5(corners_coords.bottom_left.lon);
   }
-  const save = async (newName) => {
-    if(saving || !username) {
-      return
-    }
-    setName(newName)
-    const tkn = api_token
-    setSaving(true)
-    try {
-      const response = await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': 'Token ' + tkn,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({name: newName})
-      });
-      setSaving(false)
-      if (response.status!==200) {
-        window.alert('Something went wrong')
-      }
-    } catch (e) {
-    }
-  }
 
   const downloadMapWithRoute = (e) => {
     const newCorners = getCorners(imgData, props.mapCornersCoords, props.route, includeHeader, includeRoute);
@@ -156,50 +126,23 @@ const RouteViewing = (props) => {
     setIncludeRoute(!includeRoute);
     setTogglingRoute(true)
   }
-  const enableNameEditing = (ev) => {
-    if (canEdit()) {
-      setNameEditing(true);
-    }
+
+  const hasRouteTime = () => {
+    return !!props.route[0].time
   }
-  const canEdit = () => {
-    return username === props.athlete.username
-  }
-  const saveName = async (e) => {
-    setNameEditing(false);
-    if(e.target.value !== name) {
-      await save(e.target.value);
-    }
-  }
-  const deleteMap = async () => {
-    const conf = window.confirm('Are you sure?')
-    if (conf) {
-      await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': 'Token ' + api_token,
-          'Content-Type': 'application/json'
-        },
-      });
-      props.history.push("/");
-    }
-  }
+
   return (
     <div>
-      <Helmet>
-          <title>{"DrawMyRoute.com | " + name  + " by " + props.athlete.first_name + " " + props.athlete.last_name}</title>
-          <meta name="description" content={"Map \""  + name + "\" by " + props.athlete.first_name + " " + props.athlete.last_name + " on DrawMyRoute.com"} />
-      </Helmet>
-      { (!canEdit() || !nameEditing) && <h2 onClick={enableNameEditing}><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span> {name}{canEdit() && <> <i className="fas fa-pen"></i></>}</h2>}
-      { canEdit() && nameEditing && <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span> <input type="text" maxLength={52} defaultValue={name} onBlur={saveName}/></h2>}
-      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}</small></h4>
+      <RouteHeader {...props} />
+      {hasRouteTime() && <Link to={'/routes/' + props.id + '/player'}><button className="btn btn-sm btn-primary float-right" ><i className="fas fa-play"></i> Switch to Player View</button></Link>}
+      <button className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
-      <button className="btn btn-sm btn-primary" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download</button>&nbsp;
-      {canEdit() && <button style={{float:'right'}}className="btn btn-sm btn-danger" onClick={deleteMap}><i className="fas fa-times"></i> Delete</button>}
       <div>
         {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
         {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
+
     </div>
   )
 }

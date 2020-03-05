@@ -6,7 +6,6 @@ import useGlobalState from '../utils/useGlobalState'
 const RouteDrawing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
-  const [nameEditing, setNameEditing] = useState(false);
   const [name, setName] = useState();
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
@@ -173,6 +172,7 @@ const RouteDrawing = (props) => {
     setIncludeHeader(!includeHeader);
     setTogglingHeader(true)
   }
+
   const toggleRoute = (ev) => {
     if (togglingRoute) {
       return
@@ -181,24 +181,15 @@ const RouteDrawing = (props) => {
     setIncludeRoute(!includeRoute);
     setTogglingRoute(true)
   }
-  const enableNameEditing = (ev) => {
-    if (props.editMode) {
-      setNameEditing(true);
-    }
-  }
-  const disableNameEditing = (ev) => {
-    setName(ev.target.value);
-    setNameEditing(false);
-  }
+
   return (
     <div>
-      { !nameEditing && <h2 onClick={enableNameEditing}>{name}{props.editMode && <> <i className="fas fa-pen"></i></>}</h2>}
-      { nameEditing && <h2 ><input onBlur={disableNameEditing} type="text" maxLength={52} defaultValue={name} onChange={setName}/></h2>}
-
+      <h2 ><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={setName}/></h2>
+      <button className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
-      <button className="btn btn-sm btn-primary" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download</button>&nbsp;
-      {props.editMode && !saved && username && <><button style={{float:'right'}} className="btn btn-sm btn-success" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
+
+      {props.editMode && !saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
       <div>
         {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
         {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}

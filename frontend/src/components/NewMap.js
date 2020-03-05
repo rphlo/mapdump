@@ -2,11 +2,11 @@ import React from 'react'
 import GPXDropzone from './GPXDrop'
 import ImageDropzone from './ImgDrop'
 import RouteDrawing from './RouteDrawing'
-import CornerCoordsInput from './CornerCoordsInput';
+import CornerCoordsInput from './CornerCoordsInput'
 import { parseGpx, extractCornersCoordsFromFilename, validateCornersCoords } from '../utils/fileHelpers'
-import { LatLon } from '../utils/Utils';
-
-const pkg = require('../../package.json');
+import { LatLon } from '../utils/Utils'
+import { parseTCXString } from '../utils/tcxParser'
+const pkg = require('../../package.json')
 
 function NewMap() {
     const [route, _setRoute] = React.useState();
@@ -53,6 +53,30 @@ function NewMap() {
       }
       onRouteLoaded(route)
     }
+
+    const onTCXParsed = (error, workout) => {
+      if (error) {
+        window.alert('Error parsing your TCX file!');
+        return
+      }
+      const route = [];
+      workout.laps.forEach(lap => {
+        lap.track.forEach(pos=>{
+          route.push({time: +pos.datetime, latLon: [pos.latitude, pos.longitude]})
+        })
+      })
+      onRouteLoaded(route)
+    }
+
+    const onTCXLoaded = e => {
+      const xml = e.target.result;
+      try {
+        parseTCXString(xml, onTCXParsed);
+      } catch(e) {
+        console.log(e)
+        window.alert('Error parsing your TCX file!');
+      }
+    }
   
     const onDropGPX = acceptedFiles => {
       if(!acceptedFiles.length) {
@@ -62,7 +86,11 @@ function NewMap() {
       const filename = gpxFile.name;
       setName(filename.slice(0, -4))
       const fr = new FileReader();
-      fr.onload = onGPXLoaded;
+      if (filename.toLowerCase().endsWith('.tcx')) {
+        fr.onload = onTCXLoaded;
+      } else {
+        fr.onload = onGPXLoaded;
+      }
       fr.readAsText(gpxFile);
     }
     const onImgLoaded = (e) => {
