@@ -23,12 +23,6 @@ urlpatterns = [
     path('v1/', include('routedb.urls')),
     re_path(
         r'^media/maps/(?P<hash>[-0-9a-zA-Z_])/(?P<hash2>[-0-9a-zA-Z_])/'
-        r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_([a-zA-Z0-9-_]+)(_256x256)$',
-        map_thumbnail,
-        name='map_thumbnail',
-    ),
-    re_path(
-        r'^media/maps/(?P<hash>[-0-9a-zA-Z_])/(?P<hash2>[-0-9a-zA-Z_])/'
         r'(?P<id>(?P=hash)(?P=hash2)[-0-9a-zA-Z_]{9})_[a-zA-Z0-9-_]+$',
         map_download,
         name='map_download',
