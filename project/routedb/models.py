@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import json
+import math
 import re
 import time
 from datetime import datetime
@@ -229,14 +230,18 @@ class Route(models.Model):
     start_time = models.DateTimeField(editable=False)
     country = models.CharField(max_length=2)
     tz = models.CharField(max_length=32)
+    distance = models.IntegerField()
+    duration = models.IntegerField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.route[0]['time']:
             self.start_time = datetime.fromtimestamp(self.route[0]['time'], utc)
+            self.duration = self.get_duration()
         elif self.start_time is None:
             self.start_time = now()
         self.country = self.get_country()
         self.tz = self.get_tz()
+        self.distance = self.get_distance()
         super().save(*args, **kwargs)
     
     @property
@@ -262,6 +267,21 @@ class Route(models.Model):
             self.route[0]['latlon'][0],
             self.route[0]['latlon'][1],
         )
+    
+    def get_duration(self):
+        return self.route[-1]['time'] - self.route[0]['time']
+    
+    def get_distance(self):
+        d = 0
+        prev_p = self.route[0]
+        c = math.pi / 180
+        for p in self.route[1:]:
+            dlat = p['latlon'][0] - prev_p['latlon'][0]
+            dlon = p['latlon'][1] - prev_p['latlon'][1]
+            a = math.sin(c*dlat / 2) ** 2 + math.cos(c*p['latlon'][0]) * math.cos(c*prev_p['latlon'][0]) * math.sin(c*dlon / 2) ** 2
+            d += 12756274 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+            prev_p = p
+        return d
 
     @property
     def athlete_fullname(self):

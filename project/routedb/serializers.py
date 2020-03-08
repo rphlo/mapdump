@@ -34,6 +34,8 @@ class RouteSerializer(serializers.ModelSerializer):
     country = serializers.ReadOnlyField()
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
+    distance = serializers.ReadOnlyField()
+    duration = serializers.ReadOnlyField()
 
     def validate_map_bounds(self, value):
         try:
@@ -88,7 +90,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'country', 'map_image', 'map_thumbnail_url', 'map_image_url', 'map_bounds', 'route_data')
+        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'map_thumbnail_url', 'map_image_url', 'map_bounds', 'route_data')
 
 class UserRouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')
@@ -97,10 +99,12 @@ class UserRouteListSerializer(serializers.ModelSerializer):
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
+    distance = serializers.ReadOnlyField()
+    duration = serializers.ReadOnlyField()
 
     class Meta:
         model = Route
-        fields = ('id', 'data_url', 'start_time', 'tz', 'country', 'name', 'map_thumbnail_url')
+        fields = ('id', 'data_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name', 'map_thumbnail_url')
 
 class LatestRouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')
@@ -109,10 +113,13 @@ class LatestRouteListSerializer(serializers.ModelSerializer):
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
+    distance = serializers.ReadOnlyField()
+    duration = serializers.ReadOnlyField()
     athlete = UserInfoSerializer(read_only=True)
+    
     class Meta:
         model = Route
-        fields = ('id', 'data_url', 'start_time', 'tz', 'country', 'name', 'map_thumbnail_url', 'athlete')
+        fields = ('id', 'data_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name', 'map_thumbnail_url', 'athlete')
 
 
 class UserMainSerializer(serializers.ModelSerializer):
