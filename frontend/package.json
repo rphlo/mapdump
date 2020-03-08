@@ -1,6 +1,6 @@
 {
   "name": "drawmyroute",
-  "version": "20200030800",
+  "version": "20200030801",
   "private": true,
   "dependencies": {
     "@sentry/browser": "^5.10.2",
@@ -21,7 +21,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
     "react-tooltip": "^3.11.2",
-    "sax": "^1.2.4"
+    "sax": "^1.2.4",
+    "vanilla-lazyload": "^13.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
