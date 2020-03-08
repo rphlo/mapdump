@@ -5,6 +5,7 @@ import ReactTooltip from "react-tooltip"
 import moment from 'moment';
 import {Helmet} from "react-helmet";
 import 'react-calendar-heatmap/dist/styles.css'
+import LazyLoad from "vanilla-lazyload";
 
 const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
 
@@ -22,6 +23,10 @@ const UserView = ({match}) => {
                 const rawData = await res.json()
                 setData(rawData)
                 setFound(true)
+                if (!document.lazyLoadInstance) {
+                    document.lazyLoadInstance = new LazyLoad();
+                }
+              document.lazyLoadInstance.update();
             } else if(res.status === 404){
                 setFound(false)
             }
@@ -106,7 +111,7 @@ const UserView = ({match}) => {
                 <div className="row">
                 {data.routes.map(r=>(
                 <div key={r.id} className="col-12 col-md-4"><div className="card">
-                    <Link to={'/routes/'+r.id}><img className="card-img" src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
+                    <Link to={'/routes/'+r.id}><img className="card-img-top lazyload" src="http://placehold.it/256x256/CCCCCC/FFFFFF&amp;text=Loading..." data-src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
                     <div className="card-body">
                     <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
                     <p className="card-text">{moment(r.start_time).utcOffset(r.tz).format('dddd, MMMM Do YYYY, HH:mm')}</p>
