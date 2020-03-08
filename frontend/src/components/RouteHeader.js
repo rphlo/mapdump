@@ -3,6 +3,7 @@ import {Helmet} from 'react-helmet'
 import { Link } from 'react-router-dom'
 import moment from 'moment';
 import useGlobalState from '../utils/useGlobalState'
+import {printTime} from '../utils/drawHelpers'
 
 const RouteHeader = (props) => {  
   const [name, setName] = useState()
@@ -100,7 +101,7 @@ const RouteHeader = (props) => {
       </div>
       }
       </h2>
-      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}</small></h4>
+      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}<br/>{(props.distance/1000).toFixed(1) + 'km'} {props.duration? printTime(props.duration*1000) : ''}</small></h4>
     </div>
   )
 }

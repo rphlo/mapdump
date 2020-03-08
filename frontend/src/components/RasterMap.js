@@ -32,7 +32,9 @@ const RasterMap = ({match, history}) => {
             mapBounds: transformMapBounds(rawData.map_bounds),
             mapImage: rawData.map_image_url,
             name: rawData.name,
-            route: transformRoute(rawData.route_data)
+            route: transformRoute(rawData.route_data),
+            distance: rawData.distance,
+            duration: rawData.duration
           })
           setFound(true)
         } else if(res.status === 404) {
@@ -53,7 +55,9 @@ const RasterMap = ({match, history}) => {
         mapCornersCoords: data.mapBounds,
         mapDataURL: data.mapImage,
         onReset: null,
-        name: data.name
+        name: data.name,
+        duration: data.duration,
+        distance: data.distance,
       }
       if(match.path.slice(-6) === 'player') {
         return <RouteReplay {...props}/>

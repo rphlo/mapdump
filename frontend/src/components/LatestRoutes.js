@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import moment from 'moment';
-import LazyLoad from "vanilla-lazyload";
+import moment from 'moment'
+import LazyLoad from 'vanilla-lazyload'
+import {printTime} from '../utils/drawHelpers'
 
 const LatestRoute = () => {
     const [routes, setRoutes] = React.useState(false)
@@ -35,7 +36,8 @@ const LatestRoute = () => {
                         <div className="card-body">
                           <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
                           <p className="card-text">By <Link to={'/athletes/'+r.athlete.username}>{r.athlete.first_name} {r.athlete.last_name}</Link></p>
-                          <p className="card-text">{moment(r.start_time).utcOffset(r.tz).format('dddd, MMMM Do YYYY, HH:mm')}</p>
+                          <p className="card-text">{(r.distance/1000).toFixed(1) + 'km'} {r.duration? printTime(r.duration*1000) : ''}<br/>{moment(r.start_time).utcOffset(r.tz).format('dddd, MMMM Do YYYY, HH:mm')}</p>
+                          <p className="card-text"></p>
                         </div>
                       </div>
                     </div>))}

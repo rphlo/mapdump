@@ -297,7 +297,8 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
 const getSpeedText = (s) => {
   return `${s.toFixed(2)}km/h`;
 }
-const printTime = (t) => {
+
+export const printTime = (t) => {
   var date = new Date(null);
   date.setSeconds(t/1e3);
   return date.toISOString().substr(11, 8);
