@@ -301,5 +301,21 @@ const getSpeedText = (s) => {
 export const printTime = (t) => {
   var date = new Date(null);
   date.setSeconds(t/1e3);
-  return date.toISOString().substr(11, 8);
+  const iso = date.toISOString().substr(11, 8);
+  const h = parseInt(iso.slice(0, 2))
+  const hasH = h > 0
+  const hPart = hasH ? (h + 'h') : ''
+  const m = parseInt(iso.slice(3, 5))
+  const hasM = hasH || m > 0
+  let mPart = hasM ? (m + 'm') : ''
+  if (hasH) {
+    mPart = mPart.padStart(3, '0')
+  }
+  const s = parseInt(iso.slice(6, 8))
+  const hasS = hasM || s > 0
+  let sPart = hasS? (s + 's') : ''
+  if (hasM) {
+    sPart = sPart.padStart(3, '0')
+  }
+  return hPart + mPart + sPart
 }
