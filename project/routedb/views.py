@@ -90,7 +90,7 @@ class RouteCreate(generics.CreateAPIView):
 
 
 class LatestRoutesList(generics.ListAPIView):
-    queryset = Route.objects.all()[:24]
+    queryset = Route.objects.all().select_related('athlete')[:24]
     serializer_class = LatestRouteListSerializer
 
 class UserDetail(generics.RetrieveAPIView):
@@ -99,12 +99,12 @@ class UserDetail(generics.RetrieveAPIView):
 
     def get_queryset(self):
         username = self.kwargs['username']
-        return User.objects.filter(username=username)
+        return User.objects.filter(username=username).prefetch_related('routes')
 
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RouteSerializer
     lookup_field = 'uid'
-    queryset = Route.objects.all()
+    queryset = Route.objects.all().select_related('athlete', 'raster_map')
 
     def get_queryset(self):
         if self.request.method not in SAFE_METHODS:
@@ -114,7 +114,7 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
 
 def map_download(request, uid, *args, **kwargs):
     route = get_object_or_404(
-        Route,
+        Route.objects.select_related('raster_map'),
         uid=uid,
     )
     file_path = route.raster_map.path
@@ -129,7 +129,7 @@ def map_download(request, uid, *args, **kwargs):
 
 def map_thumbnail(request, uid, *args, **kwargs):
     route = get_object_or_404(
-        Route,
+        Route.objects.select_related('raster_map'),
         uid=uid,
     )
     image = route.raster_map.thumbnail
