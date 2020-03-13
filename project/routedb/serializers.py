@@ -25,6 +25,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 class RouteSerializer(serializers.ModelSerializer):
     map_image = serializers.ImageField(source='raster_map.image', write_only=True)
+    gpx_url = RelativeURLField()
     map_image_url = RelativeURLField(source='image_url')
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
     route_data = serializers.JSONField(source='route')
@@ -90,7 +91,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'map_thumbnail_url', 'map_image_url', 'map_bounds', 'route_data')
+        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'gpx_url', 'map_thumbnail_url', 'map_image_url', 'map_bounds', 'route_data')
 
 class UserRouteListSerializer(serializers.ModelSerializer):
     data_url = RelativeURLField(source='api_url')

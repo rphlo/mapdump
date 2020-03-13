@@ -1,5 +1,7 @@
+import arrow
 import base64
 import hashlib
+import gpxpy
 import json
 import math
 import re
@@ -127,24 +129,22 @@ class RasterMap(models.Model):
         else:
             raise ValueError('Not a base 64 encoded data URI of an image')
 
+
     def strip_exif(self):
         if self.image.closed:
             self.image.open()
         with Image.open(self.image.file) as image:
-            is_jpeg = image.format.lower() == 'jpeg'
-            if not is_jpeg:
-                return
-            data = image.getdata()
-            image_without_exif = Image.new(image.mode, image.size)
-            image_without_exif.putdata(data)
+            rgb_img = image.convert('RGB')
+            #if image.size[0] > 2000 or image.size[1] > 2000:
+            #    rgb_img.thumbnail((2000, 2000), Image.ANTIALIAS)
             out_buffer = BytesIO()
-            image_without_exif.save(out_buffer, image.format.lower())
-        f_new = File(out_buffer, name=self.image.name)
-        self.image.save(
-            'filename',
-            f_new,
-            save=False,
-        )
+            rgb_img.save(out_buffer, 'JPEG', quality=60, dpi=(300, 300))
+            f_new = File(out_buffer, name=self.image.name)
+            self.image.save(
+                'filename',
+                f_new,
+                save=False,
+            )
         self.image.close()
 
     @property
@@ -297,6 +297,34 @@ class Route(models.Model):
     @property
     def thumbnail_url(self):
         return reverse('map_thumbnail', kwargs={'uid': self.uid})
+
+    @property
+    def gpx(self):
+        gpx = gpxpy.gpx.GPX()
+        gpx_track = gpxpy.gpx.GPXTrack()
+        gpx.tracks.append(gpx_track)
+
+        gpx_segment = gpxpy.gpx.GPXTrackSegment()
+        locs = self.route
+        for location in locs:
+            pt = gpxpy.gpx.GPXTrackPoint(
+                location['latlon'][0],
+                location['latlon'][1],
+            )
+            if location['time']:
+                pt.time = arrow.get(location['time']).datetime
+            gpx_segment.points.append(pt)
+        gpx_track.segments.append(gpx_segment)
+        return gpx.to_xml()
+
+    @property
+    def gpx_url(self):
+        return reverse(
+            'gpx_download',
+            kwargs={
+                'uid': self.uid,
+            }
+        )
 
     class Meta:
         ordering = ['-start_time']

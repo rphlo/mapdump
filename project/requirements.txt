@@ -12,3 +12,4 @@ timezonefinder
 reverse_geocoder
 django-rest-auth[with_social]
 django-s3-storage
+gpxpy
