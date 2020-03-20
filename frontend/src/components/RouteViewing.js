@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { drawRoute, getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver'
 import RouteHeader from './RouteHeader'
+import ShareModal from './ShareModal'
 import { Link } from 'react-router-dom'
 
 
@@ -18,6 +19,7 @@ const RouteViewing = (props) => {
   const [imghr, setImghr] = useState()
   const [imgDataOut, setImgDataOut] = useState(null)
   let finalImage = React.createRef();
+
 
   React.useEffect(() => {
     if (!imgData) {
@@ -135,19 +137,37 @@ const RouteViewing = (props) => {
     return !!props.route[0].time
   }
 
+
+  let webShareApiAvailable = false
+  if (navigator.share) {
+    webShareApiAvailable = true
+  }
+
+  const [shareModalOpen, setShareModalOpen] = useState(false)
+  const share = () => {
+    if(webShareApiAvailable) {
+      navigator.share({url: document.location.href})
+    } else {
+      setShareModalOpen(true)
+    }
+  }
+
   return (
     <div>
       <RouteHeader {...props} />
       {hasRouteTime() && <Link to={'/routes/' + props.id + '/player'}><button className="btn btn-sm btn-primary float-right" ><i className="fas fa-play"></i> Switch to Player View</button></Link>}
-      <button className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
-      <button className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> Download GPX</button>&nbsp;
+      <div>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> Download GPX</button>
+      </div>
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
       <div>
         {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
         {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
-
+      {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
     </div>
   )
 }

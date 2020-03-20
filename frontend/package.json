@@ -1,12 +1,13 @@
 {
   "name": "drawmyroute",
-  "version": "20200031301",
+  "version": "20200032000",
   "private": true,
   "dependencies": {
     "@sentry/browser": "^5.10.2",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "copy-text-to-clipboard": "^2.1.1",
     "file-saver": "^2.0.2",
     "flag-icon-css": "^3.4.5",
     "leaflet": "^1.6.0",

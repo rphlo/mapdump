@@ -5,6 +5,7 @@ import Slider from 'react-input-slider';
 import { Position, PositionArchive } from '../utils/positions'
 import { Link } from 'react-router-dom'
 import RouteHeader from './RouteHeader';
+import ShareModal from './ShareModal'
 
 const RouteReplay = (props) => {
   const [playing, setPlaying] = useState(false)
@@ -185,12 +186,29 @@ const RouteReplay = (props) => {
     return !!props.route[0].time
   }
 
+  let webShareApiAvailable = false
+  if (navigator.share) {
+    webShareApiAvailable = true
+  }
+
+  const [shareModalOpen, setShareModalOpen] = useState(false)
+  const share = () => {
+    if(webShareApiAvailable) {
+      navigator.share({url: document.location.href})
+    } else {
+      setShareModalOpen(true)
+    }
+  }
+
   return (
     <div>
       <RouteHeader {...props} />
     { hasRouteTime() ? (
     <>
       <Link to={'/routes/'+props.id}><button className="btn btn-sm btn-primary float-right" style={{marginBottom:'5px'}}><i className="fas fa-search"></i> Full route view</button></Link>
+      <div>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button>
+      </div>
       <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
       <div style={{marginBottom:'5px'}}>
       { !playing ? (
@@ -205,6 +223,7 @@ const RouteReplay = (props) => {
       <div className="alert alert-warning"><i className="fas fa-exclamation-triangle"></i> Can not display player as route does not contain time information.</div>
       <div id="raster_map"></div>
     </>)}
+    {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
   </div>)
 }
 
