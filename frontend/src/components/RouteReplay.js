@@ -146,6 +146,9 @@ const RouteReplay = (props) => {
   }
 
   const onPlay = () => {
+    if(!leafletMap) {
+      return false
+    }
     setPlaying(true)
     const interval = setInterval(() => {
       setPlayInterval(pi=>{
