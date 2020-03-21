@@ -194,7 +194,9 @@ const RouteReplay = (props) => {
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const share = () => {
     if(webShareApiAvailable) {
-      navigator.share({url: document.location.href})
+      try {
+        navigator.share({url: document.location.href})
+      } catch (e) {}
     } else {
       setShareModalOpen(true)
     }

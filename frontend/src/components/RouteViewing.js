@@ -146,8 +146,10 @@ const RouteViewing = (props) => {
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const share = () => {
     if(webShareApiAvailable) {
-      navigator.share({url: document.location.href})
-    } else {
+      try {
+        navigator.share({url: document.location.href})
+      } catch (e) {}
+      } else {
       setShareModalOpen(true)
     }
   }
