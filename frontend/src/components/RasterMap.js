@@ -31,6 +31,7 @@ const RasterMap = ({match, history}) => {
             country: rawData.country,
             mapBounds: transformMapBounds(rawData.map_bounds),
             mapImage: rawData.map_image_url,
+            gpx: rawData.gpx_url,
             name: rawData.name,
             route: transformRoute(rawData.route_data),
             distance: rawData.distance,
@@ -54,6 +55,7 @@ const RasterMap = ({match, history}) => {
         country: data.country,
         mapCornersCoords: data.mapBounds,
         mapDataURL: data.mapImage,
+        gpx: data.gpx,
         onReset: null,
         name: data.name,
         duration: data.duration,
@@ -67,6 +69,7 @@ const RasterMap = ({match, history}) => {
     return (
     <div>
       { found && data && getComponent() }
+      { found !== false && !data && <h2><i className="fa fa-spin fa-spinner"></i> Loading...</h2>}
       { found === false && <h2>Not found</h2> }
     </div>
     );

@@ -184,7 +184,7 @@ const RouteDrawing = (props) => {
 
   return (
     <div>
-      <h2 ><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={setName}/></h2>
+      <h2 ><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={(e)=>setName(e.target.value)}/></h2>
       <button className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;

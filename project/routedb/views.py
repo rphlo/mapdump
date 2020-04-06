@@ -153,3 +153,19 @@ def map_thumbnail(request, uid, *args, **kwargs):
         mime='image/jpeg'
     )
 
+
+def gpx_download(request, uid, *args, **kwargs):
+    route = get_object_or_404(
+        Route,
+        uid=uid,
+    )
+    gpx_data = route.gpx
+    response = HttpResponse(
+        gpx_data,
+        content_type='application/gpx+xml'
+    )
+    response['Content-Disposition'] = 'attachment; filename="{}.gpx"'.format(
+        route.name.replace('\\', '_').replace('"', '\\"')
+    )
+    return response
+
