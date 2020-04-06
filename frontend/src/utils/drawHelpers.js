@@ -121,7 +121,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.drawImage(img, -bounds.minX, -bounds.minY, img.width, img.height);
+  ctx.drawImage(img, Math.round(-bounds.minX), Math.round(-bounds.minY), Math.round(img.width), Math.round(img.height));
 
   const outlineWidth = 3;
   const weight = 3;
@@ -199,7 +199,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     ctx2.beginPath();
     for(let i=0; i < route.length; i++) {
       const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
-      ctx2.lineTo(pt.x - bounds.minX, pt.y - bounds.minY);
+      ctx2.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
     }
     ctx2.stroke();
 
@@ -210,10 +210,10 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
 
       // Create a gradient for each segment, pick start end end colors from palette gradient
       const gradient = ctx2.createLinearGradient(
-          pointStart.x - bounds.minX,
-          pointStart.y - bounds.minY,
-          pointEnd.x - bounds.minX,
-          pointEnd.y - bounds.minY
+          Math.round(pointStart.x - bounds.minX),
+          Math.round(pointStart.y - bounds.minY),
+          Math.round(pointEnd.x - bounds.minX),
+          Math.round(pointEnd.y - bounds.minY)
       );
       const gradientStartRGB = getRGBForValue(speeds[j-1]);
       const gradientEndRGB = getRGBForValue(speeds[j]);
@@ -223,8 +223,8 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
       ctx2.lineWidth = weight;
       ctx2.strokeStyle = gradient;
       ctx2.beginPath();
-      ctx2.moveTo(pointStart.x - bounds.minX, pointStart.y - bounds.minY);
-      ctx2.lineTo(pointEnd.x - bounds.minX, pointEnd.y - bounds.minY);
+      ctx2.moveTo(Math.round(pointStart.x - bounds.minX), Math.round(pointStart.y - bounds.minY));
+      ctx2.lineTo(Math.round(pointEnd.x - bounds.minX), Math.round(pointEnd.y - bounds.minY));
       ctx2.stroke();
 
     }

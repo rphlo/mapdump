@@ -1,4 +1,7 @@
+import os
 import urllib
+from io import BytesIO
+
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.shortcuts import get_object_or_404
@@ -12,7 +15,7 @@ from routedb.models import RasterMap, Route
 from routedb.serializers import RouteSerializer, UserMainSerializer, LatestRouteListSerializer
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
-from utils.s3 import s3_object_url
+from utils.s3 import s3_object_url, s3_key_exists, upload_to_s3
 
 
 def x_accel_redirect(request, path, filename='',
@@ -132,7 +135,21 @@ def map_thumbnail(request, uid, *args, **kwargs):
         Route.objects.select_related('raster_map'),
         uid=uid,
     )
-    image = route.raster_map.thumbnail
-    response = HttpResponse(content_type='image/jpeg')
-    image.save(response, 'JPEG')
-    return response
+    file_path = route.raster_map.path + '_thumb'
+    if not s3_key_exists(file_path, 'drawmyroute-maps'):
+        image = route.raster_map.thumbnail
+        up_buffer = BytesIO()
+        image.save(up_buffer, 'JPEG', quality=40)
+        up_buffer.seek(0)
+        upload_to_s3('drawmyroute-maps', file_path, up_buffer)
+        response = HttpResponse(content_type='image/jpeg')
+        image.save(response, 'JPEG', quality=40)
+        return response
+    return serve_from_s3(
+        'drawmyroute-maps',
+        request,
+        '/internal/' + file_path,
+        filename='{}_thumbnail.jpg'.format(route.name),
+        mime='image/jpeg'
+    )
+
