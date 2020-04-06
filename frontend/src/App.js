@@ -1,10 +1,11 @@
 import React from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Login from './components/Login'
 import Home from './components/Home'
 import RasterMap from './components/RasterMap'
 import UserView from './components/UserView'
 import NewMap from './components/NewMap'
+import NotFound from './components/NotFound'
 import TOS from './components/TOS'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import Register from './components/Register'
@@ -21,7 +22,7 @@ function App() {
   <GlobalStateProvider>
     <Router basename='/'>
       <Login />
-      <div>
+      <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/new" component={NewMap} />
           <Route exact path="/tos" component={TOS} />
@@ -34,7 +35,8 @@ function App() {
           <Route exact path="/routes/:uid/" component={RasterMap} />
           <Route exact path="/routes/:uid/player" component={RasterMap} />
           <Route exact path="/athletes/:username" component={UserView} />
-      </div>
+          <Route exact path="*" component={NotFound} />
+      </Switch>
     </Router>
   </GlobalStateProvider>
   );
