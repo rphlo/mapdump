@@ -35,7 +35,8 @@ const RasterMap = ({match, history}) => {
             name: rawData.name,
             route: transformRoute(rawData.route_data),
             distance: rawData.distance,
-            duration: rawData.duration
+            duration: rawData.duration,
+            comment: rawData.comment,
           })
           setFound(true)
         } else if(res.status === 404) {
@@ -60,6 +61,7 @@ const RasterMap = ({match, history}) => {
         name: data.name,
         duration: data.duration,
         distance: data.distance,
+        comment: data.comment,
       }
       if(match.path.slice(-6) === 'player') {
         return <RouteReplay {...props}/>

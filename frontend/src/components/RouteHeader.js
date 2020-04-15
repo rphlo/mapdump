@@ -7,9 +7,12 @@ import {printTime} from '../utils/drawHelpers'
 
 const RouteHeader = (props) => {  
   const [name, setName] = useState()
+  const [comment, setComment] = useState()
   const [nameEditing, setNameEditing] = useState(false);
+  const [commentEditing, setCommentEditing] = useState(false);
   const [saving, setSaving] = useState(false)
   const inputRef = React.useRef(null)
+  const commentInputRef = React.useRef(null)
   const globalState = useGlobalState()
   const { username, api_token } = globalState.user
   
@@ -17,10 +20,21 @@ const RouteHeader = (props) => {
     setName(props.name); 
   }, [props.name])
 
+  useEffect(() => {
+    setComment(props.comment); 
+  }, [props.comment])
+
   const enableNameEditing = (ev) => {
     ev.preventDefault()
     if (canEdit()) {
       setNameEditing(true);
+    }
+  }
+
+  const enableCommentEditing = (ev) => {
+    ev.preventDefault()
+    if (canEdit()) {
+      setCommentEditing(true);
     }
   }
 
@@ -30,8 +44,27 @@ const RouteHeader = (props) => {
     }
   }, [nameEditing]);
 
+  useEffect(() => {
+    if (commentEditing) {
+      commentInputRef.current.focus();
+    }
+  }, [commentEditing]);
 
-  const save = async (newName) => {
+  const saveName = async (e) => {
+    setNameEditing(false);
+    if(e.target.value !== name) {
+      await putName(e.target.value);
+    }
+  }
+
+  const saveComment = async (e) => {
+    setCommentEditing(false);
+    if(e.target.value !== name) {
+      await putComment(e.target.value);
+    }
+  }
+
+  const putName = async (newName) => {
     if(saving || !username) {
       return
     }
@@ -54,15 +87,32 @@ const RouteHeader = (props) => {
     } catch (e) {
     }
   }
+  const putComment = async (newComment) => {
+    if(saving || !username) {
+      return
+    }
+    setComment(newComment)
+    const tkn = api_token
+    setSaving(true)
+    try {
+      const response = await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': 'Token ' + tkn,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({comment: newComment})
+      });
+      setSaving(false)
+      if (response.status!==200) {
+        window.alert('Something went wrong')
+      }
+    } catch (e) {
+    }
+  }
 
   const canEdit = () => {
     return username === props.athlete.username
-  }
-  const saveName = async (e) => {
-    setNameEditing(false);
-    if(e.target.value !== name) {
-      await save(e.target.value);
-    }
   }
 
   const deleteMap = async (e) => {
@@ -94,7 +144,8 @@ const RouteHeader = (props) => {
           <i className="fas fa-ellipsis-v"></i>
         </button>
         <div className="dropdown-menu dropdown-menu-right">
-          <a className={"dropdown-item" + (nameEditing ? ' disabled': '')} href="/#" onClick={enableNameEditing}><i className="fa fa-pen"></i> Edit</a>
+          <a className={"dropdown-item" + (nameEditing ? ' disabled': '')} href="/#" onClick={enableNameEditing}><i className="fa fa-pen"></i> Edit title</a>
+          <a className={"dropdown-item" + (commentEditing ? ' disabled': '')} href="/#" onClick={enableCommentEditing}><i className="fa fa-pen"></i> Edit description</a>
           <div className="dropdown-divider"></div>
           <a className="dropdown-item" href="/#" onClick={deleteMap}><i className="fa fa-trash"></i> Delete</a>
         </div>
@@ -102,6 +153,10 @@ const RouteHeader = (props) => {
       }
       </h2>
       <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}<br/>{(props.distance/1000).toFixed(1) + 'km'} {props.duration? printTime(props.duration*1000) : ''}</small></h4>
+      <div style={{marginBottom: '5px'}}>
+        {(!canEdit() || !commentEditing) && <blockquote style={{whiteSpace: 'pre'}}><p>{comment}</p></blockquote>}
+        { canEdit() && commentEditing && <textarea class="form-control" ref={commentInputRef} defaultValue={comment} onBlur={saveComment}/>}  
+      </div>
     </div>
   )
 }

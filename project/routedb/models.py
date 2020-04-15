@@ -232,6 +232,7 @@ class Route(models.Model):
     tz = models.CharField(max_length=32)
     distance = models.IntegerField()
     duration = models.IntegerField(blank=True, null=True)
+    comment = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         if self.route[0]['time']:
