@@ -17,6 +17,7 @@ const RouteViewing = (props) => {
   const [imghR, setImghR] = useState()
   const [imgHr, setImgHr] = useState()
   const [imghr, setImghr] = useState()
+  const [zoom, setZoom] = useState(100)
   const [imgDataOut, setImgDataOut] = useState(null)
   let finalImage = React.createRef();
 
@@ -108,12 +109,8 @@ const RouteViewing = (props) => {
     }, 'image/jpeg', 0.4)
   }
 
-  const downloadGPX = (e) => {
+  const downloadGPX = (ev) => {
     saveAs(props.gpx, name + '.gpx');
-  }
-
-  const onClickImg = (ev) => {
-    finalImage.current.classList.toggle('final-image');
   }
 
   const toggleHeader = (ev) => {
@@ -137,6 +134,13 @@ const RouteViewing = (props) => {
     return !!props.route[0].time
   }
 
+  const zoomOut = () => {
+    setZoom(zoom - 10)
+  }
+
+  const zoomIn = () => {
+    setZoom(zoom + 10)
+  }
 
   let webShareApiAvailable = false
   if (navigator.share) {
@@ -163,10 +167,12 @@ const RouteViewing = (props) => {
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> Download GPX</button>
       </div>
+      <button className="btn btn-sm btn-default" onClick={zoomIn}><i className={"fa fa-plus"}></i></button>&nbsp;
+      <button className="btn btn-sm btn-default" onClick={zoomOut}><i className={"fa fa-minus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
       <div>
-        {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
+        {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/>}
         {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
       {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
