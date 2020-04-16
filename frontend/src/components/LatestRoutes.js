@@ -23,7 +23,7 @@ const LatestRoute = () => {
       <>
         <h3>Latest Routes</h3>
         <div className="container" style={{textAlign: 'left'}}>
-            { routes === false && <div style={{textAlign: 'center'}}><span><i class="fa fa-spinner fa-spin"></i> Loading</span></div>}
+            { routes === false && <div style={{textAlign: 'center'}}><span><i className="fa fa-spinner fa-spin"></i> Loading</span></div>}
             { routes && (!routes.length ? 
                (
                   <div style={{textAlign: 'center'}}><span>No routes have been yet uploaded...</span></div>

@@ -155,7 +155,7 @@ const RouteHeader = (props) => {
       <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}<br/>{(props.distance/1000).toFixed(1) + 'km'} {props.duration? printTime(props.duration*1000) : ''}</small></h4>
       <div style={{marginBottom: '5px'}}>
         {(!canEdit() || !commentEditing) && <blockquote style={{whiteSpace: 'pre-wrap'}}><p>{comment}</p></blockquote>}
-        { canEdit() && commentEditing && <textarea class="form-control" ref={commentInputRef} defaultValue={comment} onBlur={saveComment}/>}  
+        { canEdit() && commentEditing && <textarea className="form-control" ref={commentInputRef} defaultValue={comment} onBlur={saveComment}/>}  
       </div>
     </div>
   )
