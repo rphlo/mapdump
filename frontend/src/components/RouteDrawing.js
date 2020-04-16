@@ -17,6 +17,7 @@ const RouteDrawing = (props) => {
   const [imgHr, setImgHr] = useState()
   const [imghr, setImghr] = useState()
   const [imgDataOut, setImgDataOut] = useState(null)
+  const [zoom, setZoom] = useState(100)
   let finalImage = React.createRef();
 
 
@@ -160,10 +161,6 @@ const RouteDrawing = (props) => {
     }, 'image/jpeg', 0.4)
   }
 
-  const onClickImg = (ev) => {
-    finalImage.current.classList.toggle('final-image');
-  }
-
   const toggleHeader = (ev) => {
     if (togglingHeader) {
       return
@@ -182,16 +179,28 @@ const RouteDrawing = (props) => {
     setTogglingRoute(true)
   }
 
+  const zoomOut = () => {
+    setZoom(zoom - 10)
+  }
+
+  const zoomIn = () => {
+    setZoom(zoom + 10)
+  }
+
   return (
     <div>
       <h2 ><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={(e)=>setName(e.target.value)}/></h2>
-      <button className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>&nbsp;
+      <div>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>
+      </div>
+      <button className="btn btn-sm btn-default" onClick={zoomIn}><i className={"fa fa-plus"}></i></button>&nbsp;
+      <button className="btn btn-sm btn-default" onClick={zoomOut}><i className={"fa fa-minus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
 
       {props.editMode && !saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
       <div>
-        {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={onClickImg} style={{marginTop:'5px'}}/>}
+        {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/>}
         {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
     </div>

@@ -14,13 +14,13 @@ function NewMap() {
     const [mapDataURL, _setMapDataURL] = React.useState();
     const [name, setName] = React.useState();
   
-    const setRoute = (route) =>{
-      window.drawmyroute.route = route;
-      _setRoute(route);
+    const setRoute = (newRoute) =>{
+      window.drawmyroute.route = newRoute;
+      _setRoute(newRoute);
     } 
-    const setMapDataURL = (mapDataURL) =>{
-      window.drawmyroute.mapDataURL = mapDataURL;
-      _setMapDataURL(mapDataURL);
+    const setMapDataURL = (newMapDataURL) =>{
+      window.drawmyroute.mapDataURL = newMapDataURL;
+      _setMapDataURL(newMapDataURL);
     } 
   
     const acceptedFormats = {
@@ -29,8 +29,8 @@ function NewMap() {
       "image/png":true
     };
   
-    const onRouteLoaded = (route) => {
-      setRoute(route)
+    const onRouteLoaded = (newRoute) => {
+      setRoute(newRoute)
     }
   
     const onGPXLoaded = e => {
@@ -42,16 +42,16 @@ function NewMap() {
         window.alert('Error parsing your GPX file!');
         return;
       }
-      const route = [];
+      const newRoute = [];
       if (parsedGpx.segments.length === 0) {
-        onRouteLoaded(route);
+        onRouteLoaded(newRoute)
         return;
       }
       for (let i = 0; i < parsedGpx.segments[0].length; i++) {
         const pos = parsedGpx.segments[0][i];
-        route.push({time: pos.time, latLon: [pos.loc[0], pos.loc[1]]});
+        newRoute.push({time: pos.time, latLon: [pos.loc[0], pos.loc[1]]});
       }
-      onRouteLoaded(route)
+      onRouteLoaded(newRoute)
     }
 
     const onTCXParsed = (error, workout) => {
@@ -59,13 +59,13 @@ function NewMap() {
         window.alert('Error parsing your TCX file!');
         return
       }
-      const route = [];
+      const newRoute = [];
       workout.laps.forEach(lap => {
         lap.track.forEach(pos=>{
-          route.push({time: +pos.datetime, latLon: [pos.latitude, pos.longitude]})
+          newRoute.push({time: +pos.datetime, latLon: [pos.latitude, pos.longitude]})
         })
       })
-      onRouteLoaded(route)
+      onRouteLoaded(newRoute)
     }
 
     const onTCXLoaded = e => {

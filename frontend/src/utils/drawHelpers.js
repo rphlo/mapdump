@@ -7,7 +7,7 @@ const extractSpeed = (route) => {
   //const data = [];
   for (let i = 0; i < route.length; i++) {
     const minIdx = Math.max(i - 10, 0);
-    const maxIdx = Math.min(minIdx + 10, route.length);
+    const maxIdx = Math.min(minIdx + 10, route.length - 1);
     const partial = route.slice(minIdx, maxIdx);
     let d = 0;
     for(let j=0; j < partial.length - 1; j++) {
