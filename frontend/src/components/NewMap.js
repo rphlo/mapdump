@@ -147,7 +147,7 @@ function NewMap() {
         { (!route && !drawRoute ) && <>
           <h1>GPX File</h1><GPXDropzone onDrop={onDropGPX} />
           <hr/>
-          or <button className="btn btn-primary" onClick={()=>{setDrawRoute(true);setName('Run')}}><i className="fas fa-pen"></i> You will draw your route manually</button>
+          or <button className="btn btn-primary" onClick={()=>{setDrawRoute(true);setName('Untitled Run')}}><i className="fas fa-pen"></i> Draw route manually</button>
         </>}
         { (drawRoute || route) && !mapDataURL && <>
           <h1>Map Image File</h1>
