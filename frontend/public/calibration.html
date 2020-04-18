@@ -312,12 +312,15 @@ $(function(){
         });
     }
     function display_world_map(route){
-        route_data = route;
+        route_data = route || [];
         map_b = L.map('tile_map');
-        var latlngs = route.map(pt=>[pt.latLon[0], pt.latLon[1]]);
+        var latlngs = route_data.map(pt=>[pt.latLon[0], pt.latLon[1]]);
         var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map_b);
-        map_b.fitBounds(polyline.getBounds());
-
+        if (route_data.length > 1) {
+          map_b.fitBounds(polyline.getBounds());
+        } else {
+          map_b.setView([0, 0], 2)
+        }
         L.TileLayer.Common = L.TileLayer.extend({initialize: function(options){L.TileLayer.prototype.initialize.call(this, this.url, options);}});
         L.TileLayer['osm'] = L.TileLayer.Common.extend({url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options:{attribution: '\u0026copy\u003B \u003Ca href\u003D\u0022http://openstreetmap.org\u0022\u003EOpenStreetMap\u003C/a\u003E contributors, \u003Ca href\u003D\u0022http://creativecommons.org/licenses/by\u002Dsa/2.0/\u0022\u003ECC\u002DBY\u002DSA\u003C/a\u003E'}});
         L.TileLayer['gmap-street'] = L.TileLayer.Common.extend({url: 'https://mt0.google.com/vt/x\u003D{x}\u0026y\u003D{y}\u0026z\u003D{z}', options:{attribution: '\u0026copy\u003B Google'}});

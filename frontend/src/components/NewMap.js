@@ -2,6 +2,7 @@ import React from 'react'
 import GPXDropzone from './GPXDrop'
 import ImageDropzone from './ImgDrop'
 import RouteDrawing from './RouteDrawing'
+import PathDrawing from './PathDrawing'
 import CornerCoordsInput from './CornerCoordsInput'
 import { parseGpx, extractCornersCoordsFromFilename, validateCornersCoords } from '../utils/fileHelpers'
 import { LatLon } from '../utils/Utils'
@@ -10,6 +11,7 @@ const pkg = require('../../package.json')
 
 function NewMap() {
     const [route, _setRoute] = React.useState();
+    const [drawRoute, setDrawRoute] = React.useState(false)
     const [mapCornersCoords, setMapCornersCoords] = React.useState();
     const [mapDataURL, _setMapDataURL] = React.useState();
     const [name, setName] = React.useState();
@@ -142,13 +144,17 @@ function NewMap() {
     }
     return (
       <div className="App">
-        { !route && <><h1>GPX File</h1><GPXDropzone onDrop={onDropGPX} /></>}
-        { route && !mapDataURL && <>
+        { (!route && !drawRoute ) && <>
+          <h1>GPX File</h1><GPXDropzone onDrop={onDropGPX} />
+          <hr/>
+          or <button className="btn btn-primary" onClick={()=>{setDrawRoute(true);setName('Run')}}><i className="fas fa-pen"></i> You will draw your route manually</button>
+        </>}
+        { (drawRoute || route) && !mapDataURL && <>
           <h1>Map Image File</h1>
           <ImageDropzone onDrop={onDropImg}/>
           <button className="btn btn-danger" onClick={onRestart}><i className="fas fa-undo"></i> Back</button>
       </>}
-        { route && mapDataURL && !mapCornersCoords &&(
+        { (drawRoute || route) && mapDataURL && !mapCornersCoords &&(
           <>
             <h1>Calibration</h1>
             <CornerCoordsInput
@@ -158,14 +164,19 @@ function NewMap() {
             />
           </>
         )}
+        { drawRoute && !route && mapDataURL && mapCornersCoords && (
+          <PathDrawing
+            mapCornersCoords={mapCornersCoords}
+            mapDataURL={mapDataURL}
+            onRoute={setRoute}
+          />
+        )}
         { route && mapDataURL && mapCornersCoords && (
           <RouteDrawing
             route={route}
             mapCornersCoords={mapCornersCoords}
             mapDataURL={mapDataURL}
-            onReset={onRestart}
             name={name}
-            editMode={true}
           />
         )}
         <span style={{color:'white'}}>v{pkg.version}</span>

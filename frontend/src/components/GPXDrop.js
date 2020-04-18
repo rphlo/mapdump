@@ -13,7 +13,8 @@ const baseStyle = {
   backgroundColor: '#fafafa',
   color: '#333',
   outline: 'none',
-  transition: 'border .24s ease-in-out'
+  transition: 'border .24s ease-in-out',
+  marginBottom: '5px'
 };
 
 const activeStyle = {
