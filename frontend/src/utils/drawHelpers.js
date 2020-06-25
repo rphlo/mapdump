@@ -226,9 +226,31 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
       ctx2.moveTo(Math.round(pointStart.x - bounds.minX), Math.round(pointStart.y - bounds.minY));
       ctx2.lineTo(Math.round(pointEnd.x - bounds.minX), Math.round(pointEnd.y - bounds.minY));
       ctx2.stroke();
-
     }
 
+    if (route[0].time) {
+      let prevT = route[0].time-20e3;
+      let count = 0;
+      ctx2.lineWidth = 1
+      ctx2.strokeStyle = '#000';
+      for (let j = 0; j < route.length; j++) {
+        if (route[j].time > prevT + 10e3) {
+          const point = transform(new LatLon(route[j].latLon[0], route[j].latLon[1]));
+          ctx2.beginPath();
+          ctx2.arc(
+            Math.round(point.x - bounds.minX),
+            Math.round(point.y - bounds.minY),
+            count % 6 === 0 ? weight : 1,
+            0,
+            2 * Math.PI
+          );
+          ctx2.fill()
+          ctx2.stroke();
+          prevT = route[j].time;
+          count++;
+        }
+      }
+    }
     ctx.globalAlpha = 0.45;
     ctx.drawImage(canvas2, 0, 0);
   }
