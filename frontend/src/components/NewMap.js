@@ -1,4 +1,5 @@
 import React from 'react'
+import JSZip from 'jszip'
 import GPXDropzone from './GPXDrop'
 import ImageDropzone from './ImgDrop'
 import RouteDrawing from './RouteDrawing'
@@ -95,15 +96,115 @@ function NewMap() {
       }
       fr.readAsText(gpxFile);
     }
+
     const onImgLoaded = (e) => {
       var imageUri = e.target.result;
       setMapDataURL(imageUri);
     }
+    
+    const deg2rad = (deg) => deg * Math.PI / 180;
+
+    const computeBoundsFromLatLonBox = (n, e, s ,w, rot) => {
+      const a = (e + w) / 2;
+      const b = (n + s) / 2
+      const squish = Math.cos(deg2rad(b))
+      const x = squish * (e - w) / 2
+      const y = (n - s) / 2
+  
+      const ne = [
+          b + x * Math.sin(deg2rad(rot)) + y * Math.cos(deg2rad(rot)),
+          a + (x * Math.cos(deg2rad(rot)) - y * Math.sin(deg2rad(rot))) / squish,
+      ];
+      const nw = [
+          b - x * Math.sin(deg2rad(rot)) + y * Math.cos(deg2rad(rot)),
+          a - (x * Math.cos(deg2rad(rot)) + y * Math.sin(deg2rad(rot))) / squish,
+      ];
+      const sw = [
+          b - x * Math.sin(deg2rad(rot)) - y * Math.cos(deg2rad(rot)),
+          a - (x * Math.cos(deg2rad(rot)) - y * Math.sin(deg2rad(rot))) / squish,
+      ];
+      const se = [
+          b + x * Math.sin(deg2rad(rot)) - y * Math.cos(deg2rad(rot)),
+          a + (x * Math.cos(deg2rad(rot)) + y * Math.sin(deg2rad(rot))) / squish,
+      ];
+      return [nw, ne, se, sw]
+    }
+
+    const extractKMZInfo = async (kmlText, kmz) => {
+      const parser = new DOMParser();
+      const parsedText = parser.parseFromString(kmlText, "text/xml");
+      const go = parsedText.getElementsByTagName('GroundOverlay')[0];
+      if (go) {
+        try {
+          const nameEl = go.getElementsByTagName('name')[0].innerHTML;
+          const latLonboxEl = go.getElementsByTagName('LatLonBox')[0];
+          const latLonQuadEl = go.getElementsByTagName('LatLonQuad')[0];
+          const filePath = go.getElementsByTagName('href')[0].innerHTML;
+          const fileU8 = await kmz.file(filePath).async('uint8array');
+          const imageDataURI = 'data:'+ kmz.file(filePath).mime +';base64,' + Buffer.from(fileU8).toString('base64');
+          let bounds;
+          if (latLonboxEl) {
+            bounds = computeBoundsFromLatLonBox(
+              parseFloat(latLonboxEl.getElementsByTagName('north')[0].innerHTML),
+              parseFloat(latLonboxEl.getElementsByTagName('east')[0].innerHTML),
+              parseFloat(latLonboxEl.getElementsByTagName('south')[0].innerHTML),
+              parseFloat(latLonboxEl.getElementsByTagName('west')[0].innerHTML),
+              parseFloat(latLonboxEl.getElementsByTagName('rotation')[0] ? latLonboxEl.getElementsByTagName('rotation')[0].innerHTML : 0)
+            )
+          } else {
+            let [sw, se, ne, nw] = latLonQuadEl.getElementsByTagName('coordinates')[0].innerHTML.trim().split(' ');
+            nw = nw.split(',');
+            ne = ne.split(',');
+            se = se.split(',');
+            sw = sw.split(',');
+            bounds = [
+              [parseFloat(nw[1]), parseFloat(nw[0])],
+              [parseFloat(ne[1]), parseFloat(ne[0])],
+              [parseFloat(se[1]), parseFloat(se[0])],
+              [parseFloat(sw[1]), parseFloat(sw[0])],
+            ];
+          }
+          return {
+            name: nameEl,
+            bounds: {
+              top_left: new LatLon(bounds[0][0], bounds[0][1]),
+              top_right: new LatLon(bounds[1][0], bounds[1][1]),
+              bottom_right: new LatLon(bounds[2][0], bounds[2][1]),
+              bottom_left: new LatLon(bounds[3][0], bounds[3][1])
+            },
+            imageDataURI,
+          };
+        } catch (e) {
+          console.log(e);
+          window.alert('Could not parse this KML');
+          return;
+        }
+      } else {
+        window.alert('Could not find maps in this KML');
+        return;
+      }
+    }
+  
+    const onKmzLoaded = async (file) => {
+      const zip = await JSZip.loadAsync(file);
+      if (zip.files && zip.files['doc.kml']) {
+        const kml = await zip.file('doc.kml').async('string');
+        const data = await extractKMZInfo(kml, zip);
+        if (data) {
+          console.log(data)
+          setMapDataURL(data.imageDataURI)
+          setName(data.name)
+          setMapCornersCoords(data.bounds)
+        }
+      }
+    }
+  
     const onDropImg = acceptedFiles => {
       if(!acceptedFiles.length) {
         return
       }
       const file = acceptedFiles[0];
+      const filename = file.name;
       if(acceptedFormats[file.type]){
         const reader = new FileReader();
         reader.onload = onImgLoaded;
@@ -118,6 +219,8 @@ function NewMap() {
             bottom_left: new LatLon(c[6], c[7])
           })
         }
+      } else if (filename.toLowerCase().endsWith('.kmz')) {
+        onKmzLoaded(file);
       } else {
         window.alert("Invalid image format");
       }
