@@ -8,7 +8,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 var sax = require("sax");
-var fs = require("fs");
 
 var parseTCXString = function(xmlstr, cb) {
 
@@ -241,20 +240,5 @@ var parseTCXString = function(xmlstr, cb) {
 
 	parser.write(xmlstr).end();
 };
-
-var parseTCXFile = function(xmlFile, cb) {
-	fs.readFile(xmlFile, function (error, data) {
-		if (error) {
-			console.log(error);
-			cb(error, null);
-		}
-
-		var xmlstr = data.toString("utf8");
-			
-			parseTCXString(xmlstr, cb);
-			
-    });
-};
     
 exports.parseTCXString = parseTCXString;
-exports.parseTCXFile = parseTCXFile;

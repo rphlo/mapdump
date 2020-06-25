@@ -138,10 +138,18 @@ function NewMap() {
         try {
           const nameEl = go.getElementsByTagName('name')[0].innerHTML;
           const latLonboxEl = go.getElementsByTagName('LatLonBox')[0];
-          const latLonQuadEl = go.getElementsByTagName('LatLonQuad')[0];
+          const latLonQuadEl = go.getElementsByTagName('gx:LatLonQuad')[0];
           const filePath = go.getElementsByTagName('href')[0].innerHTML;
           const fileU8 = await kmz.file(filePath).async('uint8array');
-          const imageDataURI = 'data:'+ kmz.file(filePath).mime +';base64,' + Buffer.from(fileU8).toString('base64');
+          const filename = kmz.file(filePath).name;
+          const extension = filename.slice(-3).toLowerCase();
+          let mime = ''
+          if(extension === 'jpg') {
+            mime = 'image/jpeg;';
+          } else if (['png, gif'].includes(extension)) {
+            mime = 'image/' + extension + ';';
+          }
+          const imageDataURI = 'data:' + mime + 'base64,' + Buffer.from(fileU8).toString('base64');
           let bounds;
           if (latLonboxEl) {
             bounds = computeBoundsFromLatLonBox(
@@ -176,11 +184,11 @@ function NewMap() {
           };
         } catch (e) {
           console.log(e);
-          window.alert('Could not parse this KML');
+          window.alert('Could not parse this KMZ');
           return;
         }
       } else {
-        window.alert('Could not find maps in this KML');
+        window.alert('Could not find maps in this KMZ');
         return;
       }
     }
@@ -191,11 +199,12 @@ function NewMap() {
         const kml = await zip.file('doc.kml').async('string');
         const data = await extractKMZInfo(kml, zip);
         if (data) {
-          console.log(data)
           setMapDataURL(data.imageDataURI)
           setName(data.name)
           setMapCornersCoords(data.bounds)
         }
+      } else {
+        window.alert('Invalid KMZ');
       }
     }
   
