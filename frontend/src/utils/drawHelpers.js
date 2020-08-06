@@ -228,13 +228,13 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
       ctx2.stroke();
     }
 
-    if (route[0].time) {
-      let prevT = route[0].time-20e3;
+    if (route.length && route[0].time) {
+      let prevT = +route[0].time-20e3;
       let count = 0;
       ctx2.lineWidth = 1
       ctx2.strokeStyle = '#000';
       for (let j = 0; j < route.length; j++) {
-        if (route[j].time >= prevT + 10e3) {
+        if (+route[j].time >= +prevT + 10e3) {
           const point = transform(new LatLon(route[j].latLon[0], route[j].latLon[1]));
           ctx2.beginPath();
           ctx2.arc(
