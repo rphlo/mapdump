@@ -226,7 +226,10 @@ def strava_deauthorize(request):
     if hasattr(request.user, 'settings') and request.user.settings is not None and request.user.settings.strava_access_token:
         token = json.loads(request.user.settings.strava_access_token)
         client = StravaClient(token['access_token'])
-        client.deauthorize()
+        try:
+            client.deauthorize()
+        except Exception:
+            pass
         user_settings = request.user.settings
         user_settings.strava_access_token = ''
         user_settings.save()
