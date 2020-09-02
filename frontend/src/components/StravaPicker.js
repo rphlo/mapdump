@@ -99,9 +99,10 @@ const Settings = (props) => {
             window.alert('This Strava activity does not contain a route.');
             return;
         }
+        const startTime = +(new Date(a.start_date));
         const route = [];
         latlngs.forEach((pos, i)=>{
-          route.push({time: ~~times[i], latLon: pos})
+          route.push({time: startTime + ~~times[i]*1e3, latLon: pos})
         });
         props.onRouteDownloaded(a.name, route);
     }
