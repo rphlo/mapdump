@@ -44,11 +44,26 @@ const Settings = (props) => {
         }
     }, [stravaToken])
 
+    const disconnect = async () => {
+        await fetch(process.env.REACT_APP_API_URL + '/v1/strava/deauthorize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + api_token,
+            }
+        });
+        setStravaToken(null);
+    }
+
     React.useEffect(() => {
         (async () => {
             if(client) {
-                const routes = await client.athlete.listActivities({per_page: 10});
-                setAct(routes);
+                try {
+                    const routes = await client.athlete.listActivities({per_page: 10});
+                    setAct(routes);
+                } catch (e) {
+                    disconnect()
+                }
             }
         })()
     }, [client])
@@ -91,16 +106,6 @@ const Settings = (props) => {
         props.onRouteDownloaded(a.name, route);
     }
 
-    const disconnect = async () => {
-        await fetch(process.env.REACT_APP_API_URL + '/v1/strava/deauthorize', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + api_token,
-            }
-        });
-        setStravaToken(null);
-    }
 
     return (
         <>

@@ -182,7 +182,8 @@ def gpx_download(request, uid, *args, **kwargs):
 @login_required
 def strava_authorize(request):
     code = request.GET.get('code')
-    if not code:
+    scopes = request.GET.get('scope', '').split(',')
+    if not code or 'activity:read' not in scopes:
         return HttpResponseRedirect(settings.URL_FRONT+'/new')
     client = StravaClient()
     access_token = client.exchange_code_for_token(
@@ -223,6 +224,9 @@ def strava_access_token(request):
 @login_required
 def strava_deauthorize(request):
     if hasattr(request.user, 'settings') and request.user.settings is not None and request.user.settings.strava_access_token:
+        token = json.loads(request.user.settings.strava_access_token)
+        client = StravaClient(token['access_token'])
+        client.deauthorize()
         user_settings = request.user.settings
         user_settings.strava_access_token = ''
         user_settings.save()
