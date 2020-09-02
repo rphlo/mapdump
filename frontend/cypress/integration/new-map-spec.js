@@ -1,7 +1,7 @@
 describe('Create a new map', function() {
     it('successfully create a new map', function() {
         cy.visit('/new')
-        cy.contains('GPX File')
+        cy.contains('GPS File')
         const fileName = 'Jukola_1st_leg.gpx';
         cy.fixture(fileName).then(fileContent => {
             cy.get('[data-testid="dropzone"]').upload(
@@ -30,7 +30,6 @@ describe('Create a new map', function() {
     })
     it('successfully create a new map from tcx', function() {
         cy.visit('/new')
-        cy.contains('GPX File')
         const fileName = 'Jukola_1st_leg.tcx';
         cy.fixture(fileName).then(fileContent => {
             cy.get('[data-testid="dropzone"]').upload(
@@ -54,7 +53,6 @@ describe('Create a new map', function() {
     })
     it('successfully create a new map with coords input', function() {
         cy.visit('/new')
-        cy.contains('GPX File')
         const fileName = 'Jukola_1st_leg.gpx';
         cy.fixture(fileName).then(fileContent => {
             cy.get('[data-testid="dropzone"]').upload(

@@ -45,6 +45,13 @@ def map_upload_path(instance=None, file_name=None):
     tmp_path.append(basename)
     return os.path.join(*tmp_path)
 
+class UserSettings(models.Model):
+    user = models.OneToOneField(
+        User,
+        related_name='settings',
+        on_delete=models.CASCADE
+    )
+    strava_access_token = models.TextField()
 
 class RasterMap(models.Model):
     uid = models.CharField(

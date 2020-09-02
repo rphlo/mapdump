@@ -53,7 +53,7 @@ const useGlobalState = () => {
       type: SET_USER, 
       payload: { 
         username,
-        api_token
+        api_token,
       } 
     });
   };

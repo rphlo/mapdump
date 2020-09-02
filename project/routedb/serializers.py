@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from routedb.models import RasterMap, Route
+from routedb.models import RasterMap, Route, UserSettings
 from utils.validators import validate_latitude, validate_longitude
 
 

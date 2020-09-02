@@ -56,7 +56,7 @@ const ImageDropzone = (props) => {
       {
         isDragActive ?
           <p>Drop the map here...</p> :
-          <p>Drag 'n' drop a map here, or click to select a image or a kmz file</p>
+          <p>Drag 'n' drop an image or a kmz file here, or click to select a file</p>
       }
     </div>
   )

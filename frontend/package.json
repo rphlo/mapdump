@@ -1,6 +1,6 @@
 {
   "name": "drawmyroute",
-  "version": "2020080600",
+  "version": "2020090200",
   "private": true,
   "dependencies": {
     "@sentry/browser": "^5.10.2",
@@ -24,6 +24,7 @@
     "react-scripts": "^3.4.0",
     "react-tooltip": "^3.11.2",
     "sax": "^1.2.4",
+    "strava-v3": "^2.0.5",
     "vanilla-lazyload": "^13.0.1"
   },
   "scripts": {

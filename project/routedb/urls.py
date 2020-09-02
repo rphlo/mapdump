@@ -12,4 +12,7 @@ urlpatterns = [
     path('auth/', include('rest_auth.urls')),
     path('auth/registration/', include('rest_auth.registration.urls')),
     path('auth/login', view=views.LoginView.as_view(), name='knox_login'),
+    path('strava/token', view=views.strava_access_token, name='strava_token'),
+    path('strava/authorization', view=views.strava_authorize, name='strava_authorize'),
+    path('strava/deauthorize', view=views.strava_deauthorize, name='strava_deauthorize'),
 ]

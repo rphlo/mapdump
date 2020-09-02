@@ -1,22 +1,30 @@
 import os
 import urllib
 from io import BytesIO
+import re
+import json
+import time
 
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.shortcuts import get_object_or_404
-from knox.models import AuthToken
 from django.conf import settings
-import re
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+
+from knox.models import AuthToken
+
+from rest_framework.decorators import api_view
 from rest_framework import generics, parsers, renderers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
-from routedb.models import RasterMap, Route
-from routedb.serializers import RouteSerializer, UserMainSerializer, LatestRouteListSerializer
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
-from utils.s3 import s3_object_url, s3_key_exists, upload_to_s3
 
+from stravalib import Client as StravaClient
+
+from routedb.models import RasterMap, Route, UserSettings
+from routedb.serializers import RouteSerializer, UserMainSerializer, LatestRouteListSerializer
+from utils.s3 import s3_object_url, s3_key_exists, upload_to_s3
 
 def x_accel_redirect(request, path, filename='',
                      mime='application/force-download'):
@@ -102,7 +110,7 @@ class UserDetail(generics.RetrieveAPIView):
 
     def get_queryset(self):
         username = self.kwargs['username']
-        return User.objects.filter(username=username).prefetch_related('routes')
+        return User.objects.filter(username=username).prefetch_related('routes', 'settings')
 
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RouteSerializer
@@ -169,3 +177,53 @@ def gpx_download(request, uid, *args, **kwargs):
     )
     return response
 
+
+@api_view(['GET'])
+@login_required
+def strava_authorize(request):
+    code = request.GET.get('code')
+    if not code:
+        return HttpResponseRedirect(settings.URL_FRONT+'/new')
+    client = StravaClient()
+    access_token = client.exchange_code_for_token(
+        client_id=settings.MY_STRAVA_CLIENT_ID,
+        client_secret=settings.MY_STRAVA_CLIENT_SECRET,
+        code=code
+    )
+    if hasattr(request.user, 'settings') and request.user.settings is not None:
+        user_settings = request.user.settings
+        user_settings.strava_access_token = json.dumps(access_token)
+    else:
+        user_settings = UserSettings(user=request.user, strava_access_token=json.dumps(access_token))    
+    user_settings.save()
+    return HttpResponseRedirect(settings.URL_FRONT + '/new')
+
+
+@api_view(['GET'])
+@login_required
+def strava_access_token(request):
+    if hasattr(request.user, 'settings') and request.user.settings is not None and request.user.settings.strava_access_token:
+        token = json.loads(request.user.settings.strava_access_token)
+        if time.time() < token['expires_at']:
+            return Response({'strava_access_token': token['access_token'], 'expires_at': token['expires_at']})
+        client = StravaClient()
+        access_token = client.refresh_access_token(
+            client_id=settings.MY_STRAVA_CLIENT_ID,
+            client_secret=settings.MY_STRAVA_CLIENT_SECRET,
+            refresh_token=token['refresh_token']
+        )
+        user_settings = request.user.settings
+        user_settings.strava_access_token = json.dumps(access_token)
+        user_settings.save()
+        return Response({'strava_access_token': access_token['access_token'], 'expires_at': access_token['expires_at']})
+    return Response({})
+        
+        
+@api_view(['POST'])
+@login_required
+def strava_deauthorize(request):
+    if hasattr(request.user, 'settings') and request.user.settings is not None and request.user.settings.strava_access_token:
+        user_settings = request.user.settings
+        user_settings.strava_access_token = ''
+        user_settings.save()
+    return Response({})

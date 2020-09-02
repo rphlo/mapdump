@@ -1,9 +1,11 @@
 import React from 'react'
 import JSZip from 'jszip'
+import useGlobalState from '../utils/useGlobalState'
 import GPXDropzone from './GPXDrop'
 import ImageDropzone from './ImgDrop'
 import RouteDrawing from './RouteDrawing'
 import PathDrawing from './PathDrawing'
+import StravaPicker from './StravaPicker'
 import CornerCoordsInput from './CornerCoordsInput'
 import { parseGpx, extractCornersCoordsFromFilename, validateCornersCoords } from '../utils/fileHelpers'
 import { LatLon } from '../utils/Utils'
@@ -11,6 +13,8 @@ import { parseTCXString } from '../utils/tcxParser'
 const pkg = require('../../package.json')
 
 function NewMap() {
+    const globalState = useGlobalState()
+    const { username } = globalState.user
     const [route, _setRoute] = React.useState();
     const [drawRoute, setDrawRoute] = React.useState(false)
     const [mapCornersCoords, setMapCornersCoords] = React.useState();
@@ -253,11 +257,16 @@ function NewMap() {
       setRoute(null);
       setMapDataURL('');
       setMapCornersCoords(null);
+      setDrawRoute(false)
     }
     return (
       <div className="App">
         { (!route && !drawRoute ) && <>
-          <h1>GPX File</h1><GPXDropzone onDrop={onDropGPX} />
+          <h1>GPS File</h1><GPXDropzone onDrop={onDropGPX} />
+          {username && <>
+            <hr/>
+            <StravaPicker onRouteDownloaded={(name, route) => {setName(name);onRouteLoaded(route)}} />
+          </> }
           <hr/>
           or <button className="btn btn-primary" onClick={()=>{setDrawRoute(true);setName('Untitled Run')}}><i className="fas fa-pen"></i> Draw route manually</button>
         </>}
