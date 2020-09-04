@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "skia-canvas": "^0.9.19"
+  }
+}
