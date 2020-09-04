@@ -124,10 +124,17 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 def map_download(request, uid, *args, **kwargs):
+    show_header = request.GET.get('show_header', False)
+    show_route = request.GET.get('show_route', False)
     route = get_object_or_404(
         Route.objects.select_related('raster_map'),
         uid=uid,
     )
+    if show_header or show_route:
+        return HttpResponse(
+            route.route_image(show_header, show_route),
+            content_type='image/jpeg'
+        )
     file_path = route.raster_map.path
     return serve_from_s3(
         'drawmyroute-maps',

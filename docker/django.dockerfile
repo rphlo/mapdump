@@ -33,6 +33,22 @@ RUN DATABASE_URL=none /venv/bin/python project/manage.py collectstatic --noinput
 # Start uWSGI
 # CMD ["/venv/bin/uwsgi", "--http-auto-chunked", "--http-keepalive"]
 
+
+# install node for tools
+# update 
+RUN apt-get update
+# install curl 
+RUN apt-get -y install curl
+# get install script and pass it to execute: 
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
+# and install node 
+RUN apt-get -y  install nodejs
+RUN node --version
+RUN npm --version
+RUN cd /app/tools/ && npm add yarn -g
+RUN cd /app/tools/ && yarn install
+RUN chmod a+x /app/tools/generate_map.js
+
 ADD docker/wait-for-it.sh /wait-for-it.sh
 ADD docker/run-django.sh /run.sh
 RUN chmod 755 /wait-for-it.sh /run.sh

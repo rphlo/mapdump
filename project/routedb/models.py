@@ -6,6 +6,8 @@ import json
 import math
 import re
 import time
+import subprocess
+import tempfile
 from datetime import datetime
 from io import BytesIO
 
@@ -255,6 +257,29 @@ class Route(models.Model):
     @property
     def route(self):
         return json.loads(self.route_json)
+
+    def route_image(self, header=True, route=True):
+        arg = 'h' if header else ''
+        arg += 'r' if route else ''
+        orig = self.raster_map.data
+        data_uri = ''
+        with tempfile.NamedTemporaryFile() as img_file, tempfile.NamedTemporaryFile() as route_file:
+            img_file.write(orig)
+            route_file.write(self.route_json.encode('utf-8'))
+            data_uri = subprocess.check_output([
+                'node',
+                '/app/tools/generate_map.js',
+                img_file.name,
+                route_file.name,
+                json.dumps(self.raster_map.bounds),
+                arg
+            ])
+
+        if data_uri:
+            header, encoded = data_uri.decode('utf-8').split(",", 1)
+            data = base64.b64decode(encoded)
+            return data
+        return None
 
     @route.setter
     def route(self, value):
