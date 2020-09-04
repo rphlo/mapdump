@@ -17,7 +17,7 @@ const RouteDrawing = (props) => {
   const [imgHr, setImgHr] = useState()
   const [imghr, setImghr] = useState()
   const [imgDataOut, setImgDataOut] = useState(null)
-  const [zoom, setZoom] = useState(100)
+  const [zoom, setZoom] = useState(200)
   let finalImage = React.createRef();
 
 
@@ -165,7 +165,6 @@ const RouteDrawing = (props) => {
     if (togglingHeader) {
       return
     }
-    setImgDataOut(null)
     setIncludeHeader(!includeHeader);
     setTogglingHeader(true)
   }
@@ -174,7 +173,6 @@ const RouteDrawing = (props) => {
     if (togglingRoute) {
       return
     }
-    setImgDataOut(null)
     setIncludeRoute(!includeRoute);
     setTogglingRoute(true)
   }
@@ -200,7 +198,7 @@ const RouteDrawing = (props) => {
 
       {!saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
       <div>
-        {imgDataOut && <img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/>}
+        {imgDataOut && <center><img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
         {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
     </div>

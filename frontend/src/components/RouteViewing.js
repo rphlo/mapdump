@@ -81,7 +81,6 @@ const RouteViewing = (props) => {
     if (togglingHeader) {
       return
     }
-    setImgDataOut(null)
     setIncludeHeader(!includeHeader);
     setTogglingHeader(true)
   }
@@ -89,7 +88,6 @@ const RouteViewing = (props) => {
     if (togglingRoute) {
       return
     }
-    setImgDataOut(null)
     setIncludeRoute(!includeRoute);
     setTogglingRoute(true)
   }
@@ -136,9 +134,9 @@ const RouteViewing = (props) => {
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
       <div>
-        {imgDataOut && imgData && <img heigth={imgData.heigth} ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/>}
+        {imgDataOut && imgData && <center><img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
         {!imgDataOut && (
-          <div style={{height: (imgData ? Math.round(imgData.height*zoom/100) : 0)}}>
+          <div>
             <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>
           </div>)}
       </div>
