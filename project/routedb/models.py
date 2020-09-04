@@ -5,6 +5,7 @@ import gpxpy
 import json
 import math
 import re
+import os
 import time
 import subprocess
 import tempfile
@@ -190,7 +191,7 @@ class RasterMap(models.Model):
         ).read()
         img = Image.open(BytesIO(orig))
         if img.mode != 'RGBA':
-            img = img.convert('RGB') 
+            img = img.convert('RGB')
         img = img.transform(
             (256, 256),
             Image.QUAD,
@@ -207,7 +208,7 @@ class RasterMap(models.Model):
         )
         img_out = Image.new(
             'RGB',
-            img.size, 
+            img.size,
             (255, 255, 255, 0)
         )
         img_out.paste(img, (0, 0))
@@ -253,7 +254,7 @@ class Route(models.Model):
         self.tz = self.get_tz()
         self.distance = self.get_distance()
         super().save(*args, **kwargs)
-    
+
     @property
     def route(self):
         return json.loads(self.route_json)
@@ -268,12 +269,12 @@ class Route(models.Model):
             route_file.write(self.route_json.encode('utf-8'))
             data_uri = subprocess.check_output([
                 'node',
-                '/app/tools/generate_map.js',
+                os.path.join(settings.BASE_DIR, '..', 'tools/generate_map.js'),
                 img_file.name,
                 route_file.name,
                 json.dumps(self.raster_map.bounds),
                 arg
-            ])
+            ], stderr=subprocess.STDOUT)
 
         if data_uri:
             header, encoded = data_uri.decode('utf-8').split(",", 1)
@@ -300,10 +301,10 @@ class Route(models.Model):
             self.route[0]['latlon'][0],
             self.route[0]['latlon'][1],
         )
-    
+
     def get_duration(self):
         return self.route[-1]['time'] - self.route[0]['time']
-    
+
     def get_distance(self):
         d = 0
         prev_p = self.route[0]
@@ -322,7 +323,7 @@ class Route(models.Model):
         if not fullname:
             return self.athlete.username
         return fullname
- 
+
     @property
     def image_url(self):
         return reverse('map_image', kwargs={'uid': self.uid})
