@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Login from './components/Login'
 import Home from './components/Home'
 import RasterMap from './components/RasterMap'
+import RasterMapRedirect from './components/RasterMapRedirect'
 import UserView from './components/UserView'
 import NewMap from './components/NewMap'
 import NotFound from './components/NotFound'
@@ -33,7 +34,7 @@ function App() {
           <Route exact path="/password-reset-confirmation/:key" component={PasswordResetConfirmation} />
           <Route exact path="/verify-email/:key" component={VerifyEmail} />
           <Route exact path="/routes/:uid/" component={RasterMap} />
-          <Route exact path="/routes/:uid/player" component={RasterMap} />
+          <Route exact path="/routes/:uid/player" component={RasterMapRedirect} />
           <Route exact path="/athletes/:username" component={UserView} />
           <Route exact path="*" component={NotFound} />
       </Switch>

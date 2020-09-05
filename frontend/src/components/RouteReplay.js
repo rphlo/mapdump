@@ -210,9 +210,10 @@ const RouteReplay = (props) => {
       <RouteHeader {...props} />
     { hasRouteTime() ? (
     <>
-      <Link to={'/routes/'+props.id}><button className="btn btn-sm btn-primary float-right" style={{marginBottom:'5px'}}><i className="fas fa-search"></i> Full route view</button></Link>
+      <Link to={'/routes/'+props.id}></Link>
       <div>
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-primary float-right" onClick={props.togglePlayer}><i className="fas fa-map"></i> View full map </button>
       </div>
       <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
       <div style={{marginBottom:'5px'}}>

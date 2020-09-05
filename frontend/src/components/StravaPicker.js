@@ -1,7 +1,6 @@
 import React from 'react';
 import strava from 'strava-v3';
 import moment from 'moment';
-import { Link } from 'react-router-dom'
 
 import { printTime } from '../utils/drawHelpers';
 import useGlobalState from '../utils/useGlobalState';
@@ -66,6 +65,7 @@ const Settings = (props) => {
                 }
             }
         })()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client])
 
     if (!stravaToken) {
@@ -122,7 +122,7 @@ const Settings = (props) => {
                 </thead>
                 <tbody style={{cursor:'pointer'}}>
                 {act.map((a) => (
-                    <tr key={a.id} scope="row" onClick={() => downloadGPX(a)}>
+                    <tr key={a.id} onClick={() => downloadGPX(a)}>
                         <td>{moment(a.start_date).format('dddd, MMMM Do YYYY, HH:mm')}</td>
                         <td>{a.name}</td>
                         <td>{printTime(a.elapsed_time * 1e3)}{}</td>

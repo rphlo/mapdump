@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { drawRoute, getCorners } from '../utils/drawHelpers'
+import { getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver'
 import RouteHeader from './RouteHeader'
 import ShareModal from './ShareModal'
@@ -123,11 +123,12 @@ const RouteViewing = (props) => {
   return (
     <div>
       <RouteHeader {...props} />
-      {hasRouteTime() && <Link to={'/routes/' + props.id + '/player'}><button className="btn btn-sm btn-primary float-right" ><i className="fas fa-play"></i> Switch to Player View</button></Link>}
+      {hasRouteTime() && <Link to={'/routes/' + props.id + '/player'}></Link>}
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMap}><i className="fas fa-download"></i> Download Map</button>&nbsp;
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> Download GPX</button>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-primary float-right" onClick={props.togglePlayer}><i className="fas fa-play"></i> View animation</button>
       </div>
       <button className="btn btn-sm btn-default" onClick={zoomIn}><i className={"fa fa-plus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={zoomOut}><i className={"fa fa-minus"}></i></button>&nbsp;

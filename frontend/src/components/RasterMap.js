@@ -5,7 +5,8 @@ import RouteReplay from './RouteReplay'
 const RasterMap = ({match, history}) => {
     const [found, setFound] = React.useState(null)
     const [data, setData] = React.useState()
-  
+    const [showPlayer, setShowPlayer] = React.useState(false);
+
     const transformMapBounds = (v) => {
       return {
         top_left: {lat: parseFloat(v.top_left[0]), lon: parseFloat(v.top_left[1])},
@@ -45,6 +46,10 @@ const RasterMap = ({match, history}) => {
       })()
     }, [match.params.uid])
   
+    const togglePlayer = () => {
+      setShowPlayer(!showPlayer);
+    }
+
     const getComponent = () => {
       const props = {
         athlete: data.athlete,
@@ -62,8 +67,9 @@ const RasterMap = ({match, history}) => {
         duration: data.duration,
         distance: data.distance,
         comment: data.comment,
+        togglePlayer,
       }
-      if(match.path.slice(-6) === 'player') {
+      if(showPlayer) {
         return <RouteReplay {...props}/>
       }
       return <RouteViewing {...props} />
