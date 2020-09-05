@@ -187,7 +187,7 @@ const RouteDrawing = (props) => {
 
   return (
     <div>
-      <h2 ><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={(e)=>setName(e.target.value)}/></h2>
+      <h2><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={(e)=>setName(e.target.value)}/></h2>
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>
       </div>

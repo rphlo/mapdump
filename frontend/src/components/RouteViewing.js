@@ -3,8 +3,6 @@ import { getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver'
 import RouteHeader from './RouteHeader'
 import ShareModal from './ShareModal'
-import { Link } from 'react-router-dom'
-
 
 const RouteViewing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
@@ -97,7 +95,7 @@ const RouteViewing = (props) => {
   }
 
   const zoomOut = () => {
-    setZoom(zoom - 10)
+    setZoom(Math.max(10, zoom - 10))
   }
 
   const zoomIn = () => {
@@ -123,15 +121,14 @@ const RouteViewing = (props) => {
   return (
     <div>
       <RouteHeader {...props} />
-      {hasRouteTime() && <Link to={'/routes/' + props.id + '/player'}></Link>}
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMap}><i className="fas fa-download"></i> Download Map</button>&nbsp;
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> Download GPX</button>
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-primary float-right" onClick={props.togglePlayer}><i className="fas fa-play"></i> View animation</button>
+        { hasRouteTime() && <button style={{marginBottom: '5px'}} className="btn btn-sm btn-primary float-right" onClick={props.togglePlayer}><i className="fas fa-play"></i> View animation</button> }
       </div>
-      <button className="btn btn-sm btn-default" onClick={zoomIn}><i className={"fa fa-plus"}></i></button>&nbsp;
-      <button className="btn btn-sm btn-default" onClick={zoomOut}><i className={"fa fa-minus"}></i></button>&nbsp;
+      <button className="btn btn-sm btn-default" onClick={zoomIn} aria-label="Zoom in"><i className={"fa fa-plus"}></i></button>&nbsp;
+      <button className="btn btn-sm btn-default" onClick={zoomOut} aria-label="Zoom out"><i className={"fa fa-minus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
       <div>

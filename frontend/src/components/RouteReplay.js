@@ -3,7 +3,6 @@ import { LatLon, cornerCalTransform } from '../utils/Utils'
 import * as L from 'leaflet';
 import Slider from 'react-input-slider';
 import { Position, PositionArchive } from '../utils/positions'
-import { Link } from 'react-router-dom'
 import RouteHeader from './RouteHeader';
 import ShareModal from './ShareModal'
 
@@ -208,29 +207,28 @@ const RouteReplay = (props) => {
   return (
     <div>
       <RouteHeader {...props} />
-    { hasRouteTime() ? (
-    <>
-      <Link to={'/routes/'+props.id}></Link>
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-primary float-right" onClick={props.togglePlayer}><i className="fas fa-map"></i> View full map </button>
       </div>
-      <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
-      <div style={{marginBottom:'5px'}}>
-      { !playing ? (
-        <button className="btn btn-light" onClick={onPlay}><i className="fa fa-play"></i></button>
-      ) : (
-        <button className="btn btn-light" onClick={onPause}><i className="fa fa-pause"></i></button>
-      )}
-      <span style={{paddingLeft: '15px'}}><Slider style={{width:'calc(100% - 65px)'}} axis='x' onChange={onChangeProgress} xmin="0" xmax="100" xstep=".1" x={progress}/></span></div>
-      <div><span className="badge badge-secondary" style={{fontSize: '1em',fontVariantNumeric: 'tabular-nums'}}>{ getFormattedTimeSinceStart() }</span><span className="badge badge-secondary" style={{fontSize: '1em', marginLeft: '5px'}}>{'x' + speed }</span> <button className="btn btn-sm btn-light" onClick={onSlower}>Slower</button> <button onClick={onFaster} className="btn btn-sm btn-light">Faster</button></div>
-    </>) : (
-    <>
-      <div className="alert alert-warning"><i className="fas fa-exclamation-triangle"></i> Can not display player as route does not contain time information.</div>
-      <div id="raster_map"></div>
-    </>)}
-    {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
-  </div>)
+      { hasRouteTime() ? (
+      <>
+        <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
+        <div style={{marginBottom:'5px'}}>
+        { !playing ? (
+          <button className="btn btn-light" onClick={onPlay}><i className="fa fa-play"></i></button>
+        ) : (
+          <button className="btn btn-light" onClick={onPause}><i className="fa fa-pause"></i></button>
+        )}
+        <span style={{paddingLeft: '15px'}}><Slider style={{width:'calc(100% - 65px)'}} axis='x' onChange={onChangeProgress} xmin="0" xmax="100" xstep=".1" x={progress}/></span></div>
+        <div><span className="badge badge-secondary" style={{fontSize: '1em',fontVariantNumeric: 'tabular-nums'}}>{ getFormattedTimeSinceStart() }</span><span className="badge badge-secondary" style={{fontSize: '1em', marginLeft: '5px'}}>{'x' + speed }</span> <button className="btn btn-sm btn-light" onClick={onSlower}>Slower</button> <button onClick={onFaster} className="btn btn-sm btn-light">Faster</button></div>
+      </>) : (
+      <>
+        <div className="alert alert-warning"><i className="fas fa-exclamation-triangle"></i> Can not display player as route does not contain time information.</div>
+        <div id="raster_map"></div>
+      </>)}
+      {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
+    </div>)
 }
 
 export default RouteReplay;
