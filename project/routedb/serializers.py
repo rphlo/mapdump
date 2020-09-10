@@ -76,7 +76,8 @@ class RouteSerializer(serializers.ModelSerializer):
         
         raster_map = RasterMap(
             uploader=user,
-            image=validated_data['raster_map']['image']
+            image=validated_data['raster_map']['image'],
+            mime_type=validated_data['raster_map']['image'].content_type
         )
         raster_map.bounds = validated_data['raster_map']['bounds']
         raster_map.save()

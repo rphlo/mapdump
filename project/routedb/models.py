@@ -95,11 +95,6 @@ class RasterMap(models.Model):
     )
     mime_type = models.CharField(max_length=256, editable=False, default='image/jpeg')
 
-    def save(self, *args, **kwargs):
-        if self.image is not None:
-            self.mime_type = self.get_mime_type()
-        super().save(*args, **kwargs)
-
     @property
     def path(self):
         return self.image.name
@@ -109,11 +104,6 @@ class RasterMap(models.Model):
         with self.image.open('rb') as fp:
             data = fp.read()
         return data
-
-    def get_mime_type(self):
-        img = Image.open(self.image.open())
-        self.image.close()
-        return 'image/{}'.format(img.format.lower())
 
     @property
     def data_uri(self):
