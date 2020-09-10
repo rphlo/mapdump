@@ -136,12 +136,13 @@ def map_download(request, uid, *args, **kwargs):
             content_type='image/jpeg'
         )
     file_path = route.raster_map.path
+    mime_type = route.raster_map.mime_type
     return serve_from_s3(
         'drawmyroute-maps',
         request,
         '/internal/' + file_path,
-        filename='{}.{}'.format(route.name, route.raster_map.mime_type[6:]),
-        mime=route.raster_map.mime_type
+        filename='{}.{}'.format(route.name, mime_type[6:]),
+        mime=mime_type
     )
 
 

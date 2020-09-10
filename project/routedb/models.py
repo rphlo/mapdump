@@ -93,6 +93,12 @@ class RasterMap(models.Model):
         'eg: 60.519,22.078,60.518,22.115,60.491,22.112,60.492,22.073',
         validators=[validate_corners_coordinates]
     )
+    mime_type = models.CharField(max_length=256, editable=False, default='image/jpeg')
+
+    def save(self, *args, **kwargs):
+        if self.image is not None:
+            self.mime_type = self.get_mime_type()
+        super().save(*args, **kwargs)
 
     @property
     def path(self):
@@ -104,8 +110,7 @@ class RasterMap(models.Model):
             data = fp.read()
         return data
 
-    @property
-    def mime_type(self):
+    def get_mime_type(self):
         img = Image.open(self.image.open())
         self.image.close()
         return 'image/{}'.format(img.format.lower())
@@ -259,6 +264,10 @@ class Route(models.Model):
     def route(self):
         return json.loads(self.route_json)
 
+    @route.setter
+    def route(self, value):
+        self.route_json = json.dumps(value)
+
     def route_image(self, header=True, route=True):
         arg = 'h' if header else ''
         arg += 'r' if route else ''
@@ -282,9 +291,6 @@ class Route(models.Model):
             return data
         return None
 
-    @route.setter
-    def route(self, value):
-        self.route_json = json.dumps(value)
 
     @property
     def api_url(self):
