@@ -130,18 +130,26 @@ def map_download(request, uid, *args, **kwargs):
         Route.objects.select_related('raster_map'),
         uid=uid,
     )
+    suffix = 'h' if show_header else ''
+    suffix += 'r' if show_route else ''
     if show_header or show_route:
-        return HttpResponse(
-            route.route_image(show_header, show_route),
-            content_type='image/jpeg'
-        )
-    file_path = route.raster_map.path
-    mime_type = route.raster_map.mime_type
+        suffix = '_' + suffix
+        file_path = route.raster_map.path + suffix
+        mime_type = 'image/jpeg'
+        if not s3_key_exists(file_path, 'drawmyroute-maps'):
+            img = route.route_image(show_header, show_route)
+            up_buffer = BytesIO(img)
+            up_buffer.seek(0)
+            upload_to_s3('drawmyroute-maps', file_path, up_buffer)
+            return HttpResponse(img, content_type=mime_type)
+    else:
+        file_path = route.raster_map.path
+        mime_type = route.raster_map.mime_type
     return serve_from_s3(
         'drawmyroute-maps',
         request,
         '/internal/' + file_path,
-        filename='{}.{}'.format(route.name, mime_type[6:]),
+        filename='{}{}.{}'.format(route.name, suffix, mime_type[6:]),
         mime=mime_type
     )
 

@@ -22,7 +22,7 @@ def s3_object_url(key, bucket):
 
 def s3_key_exists(key, bucket):
     s3 = get_s3_client()
-    response = s3.list_objects_v2(
+    response = s3.list_objects(
         Bucket=bucket,
         Prefix=key,
     )
