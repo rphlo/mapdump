@@ -87,6 +87,7 @@ class RouteSerializer(serializers.ModelSerializer):
             name=validated_data['name']
         )
         route.route = validated_data['route']
+        route.prefetch_route_extras()
         route.save()
         return route
 

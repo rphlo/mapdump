@@ -239,7 +239,12 @@ class Route(models.Model):
     duration = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True)
 
-    def save(self, *args, **kwargs):
+    has_image_w_header = models.BooleanField(default=False)
+    has_image_w_route = models.BooleanField(default=False)
+    has_image_w_header_route = models.BooleanField(default=False)
+    has_image_thumbnail = models.BooleanField(default=False)
+
+    def prefetch_route_extras(self, *args, **kwargs):
         if self.route[0]['time']:
             self.start_time = datetime.fromtimestamp(self.route[0]['time'], utc)
             self.duration = self.get_duration()
@@ -248,7 +253,6 @@ class Route(models.Model):
         self.country = self.get_country()
         self.tz = self.get_tz()
         self.distance = self.get_distance()
-        super().save(*args, **kwargs)
 
     @property
     def route(self):

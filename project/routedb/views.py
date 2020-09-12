@@ -130,17 +130,18 @@ def map_download(request, uid, *args, **kwargs):
         Route.objects.select_related('raster_map'),
         uid=uid,
     )
-    suffix = 'h' if show_header else ''
-    suffix += 'r' if show_route else ''
+    suffix = '_header' if show_header else ''
+    suffix += '_route' if show_route else ''
     if show_header or show_route:
-        suffix = '_' + suffix
         file_path = route.raster_map.path + suffix
         mime_type = 'image/jpeg'
-        if not s3_key_exists(file_path, 'drawmyroute-maps'):
+        if not getattr(route, 'has_image_w' + suffix, False):
             img = route.route_image(show_header, show_route)
             up_buffer = BytesIO(img)
             up_buffer.seek(0)
             upload_to_s3('drawmyroute-maps', file_path, up_buffer)
+            route.__setattr__('has_image_w' + suffix, True)
+            route.save()
             return HttpResponse(img, content_type=mime_type)
     else:
         file_path = route.raster_map.path
@@ -160,12 +161,14 @@ def map_thumbnail(request, uid, *args, **kwargs):
         uid=uid,
     )
     file_path = route.raster_map.path + '_thumb'
-    if not s3_key_exists(file_path, 'drawmyroute-maps'):
+    if not route.has_image_thumbnail:
         image = route.raster_map.thumbnail
         up_buffer = BytesIO()
         image.save(up_buffer, 'JPEG', quality=40)
         up_buffer.seek(0)
         upload_to_s3('drawmyroute-maps', file_path, up_buffer)
+        route.has_image_thumbnail = True
+        route.save()
         response = HttpResponse(content_type='image/jpeg')
         image.save(response, 'JPEG', quality=40)
         return response
