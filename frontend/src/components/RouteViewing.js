@@ -49,7 +49,11 @@ const RouteViewing = (props) => {
   }
 
   const downloadMap = (e) => {
-    const newCorners = getCorners(finalImage.current, props.mapCornersCoords, props.route, includeHeader, includeRoute);
+    const imgSize = {
+      width: finalImage.current.width,
+      height: finalImage.current.height - (includeHeader ? 70 : 0)
+    }
+    const newCorners = getCorners(imgSize, props.mapCornersCoords, props.route, includeHeader, includeRoute);
     const downloadName = name + '_' + (includeRoute ? '' : 'blank_') + printCornersCoords(newCorners, '_') + '_.jpg'
     console.log(downloadName)
     saveAs(finalImage.current.src, downloadName);
