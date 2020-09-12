@@ -25,13 +25,13 @@ const RouteViewing = (props) => {
     img.onload = function(){
         setImgData(this);
     };
-    img.src = url
 
     const qp2 = new URLSearchParams();
-    qp.set('show_header', '1');
-    const url2 = props.mapDataURL + '?' + qp.toString();
+    qp2.set('show_header', '1');
+    const url2 = props.mapDataURL + '?' + qp2.toString();
     const img2 = new Image();
     img2.crossOrigin = "Anonymous";
+    img.src = url
     img2.src = url2
   }, [props.mapDataURL])
 
