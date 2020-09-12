@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, createRef } from 'react'
 import { getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver'
 import RouteHeader from './RouteHeader'
@@ -10,32 +10,12 @@ const RouteViewing = (props) => {
   const [name, setName] = useState();
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
-  const [imgData, setImgData] = useState()
   const [zoom, setZoom] = useState(200)
-  const [imgDataOut, setImgDataOut] = useState(null)
-  let finalImage = React.createRef();
+  const [imgURL, setImgURL] = useState(null)
+  const [imgLoaded, setImgLoaded] = useState(false)
+  let finalImage = createRef();
 
   useEffect(() => {
-    const qp = new URLSearchParams();
-    qp.set('show_header', '1');
-    qp.set('show_route', '1');
-    const url = props.mapDataURL + '?' + qp.toString();
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.onload = function(){
-        setImgData(this);
-    };
-
-    const qp2 = new URLSearchParams();
-    qp2.set('show_header', '1');
-    const url2 = props.mapDataURL + '?' + qp2.toString();
-    const img2 = new Image();
-    img2.crossOrigin = "Anonymous";
-    img.src = url
-    img2.src = url2
-  }, [props.mapDataURL])
-
-  React.useEffect(() => {
     const qp = new URLSearchParams();
     if (includeHeader) {
       qp.set('show_header', '1');
@@ -44,14 +24,7 @@ const RouteViewing = (props) => {
       qp.set('show_route', '1');
     }
     const url = props.mapDataURL + '?' + qp.toString();
-    setImgDataOut(url);
-    
-    if (togglingHeader) {
-      setTogglingHeader(false)
-    }
-    if (togglingRoute) {
-      setTogglingRoute(false)
-    }
+    setImgURL(url);
   }, [includeHeader, includeRoute, props.mapDataURL, togglingHeader, togglingRoute])
 
   useEffect(() => {
@@ -63,23 +36,23 @@ const RouteViewing = (props) => {
   }
 
   const printCornersCoords = (corners_coords, separator) => {
-    return '' + round5(corners_coords.top_left.lat) + separator + round5(corners_coords.top_left.lon) +
-      separator + round5(corners_coords.top_right.lat) + separator + round5(corners_coords.top_right.lon) +
-      separator + round5(corners_coords.bottom_right.lat) + separator + round5(corners_coords.bottom_right.lon) +
-      separator + round5(corners_coords.bottom_left.lat) + separator + round5(corners_coords.bottom_left.lon);
+    return [
+      corners_coords.top_left.lat,
+      corners_coords.top_left.lon,
+      corners_coords.top_right.lat,
+      corners_coords.top_right.lon,
+      corners_coords.bottom_right.lat,
+      corners_coords.bottom_right.lon,
+      corners_coords.bottom_left.lat,
+      corners_coords.bottom_left.lon
+    ].map(c => round5(c)).join(separator)
   }
 
   const downloadMap = (e) => {
-    const newCorners = getCorners(imgData, props.mapCornersCoords, props.route, includeHeader, includeRoute);
-    const qp = new URLSearchParams();
-    if (includeHeader) {
-      qp.set('show_header', '1');
-    }
-    if (includeRoute) {
-      qp.set('show_route', '1');
-    }
-    const url = props.mapDataURL + '?' + qp.toString();
-    saveAs(url, name + '_' + (includeRoute ? '' : 'blank_') + printCornersCoords(newCorners, '_')+ '_.jpg');
+    const newCorners = getCorners(finalImage.current, props.mapCornersCoords, props.route, includeHeader, includeRoute);
+    const downloadName = name + '_' + (includeRoute ? '' : 'blank_') + printCornersCoords(newCorners, '_') + '_.jpg'
+    console.log(downloadName)
+    saveAs(finalImage.current.src, downloadName);
   }
 
   const downloadGPX = (ev) => {
@@ -113,6 +86,16 @@ const RouteViewing = (props) => {
     setZoom(zoom + 10)
   }
 
+  const onImgLoaded = () => {
+    setImgLoaded(true)
+    if (togglingHeader) {
+      setTogglingHeader(false)
+    }
+    if (togglingRoute) {
+      setTogglingRoute(false)
+    }
+  }
+
   let webShareApiAvailable = false
   if (navigator.share) {
     webShareApiAvailable = true
@@ -143,8 +126,20 @@ const RouteViewing = (props) => {
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
       <div>
-        {imgDataOut && imgData && <center><img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
-        {!imgDataOut && (
+        {imgURL && (
+          <center>
+            <img
+              ref={finalImage}
+              crossOrigin="anonymous"
+              onLoad={onImgLoaded}
+              className="final-image"
+              src={imgURL}
+              alt="route"
+              onClick={toggleRoute}
+              style={{marginTop:'5px', width: zoom + '%'}}/>
+          </center>)
+        }
+        {!imgLoaded && (
           <div>
             <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>
           </div>)}
