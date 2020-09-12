@@ -15,13 +15,24 @@ const RouteViewing = (props) => {
   const [imgDataOut, setImgDataOut] = useState(null)
   let finalImage = React.createRef();
 
-  useEffect(() => {   
-    var img = new Image();
+  useEffect(() => {
+    const qp = new URLSearchParams();
+    qp.set('show_header', '1');
+    qp.set('show_route', '1');
+    const url = props.mapDataURL + '?' + qp.toString();
+    const img = new Image();
     img.crossOrigin = "Anonymous";
     img.onload = function(){
         setImgData(this);
     };
-    img.src = props.mapDataURL
+    img.src = url
+
+    const qp2 = new URLSearchParams();
+    qp.set('show_header', '1');
+    const url2 = props.mapDataURL + '?' + qp.toString();
+    const img2 = new Image();
+    img2.crossOrigin = "Anonymous";
+    img2.src = url2
   }, [props.mapDataURL])
 
   React.useEffect(() => {
