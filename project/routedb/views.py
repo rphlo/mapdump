@@ -140,7 +140,7 @@ def map_download(request, uid, *args, **kwargs):
     suffix = '_header' if show_header else ''
     suffix += '_route' if show_route else ''
     if show_header or show_route:
-        file_path = route.raster_map.path + suffix
+        file_path = route.images_path + suffix
         mime_type = 'image/jpeg'
         if not getattr(route, 'has_image_w' + suffix, False):
             img = route.route_image(show_header, show_route)

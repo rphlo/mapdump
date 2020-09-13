@@ -35,14 +35,22 @@ map_storage = S3Storage(aws_s3_bucket_name='drawmyroute-maps')
 
 
 def map_upload_path(instance=None, file_name=None):
-    import os.path
     tmp_path = [
         'maps'
     ]
-    if file_name:
-        pass
     time_hash = time_base64()
     basename = instance.uid + '_' + time_hash
+    tmp_path.append(basename[0])
+    tmp_path.append(basename[1])
+    tmp_path.append(basename)
+    return os.path.join(*tmp_path)
+
+
+def route_upload_path(instance=None, file_name=None):
+    tmp_path = [
+        'routes'
+    ]
+    basename = instance.uid
     tmp_path.append(basename[0])
     tmp_path.append(basename[1])
     tmp_path.append(basename)
@@ -359,6 +367,10 @@ class Route(models.Model):
                 'uid': self.uid,
             }
         )
+
+    @property
+    def images_path(self):
+        return route_upload_path(self)
 
     class Meta:
         ordering = ['-start_time']
