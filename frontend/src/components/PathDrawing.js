@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Point, cornerBackTransform } from '../utils/Utils'
 import * as L from 'leaflet';
 
-const RouteReplay = (props) => {
+const PathDrawing = (props) => {
   const [mapImage, setMapImage] = useState(false)
   const [leafletMap, setLeafletMap] = useState(null)
   const [route, setRoute] = React.useState([]);
   const [pl, ] = React.useState(L.polyline([], {color: 'red'}))
+
   function resetOrientation(src, callback) {
     var img = new Image();
     img.crossOrigin = "anonymous";
@@ -92,4 +93,4 @@ const RouteReplay = (props) => {
   )
 }
 
-export default RouteReplay;
+export default PathDrawing;

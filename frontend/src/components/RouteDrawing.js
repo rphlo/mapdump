@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, createRef } from 'react'
 import { drawRoute, drawOriginalMap, getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver';
 import useGlobalState from '../utils/useGlobalState'
 
 const RouteDrawing = (props) => {
+  const [name, setName] = useState();
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
-  const [name, setName] = useState();
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false);
   const [imgData, setImgData] = useState()
+  const [imgURL, setImgURL] = useState(null)
   const [imgHR, setImgHR] = useState()
   const [imghR, setImghR] = useState()
   const [imgHr, setImgHr] = useState()
   const [imghr, setImghr] = useState()
-  const [imgDataOut, setImgDataOut] = useState(null)
   const [zoom, setZoom] = useState(200)
-  let finalImage = React.createRef();
-
+  let finalImage = createRef();
 
   const globalState = useGlobalState()
   const { username, api_token } = globalState.user
 
-  React.useEffect(() => {
+ useEffect(() => {
     if (!imgData) {
       return
     }
@@ -37,19 +36,19 @@ const RouteDrawing = (props) => {
       }
     }
     if (includeHeader && includeRoute && imgHR) {
-      setImgDataOut(imgHR)
+      setImgURL(imgHR)
       endToggling()
       return
     } else if (includeHeader && !includeRoute && imgHr) {
-      setImgDataOut(imgHr)
+      setImgURL(imgHr)
       endToggling()
       return
     } else if (!includeHeader && includeRoute && imghR) {
-      setImgDataOut(imghR)
+      setImgURL(imghR)
       endToggling()
       return
     } else if (!includeHeader && !includeRoute && imghr) {
-      setImgDataOut(imghr)
+      setImgURL(imghr)
       endToggling()
       return
     }
@@ -61,7 +60,7 @@ const RouteDrawing = (props) => {
       includeRoute
     );
     const url = canvas.toDataURL()
-    setImgDataOut(url);
+    setImgURL(url);
     if (includeHeader && includeRoute) {
       setImgHR(url)
     } else if (includeHeader && !includeRoute) {
@@ -198,8 +197,8 @@ const RouteDrawing = (props) => {
 
       {!saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
       <div>
-        {imgDataOut && <center><img ref={finalImage} className="final-image" src={imgDataOut} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
-        {!imgDataOut && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
+        {imgURL && <center><img ref={finalImage} className="final-image" src={imgURL} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
+        {!imgURL && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
       </div>
     </div>
   )
