@@ -4,7 +4,7 @@ const {drawRoute} = require('./drawHelpers');
 
 const [imgFile, routeFile, cornersJSON, type] = process.argv.slice(2);
 
-const routeJSON = fs.readFileSync(routeFile, 'utf8');
+const routeJSON = fs.readFileSync(routeFile, {encoding:'utf8', flag:'r'});
 const routeRaw = JSON.parse(routeJSON);
 const route = routeRaw.map(p=>{return {time: p.time*1e3, latLon: p.latlon}})
 const cornersRaw = JSON.parse(cornersJSON);

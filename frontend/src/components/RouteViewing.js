@@ -17,6 +17,9 @@ const RouteViewing = (props) => {
 
   useEffect(() => {
     const qp = new URLSearchParams();
+    if (!includeHeader && !includeRoute) {
+      qp.set('out_bounds', '1');
+    }
     if (includeHeader) {
       qp.set('show_header', '1');
     }

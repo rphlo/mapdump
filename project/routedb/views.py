@@ -133,6 +133,7 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
 def map_download(request, uid, *args, **kwargs):
     show_header = request.GET.get('show_header', False)
     show_route = request.GET.get('show_route', False)
+    out_bounds = request.GET.get('out_bounds', False)
     route = get_object_or_404(
         Route.objects.select_related('raster_map'),
         uid=uid,
@@ -148,6 +149,17 @@ def map_download(request, uid, *args, **kwargs):
             up_buffer.seek(0)
             upload_to_s3('drawmyroute-maps', file_path, up_buffer)
             route.__setattr__('has_image_w' + suffix, True)
+            route.save()
+            return HttpResponse(img, content_type=mime_type)
+    elif out_bounds:
+        file_path = route.images_path
+        mime_type = 'image/jpeg'
+        if not route.has_image_blank:
+            img = route.route_image(False, False)
+            up_buffer = BytesIO(img)
+            up_buffer.seek(0)
+            upload_to_s3('drawmyroute-maps', file_path, up_buffer)
+            route.has_image_blank = True
             route.save()
             return HttpResponse(img, content_type=mime_type)
     else:

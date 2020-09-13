@@ -251,6 +251,7 @@ class Route(models.Model):
     has_image_w_route = models.BooleanField(default=False)
     has_image_w_header_route = models.BooleanField(default=False)
     has_image_thumbnail = models.BooleanField(default=False)
+    has_image_blank = models.BooleanField(default=False)
 
     def prefetch_route_extras(self, *args, **kwargs):
         if self.route[0]['time']:
@@ -277,7 +278,9 @@ class Route(models.Model):
         data_uri = ''
         with tempfile.NamedTemporaryFile() as img_file, tempfile.NamedTemporaryFile() as route_file:
             img_file.write(orig)
+            img_file.flush()
             route_file.write(self.route_json.encode('utf-8'))
+            route_file.flush()
             data_uri = subprocess.check_output([
                 'node',
                 os.path.join(settings.BASE_DIR, '..', 'tools/generate_map.js'),
