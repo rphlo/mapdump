@@ -78,11 +78,11 @@ const Login = () => {
                 <form onSubmit={onLogin}>
                   <div className="form-group">
                     <label htmlFor="username"><i className="fas fa-user"></i> Username</label>
-                    <input onChange={(e)=>{setLogin(e.target.value)}} type="text" className="form-control" id="username" placeholder="Username"/>
+                    <input onChange={(e)=>{setLogin(e.target.value)}} type="text" className="form-control" id="username" name="username" placeholder="Username"/>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="psw"><i className="fas fa-key"></i> Password</label>
-                    <input onChange={(e)=>{setPass(e.target.value)}} type="password" className="form-control" id="psw" placeholder="Password"/>
+                    <label htmlFor="password"><i className="fas fa-key"></i> Password</label>
+                    <input onChange={(e)=>{setPass(e.target.value)}} type="password" className="form-control" id="password" name="password" placeholder="Password"/>
                   </div>
                   <button data-testid="submitLoginBtn" type="submit" className="btn btn-primary btn-block"><i className="fas fa-sign-in-alt"></i>  Login</button>
                 </form>
