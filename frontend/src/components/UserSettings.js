@@ -68,21 +68,21 @@ const UserSettings = () => {
             <form onSubmit={onSubmit}>
             <div className={"form-group"}>
                 <label htmlFor="username"><i className="fas fa-user"></i> Username</label>
-                <input onChange={(e)=>{setUsername(e.target.value)}} defaultValue={username} type="text" className={"form-control" + (errors.username ? ' is-invalid' : '')} id="username" placeholder="Username"/>
+                <input onChange={(e)=>{setUsername(e.target.value)}} defaultValue={username} type="text" className={"form-control" + (errors.username ? ' is-invalid' : '')} id="username" name="username" placeholder="Username"/>
                 {errors.username && (<div className="invalid-feedback">
                     {errors.username}
                 </div>)}
             </div>
             <div className="form-group">
                 <label htmlFor="firstName"><i className="fas fa-user"></i> First Name</label>
-                <input onChange={(e)=>{setFirstName(e.target.value)}} defaultValue={firstName} type="text" className={"form-control" + (errors.first_name ? ' is-invalid' : '')} id="firstName" placeholder="First Name"/>
+                <input onChange={(e)=>{setFirstName(e.target.value)}} defaultValue={firstName} type="text" className={"form-control" + (errors.first_name ? ' is-invalid' : '')} id="firstName" name="firstName" placeholder="First Name"/>
                 {errors.first_name && (<div className="invalid-feedback">
                     {errors.first_name}
                 </div>)}
             </div>
             <div className="form-group">
                 <label htmlFor="lastName"><i className="fas fa-user"></i> Last Name</label>
-                <input onChange={(e)=>{setLastName(e.target.value)}} defaultValue={lastName} type="text" className={"form-control" + (errors.last_name ? ' is-invalid' : '')} id="lastName" placeholder="Last Name"/>
+                <input onChange={(e)=>{setLastName(e.target.value)}} defaultValue={lastName} type="text" className={"form-control" + (errors.last_name ? ' is-invalid' : '')} id="lastName" name="lastName" placeholder="Last Name"/>
                 {errors.last_name && (<div className="invalid-feedback">
                     {errors.last_name}
                 </div>)}

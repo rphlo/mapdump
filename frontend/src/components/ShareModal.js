@@ -26,7 +26,7 @@ const ShareModal = (props) => {
                 <div className="form-row align-items-center">
                   <div className="col-auto">
                     <label htmlFor="url" className="sr-only"><i className="fas fa-link"></i> URL</label>
-                    <input ref={inputEl} type="text" className="form-control" id="url" placeholder="URL" readOnly value={props.url}/>
+                    <input ref={inputEl} type="text" className="form-control" id="url" name="url" placeholder="URL" readOnly value={props.url}/>
                   </div>
                   <div className="col-auto">
                     <button data-testid="copyBtn" className="btn btn-primary" onClick={onCopy}><i className="fas fa-copy"></i> Copy</button>

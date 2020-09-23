@@ -35,6 +35,6 @@ beforeEach(function () {
 Cypress.Commands.add('login', () => {
     cy.get('[data-testid="loginBtn"]').click()
     cy.get('#username').type('tester')
-    cy.get('#psw').type('abc123')
+    cy.get('#password').type('abc123')
     cy.get('[data-testid="submitLoginBtn"]').click()
 })

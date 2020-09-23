@@ -45,42 +45,42 @@ const Register = (props) => {
             <form onSubmit={onRegister}>
             <div className={"form-group"}>
                 <label htmlFor="username"><i className="fas fa-user"></i> Username</label>
-                <input onChange={(e)=>{setLogin(e.target.value)}} type="text" className={"form-control" + (errors.username ? ' is-invalid' : '')} id="username" placeholder="Username"/>
+                <input onChange={(e)=>{setLogin(e.target.value)}} type="text" className={"form-control" + (errors.username ? ' is-invalid' : '')} id="username" name="username" placeholder="Username"/>
                 {errors.username && (<div className="invalid-feedback">
                     {errors.username}
                 </div>)}
             </div>
             <div className={"form-group"}>
                 <label htmlFor="email"><i className="fas fa-at"></i> Email</label>
-                <input onChange={(e)=>{setEmail(e.target.value)}} type="email" className={"form-control" + (errors.email ? ' is-invalid' : '')} id="email" placeholder="Email"/>
+                <input onChange={(e)=>{setEmail(e.target.value)}} type="email" className={"form-control" + (errors.email ? ' is-invalid' : '')} id="email" name="email" placeholder="Email"/>
                 {errors.email && (<div className="invalid-feedback">
                     {errors.email}
                 </div>)}
             </div>
             <div className="form-group">
                 <label htmlFor="firstName"><i className="fas fa-user"></i> First Name</label>
-                <input onChange={(e)=>{setFirstName(e.target.value)}} type="text" className={"form-control" + (errors.first_name ? ' is-invalid' : '')} id="firstName" placeholder="First Name"/>
+                <input onChange={(e)=>{setFirstName(e.target.value)}} type="text" className={"form-control" + (errors.first_name ? ' is-invalid' : '')} id="firstName" name="firstName" placeholder="First Name"/>
                 {errors.first_name && (<div className="invalid-feedback">
                     {errors.first_name}
                 </div>)}
             </div>
             <div className="form-group">
                 <label htmlFor="lastName"><i className="fas fa-user"></i> Last Name</label>
-                <input onChange={(e)=>{setLastName(e.target.value)}} type="text" className={"form-control" + (errors.last_name ? ' is-invalid' : '')} id="lastName" placeholder="Last Name"/>
+                <input onChange={(e)=>{setLastName(e.target.value)}} type="text" className={"form-control" + (errors.last_name ? ' is-invalid' : '')} id="lastName" name="lastName" placeholder="Last Name"/>
                 {errors.last_name && (<div className="invalid-feedback">
                     {errors.last_name}
                 </div>)}
             </div>
             <div className="form-group">
-                <label htmlFor="psw"><i className="fas fa-key"></i> Password</label>
-                <input onChange={(e)=>{setPass(e.target.value)}} type="password" className={"form-control" + (errors.password1 ? ' is-invalid' : '')} id="psw" placeholder="Password"/>
+                <label htmlFor="password"><i className="fas fa-key"></i> Password</label>
+                <input onChange={(e)=>{setPass(e.target.value)}} type="password" className={"form-control" + (errors.password1 ? ' is-invalid' : '')} id="password" name="password" placeholder="Password"/>
                 {errors.password1 && (<div className="invalid-feedback">
                     {errors.password1}
                 </div>)}
             </div>
             <div className="form-group">
-                <label htmlFor="psw2"><i className="fas fa-key"></i> Password Confirmation</label>
-                <input onChange={(e)=>{setPass2(e.target.value)}} type="password" className={"form-control" + (errors.password2 ? ' is-invalid' : '')} id="psw2" placeholder="Password Confirmation"/>
+                <label htmlFor="passwordRepeat"><i className="fas fa-key"></i> Password Confirmation</label>
+                <input onChange={(e)=>{setPass2(e.target.value)}} type="password" className={"form-control" + (errors.password2 ? ' is-invalid' : '')} id="passwordRepeat" name="passwordRepeat" placeholder="Password Confirmation"/>
                 {errors.password2 && (<div className="invalid-feedback">
                     {errors.password2}
                 </div>)}
