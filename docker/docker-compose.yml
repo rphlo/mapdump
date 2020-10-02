@@ -61,4 +61,5 @@ services:
       - ../frontend/:/app/:rw
     ports:
       - "3000:3000"
+    tty: true
 
