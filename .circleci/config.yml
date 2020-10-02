@@ -24,6 +24,7 @@ jobs:
           node -v
           curl -o- -L https://yarnpkg.com/install.sh | bash
           cd frontend
+          ~/.yarn/bin/yarn cypress install
           ~/.yarn/bin/yarn cypress run
     - store_artifacts:
         path: frontend/cypress/videos
