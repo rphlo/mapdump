@@ -11,6 +11,8 @@ jobs:
     - run: mkdir -p media/drawmyroute-maps/
     - run: ./dc build
     - run: ./dc up -d
+    - run: ./dc run react yarn install --production
+    - run: ./dc restart react
     - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3000)" != "200" ]]; do sleep 5; done' || false
     - run:
         name: Install Node.js 10 and run cypress
