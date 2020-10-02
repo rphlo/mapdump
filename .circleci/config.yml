@@ -25,9 +25,9 @@ jobs:
           ~/.yarn/bin/yarn install
           ~/.yarn/bin/yarn cypress run
     - store_artifacts:
-        path: cypress/videos
+        path: frontend/cypress/videos
     - store_artifacts:
-        path: cypress/screenshots
+        path: frontend/cypress/screenshots
 workflows:
   build:
     jobs:
