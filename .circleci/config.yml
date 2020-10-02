@@ -11,7 +11,7 @@ jobs:
     - run: mkdir -p media/drawmyroute-maps/
     - run: ./dc build
     - run: ./dc up -d
-    - run: ./dc run react yarn install --production
+    - run: ./dc run react yarn install
     - run: ./dc restart react
     - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3000)" != "200" ]]; do sleep 5; done' || false
     - run:
@@ -24,7 +24,6 @@ jobs:
           node -v
           curl -o- -L https://yarnpkg.com/install.sh | bash
           cd frontend
-          ~/.yarn/bin/yarn install
           ~/.yarn/bin/yarn cypress run
     - store_artifacts:
         path: frontend/cypress/videos
