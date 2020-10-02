@@ -60,7 +60,7 @@ const Login = () => {
         </div>}
       {!username && !wantLogin && (<div style={{textAlign:'right'}}>
           <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Login</button>
-          &nbsp;<Link to='/sign-up'><button className="btn btn-success btn-sm"><i className="fas fa-user-plus"></i> Sign up</button></Link>
+          &nbsp;<Link to='/sign-up'><button className="btn btn-success btn-sm"><i className="fas fa-user-plus"></i> Sign up for free</button></Link>
         </div>)}
       {!username && wantLogin && (<div><span>&nbsp;</span>
         <div className="modal" role="dialog" style={{display: 'block'}}>
