@@ -13,11 +13,8 @@ const RouteDrawing = (props) => {
   const [saved, setSaved] = useState(false);
   const [imgData, setImgData] = useState()
   const [imgURL, setImgURL] = useState(null)
-  const [imgHR, setImgHR] = useState()
-  const [imghR, setImghR] = useState()
-  const [imgHr, setImgHr] = useState()
-  const [imghr, setImghr] = useState()
   const [zoom, setZoom] = useState(200)
+  const [bounds, setBounds] = useState(props.mapCornersCoords) 
   let finalImage = createRef();
 
   const globalState = useGlobalState()
@@ -27,50 +24,18 @@ const RouteDrawing = (props) => {
     if (!imgData) {
       return
     }
-    const endToggling = () => {
-      if (togglingHeader) {
-        setTogglingHeader(false)
-      }
-      if (togglingRoute) {
-        setTogglingRoute(false)
-      }
-    }
-    if (includeHeader && includeRoute && imgHR) {
-      setImgURL(imgHR)
-      endToggling()
-      return
-    } else if (includeHeader && !includeRoute && imgHr) {
-      setImgURL(imgHr)
-      endToggling()
-      return
-    } else if (!includeHeader && includeRoute && imghR) {
-      setImgURL(imghR)
-      endToggling()
-      return
-    } else if (!includeHeader && !includeRoute && imghr) {
-      setImgURL(imghr)
-      endToggling()
-      return
-    }
     const canvas = drawRoute(
       imgData,
-      props.mapCornersCoords,
+      bounds,
       props.route,
       includeHeader,
       includeRoute
     );
     const url = canvas.toDataURL()
     setImgURL(url);
-    if (includeHeader && includeRoute) {
-      setImgHR(url)
-    } else if (includeHeader && !includeRoute) {
-      setImgHr(url)
-    } else if (!includeHeader && includeRoute) {
-      setImghR(url)
-    } else if (!includeHeader && !includeRoute) {
-      setImghr(url)
-    }
-  }, [imgData, imgHR, imghR, imgHr, imghr, includeHeader, includeRoute, props.mapCornersCoords, props.route, togglingHeader, togglingRoute])
+    setTogglingRoute(false);
+    setTogglingHeader(false);
+  }, [imgData, bounds, includeHeader, includeRoute, props.route])
 
   useEffect(() => {
     setName(props.name); 
@@ -107,6 +72,23 @@ const RouteDrawing = (props) => {
       separator + round5(corners_coords.bottom_right.lat) + separator + round5(corners_coords.bottom_right.lon) +
       separator + round5(corners_coords.bottom_left.lat) + separator + round5(corners_coords.bottom_left.lon);
   }
+
+  const rotate = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width  = imgData.height;
+    canvas.height = imgData.width;
+    const ctx = canvas.getContext('2d');
+    ctx.rotate(90 * Math.PI / 180);
+    ctx.drawImage(imgData, 0, -imgData.height);
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = function(){
+        setBounds({top_left: bounds.bottom_left, top_right: bounds.top_left, bottom_right: bounds.top_right, bottom_left: bounds.bottom_right});
+        setImgData(this);
+    };
+    img.src = canvas.toDataURL()
+  }
+
   const onExport = async (e) => {
     if(saving || !username) {
       return
@@ -120,7 +102,7 @@ const RouteDrawing = (props) => {
     canvas.toBlob(async (blob) => {
       var fd = new FormData();
       fd.append('map_image', blob, name + '.jpg') 
-      fd.append('map_bounds', formatMapBounds(props.mapCornersCoords));
+      fd.append('map_bounds', formatMapBounds(bounds));
       fd.append('route_data', formatRoute(props.route));
       fd.append('name', name);
       try {
@@ -147,10 +129,10 @@ const RouteDrawing = (props) => {
   }
 
   const downloadMapWithRoute = (e) => {
-    const newCorners = getCorners(imgData, props.mapCornersCoords, props.route, includeHeader, includeRoute);
+    const newCorners = getCorners(imgData, bounds, props.route, includeHeader, includeRoute);
     const canvas = drawRoute(
       imgData,
-      props.mapCornersCoords,
+      bounds,
       props.route,
       includeHeader,
       includeRoute,
@@ -194,6 +176,7 @@ const RouteDrawing = (props) => {
       <button className="btn btn-sm btn-default" onClick={zoomOut}><i className={"fa fa-minus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
+      <button className="btn btn-sm btn-default" onClick={rotate}><i className="fa fa-sync"></i> Rotate</button>&nbsp;
 
       {!saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
       <div>
