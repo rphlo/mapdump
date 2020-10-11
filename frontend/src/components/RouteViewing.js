@@ -121,7 +121,7 @@ const RouteViewing = (props) => {
 
   return (
     <div>
-      <RouteHeader {...props} />
+      <RouteHeader {...props} onNameChanged={setName} />
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMap}><i className="fas fa-download"></i> Download Map</button>&nbsp;

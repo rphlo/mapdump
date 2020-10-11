@@ -84,6 +84,7 @@ const RouteHeader = (props) => {
       if (response.status!==200) {
         window.alert('Something went wrong')
       }
+      props.onNameChanged && props.onNameChanged(newName)
     } catch (e) {
     }
   }
