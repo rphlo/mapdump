@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Calibrate Map</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
-          integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-          crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-          crossorigin=""/>    
+    <link rel="stylesheet" href="/vendor/bootstrap-4.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/vendor/leaflet-1.7.1/leaflet.css" />    
     <style>
     html {
       height: 100%;
@@ -122,18 +118,10 @@
 <footer class="container-fluid text-center">
   <span>&copy <script>document.write(new Date().getFullYear())</script> DrawMyRoute.com - <a href="mailto:rphl@rphl.net">Raphael Stefanini</a></span>
 </footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"
-        integrity="sha256-C8oQVJ33cKtnkARnmeWp6SDChkU+u7KvsNMFUzkkUzk="
-        crossorigin="anonymous"></script>
-<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-        crossorigin=""></script>
-<script src="https://cdn.jsdelivr.net/gh/ScanEx/Leaflet.imageTransform@bfa1ba5/src/L.ImageTransform.js"
-        integrity="sha384-K1b8l7ruEmR3Qf4CltJMvLt5ZAtW/A/KqkLIsssHCzCjCnwSgsP0GIe4mlbzOvGn"
-        crossorigin="anonymous"></script>
+<script src="/vendor/jquery-3.5.1/jquery.slim.min.js"></script>
+<script src="/vendor/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+<script src="/vendor/leaflet-1.7.1/leaflet.js"></script>
+<script src="/vendor/leaflet-image-transform-1.0.0/L.ImageTransform.js"></script>
 <script>
 SpheroidProjection = (function(){
     var p = "prototype",
@@ -257,8 +245,8 @@ $(function(){
 
     function color_icon(color){
         return new L.Icon({
-            iconUrl: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@575461f7/img/marker-icon-2x-' + color + '.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconUrl: '/vendor/leaflet-color-markers-1.0.0/img/marker-icon-2x-' + color + '.png',
+            shadowUrl: '/vendor/leaflet-1.7.1/images/marker-shadow.png',
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             popupAnchor: [1, -34],
