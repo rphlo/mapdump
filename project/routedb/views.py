@@ -229,11 +229,8 @@ def strava_authorize(request):
         client_secret=settings.MY_STRAVA_CLIENT_SECRET,
         code=code
     )
-    if hasattr(request.user, 'settings') and request.user.settings is not None:
-        user_settings = request.user.settings
-        user_settings.strava_access_token = json.dumps(access_token)
-    else:
-        user_settings = UserSettings(user=request.user, strava_access_token=json.dumps(access_token))    
+    user_settings = request.user.settings
+    user_settings.strava_access_token = json.dumps(access_token) 
     user_settings.save()
     return HttpResponseRedirect(settings.URL_FRONT + '/new')
 
@@ -241,8 +238,9 @@ def strava_authorize(request):
 @api_view(['GET'])
 @login_required
 def strava_access_token(request):
-    if hasattr(request.user, 'settings') and request.user.settings is not None and request.user.settings.strava_access_token:
-        token = json.loads(request.user.settings.strava_access_token)
+    user_settings = request.user.settings
+    if user_settings.strava_access_token:
+        token = json.loads(user_settings.strava_access_token)
         if time.time() < token['expires_at']:
             return Response({'strava_access_token': token['access_token'], 'expires_at': token['expires_at']})
         client = StravaClient()
@@ -251,7 +249,6 @@ def strava_access_token(request):
             client_secret=settings.MY_STRAVA_CLIENT_SECRET,
             refresh_token=token['refresh_token']
         )
-        user_settings = request.user.settings
         user_settings.strava_access_token = json.dumps(access_token)
         user_settings.save()
         return Response({'strava_access_token': access_token['access_token'], 'expires_at': access_token['expires_at']})
@@ -261,14 +258,14 @@ def strava_access_token(request):
 @api_view(['POST'])
 @login_required
 def strava_deauthorize(request):
-    if hasattr(request.user, 'settings') and request.user.settings is not None and request.user.settings.strava_access_token:
-        token = json.loads(request.user.settings.strava_access_token)
+    user_settings = request.user.settings
+    if user_settings.strava_access_token:
+        token = json.loads(user_settings.strava_access_token)
         client = StravaClient(token['access_token'])
         try:
             client.deauthorize()
         except Exception:
             pass
-        user_settings = request.user.settings
-        user_settings.strava_access_token = ''
+        user_settings.strava_access_token = None
         user_settings.save()
     return Response({})

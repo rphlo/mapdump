@@ -59,10 +59,11 @@ def route_upload_path(instance=None, file_name=None):
 class UserSettings(models.Model):
     user = models.OneToOneField(
         User,
-        related_name='settings',
         on_delete=models.CASCADE
     )
-    strava_access_token = models.TextField()
+    strava_access_token = models.TextField(blank=True, null=True)
+
+User.settings = property(lambda u: UserSettings.objects.get_or_create(user=u)[0])
 
 class RasterMap(models.Model):
     uid = models.CharField(
