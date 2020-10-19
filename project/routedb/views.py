@@ -117,7 +117,7 @@ class UserDetail(generics.RetrieveAPIView):
 
     def get_queryset(self):
         username = self.kwargs['username']
-        return User.objects.filter(username=username).prefetch_related('routes', 'settings')
+        return User.objects.filter(username=username).prefetch_related('routes')
 
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RouteSerializer
