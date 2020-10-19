@@ -25,6 +25,8 @@ describe('Create a new map', function() {
                 cy.get('[data-testid="saveBtn"]').contains('Save').click()
                 cy.wait(10000)
                 cy.url().should('include', '/routes/')
+                cy.visit('/athletes/tester')
+                cy.get('[data-testid="routeCount"]').contains('1 Route')
             });
         });
     })

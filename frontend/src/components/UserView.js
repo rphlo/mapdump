@@ -107,7 +107,7 @@ const UserView = ({match}) => {
                 }, null)
             }
             <hr/>
-            <h3>{data.routes.length} Route{data.routes.length===1?'':'s'}</h3>
+            <h3 data-testid="routeCount">{data.routes.length} Route{data.routes.length===1 ? '' : 's'}</h3>
             <div className="container">
                 <div className="row">
                 {data.routes.map(r=>(
