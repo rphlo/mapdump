@@ -23,9 +23,9 @@ const LatestRoute = () => {
     return (
       <>
         <Helmet>
-          <link rel="alternate" type="application/rss+xml" title="RSS Feed" href={process.env.REACT_APP_API_URL + '/v1/latest_routes/feed/'} />
+          <link rel="alternate" type="application/rss+xml" title="RSS Feed" href={process.env.REACT_APP_API_URL + '/v1/latest-routes/feed/'} />
         </Helmet>
-        <h3>Latest Routes <a href={process.env.REACT_APP_API_URL + '/v1/latest_routes/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h3>
+        <h3>Latest Routes <a href={process.env.REACT_APP_API_URL + '/v1/latest-routes/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h3>
         <div className="container" style={{textAlign: 'left'}}>
             { routes === false && <div style={{textAlign: 'center'}}><span><i className="fa fa-spinner fa-spin"></i> Loading</span></div>}
             { routes && (!routes.length ? 
