@@ -1,10 +1,12 @@
 from django.urls import path, re_path, include
-from . import views
+from . import views, feeds
 
 urlpatterns = [
     path('routes/new', views.RouteCreate.as_view(), name='route_create'),
     path('latest-routes/', views.LatestRoutesList.as_view(), name='latest_routes_list'),
+    path('latest-routes/feed/', feeds.latest_routes_feed, name='latest_routes_feed'),
     re_path(r'^user/(?P<username>[a-zA-Z0-9_-]+)/?$', views.UserDetail.as_view(), name='user_detail'),
+    re_path(r'^user/(?P<username>[a-zA-Z0-9_-]+)/feed/?$', feeds.athlete_routes_feed, name='user_feed'),
     re_path(r'^route/(?P<uid>[a-zA-Z0-9_-]+)/?$', views.RouteDetail.as_view(), name='route_detail'),
     re_path(r'^route/(?P<uid>[a-zA-Z0-9_-]+)/map/?$', views.map_download, name='map_image'),
     re_path(r'^route/(?P<uid>[a-zA-Z0-9_-]+)/gpx/?$', views.gpx_download, name='gpx_download'),
