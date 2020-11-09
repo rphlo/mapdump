@@ -258,7 +258,7 @@ def strava_access_token(request):
         user_settings.save()
         return Response({'strava_access_token': access_token['access_token'], 'expires_at': access_token['expires_at']})
     return Response({})
-        
+
         
 @api_view(['POST'])
 @login_required

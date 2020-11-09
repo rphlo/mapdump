@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+LOGIN_URL = '/drf-auth/login/'
 # Application definition
 
 INSTALLED_APPS = [
