@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import ReactTooltip from 'react-tooltip'
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import {Helmet} from 'react-helmet'
 import 'react-calendar-heatmap/dist/styles.css'
 import LazyLoad from 'vanilla-lazyload'
@@ -44,10 +44,10 @@ const UserView = ({match}) => {
         const val = [];
         let yesterday = new Date();
         for(let i=0; i < 365; i++) {
-        // eslint-disable-next-line
-        const count = data.routes.filter(r=>moment(r.start_time).zone(r.tz).format('YYYYMMDD') === moment(+yesterday).format('YYYYMMDD')).length
-        val.push({date: new Date(+yesterday).toISOString(), count})
-        yesterday = shiftDate(yesterday, -1)
+            // eslint-disable-next-line
+            const count = data.routes.filter(r => DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('yyyyMMdd') === DateTime.fromMillis(+yesterday).toFormat('yyyyMMdd')).length
+            val.push({date: new Date(+yesterday).toISOString(), count})
+            yesterday = shiftDate(yesterday, -1)
         }
         return val
     }
@@ -116,7 +116,7 @@ const UserView = ({match}) => {
                     <Link to={'/routes/'+r.id}><img className="card-img-top lazyload" src="/placeholder-image.png" data-src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
                     <div className="card-body">
                     <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
-                    <p className="card-text">{moment(r.start_time).utcOffset(r.tz).format('dddd, MMMM Do YYYY, HH:mm')}<br/>{(r.distance/1000).toFixed(1) + 'km'} {r.duration? printTime(r.duration*1000) : ''}</p>
+                    <p className="card-text">{DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('DDDD, T')}<br/>{(r.distance/1000).toFixed(1) + 'km'} {r.duration? printTime(r.duration*1000) : ''}</p>
                     </div>
                 </div>
                 </div>))}

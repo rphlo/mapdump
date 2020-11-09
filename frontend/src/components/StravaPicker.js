@@ -1,6 +1,6 @@
 import React from 'react';
 import strava from 'strava-v3';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 import { printTime } from '../utils/drawHelpers';
 import useGlobalState from '../utils/useGlobalState';
@@ -123,7 +123,7 @@ const Settings = (props) => {
                 <tbody style={{cursor:'pointer'}}>
                 {act.map((a) => (
                     <tr key={a.id} onClick={() => downloadGPX(a)}>
-                        <td>{moment(a.start_date).format('dddd, MMMM Do YYYY, HH:mm')}</td>
+                        <td>{DateTime.fromISO(a.start_date).toFormat('DDDD, T')}</td>
                         <td>{a.name}</td>
                         <td>{printTime(a.elapsed_time * 1e3)}{}</td>
                         <td>{(a.distance/1000).toFixed(1)}km</td>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {Helmet} from 'react-helmet'
 import { Link } from 'react-router-dom'
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import useGlobalState from '../utils/useGlobalState'
 import {printTime} from '../utils/drawHelpers'
 
@@ -153,7 +153,7 @@ const RouteHeader = (props) => {
       </div>
       }
       </h2>
-      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{moment(props.startTime).utcOffset(props.tz).format('dddd, MMMM Do YYYY, HH:mm')}<br/>{(props.distance/1000).toFixed(1) + 'km'} {props.duration? printTime(props.duration*1000) : ''}</small></h4>
+      <h4>by <Link to={'/athletes/'+props.athlete.username}>{props.athlete.first_name} {props.athlete.last_name}</Link> <small>{DateTime.fromISO(props.startTime, {zone: props.tz}).toFormat('DDDD, T')}<br/>{(props.distance/1000).toFixed(1) + 'km'} {props.duration? printTime(props.duration*1000) : ''}</small></h4>
       <div style={{marginBottom: '5px'}}>
         {(!canEdit() || !commentEditing) && <blockquote style={{whiteSpace: 'pre-wrap'}}><p>{comment}</p></blockquote>}
         { canEdit() && commentEditing && <textarea className="form-control" ref={commentInputRef} defaultValue={comment} onBlur={saveComment}/>}  

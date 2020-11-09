@@ -244,11 +244,16 @@ def strava_access_token(request):
         if time.time() < token['expires_at']:
             return Response({'strava_access_token': token['access_token'], 'expires_at': token['expires_at']})
         client = StravaClient()
-        access_token = client.refresh_access_token(
-            client_id=settings.MY_STRAVA_CLIENT_ID,
-            client_secret=settings.MY_STRAVA_CLIENT_SECRET,
-            refresh_token=token['refresh_token']
-        )
+        try:
+            access_token = client.refresh_access_token(
+                client_id=settings.MY_STRAVA_CLIENT_ID,
+                client_secret=settings.MY_STRAVA_CLIENT_SECRET,
+                refresh_token=token['refresh_token']
+            )
+        except Exception:
+            user_settings.strava_access_token = ''
+            user_settings.save()
+            return Response({})
         user_settings.strava_access_token = json.dumps(access_token)
         user_settings.save()
         return Response({'strava_access_token': access_token['access_token'], 'expires_at': access_token['expires_at']})
