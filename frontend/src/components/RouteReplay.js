@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { LatLon, cornerCalTransform } from '../utils/Utils'
 import * as L from 'leaflet';
+import '../utils/Leaflet.SmoothWheelZoom';
 import Slider from 'react-input-slider';
 import { Position, PositionArchive } from '../utils/positions'
 import RouteHeader from './RouteHeader';
@@ -51,7 +52,7 @@ const RouteReplay = (props) => {
       var img = new Image();
       img.onload = function () {
         setMapImage(this)
-        const map = L.map('raster_map', {crs: L.CRS.Simple, minZoom: -5, maxZoom:2});
+        const map = L.map('raster_map', {crs: L.CRS.Simple, minZoom: -5, maxZoom:2, zoomSnap: 0, scrollWheelZoom: false, smoothWheelZoom: true});
         setLeafletMap(map)
         const bounds = [map.unproject([0,0]), map.unproject([this.width, this.height])];
         new L.imageOverlay(this.src, bounds).addTo(map);
