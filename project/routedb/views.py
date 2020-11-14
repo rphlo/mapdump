@@ -23,7 +23,13 @@ from rest_framework.response import Response
 from stravalib import Client as StravaClient
 
 from routedb.models import RasterMap, Route, UserSettings
-from routedb.serializers import RouteSerializer, UserMainSerializer, LatestRouteListSerializer
+from routedb.serializers import (
+    RouteSerializer,
+    UserMainSerializer,
+    LatestRouteListSerializer,
+    EmailSerializer,
+    ResendVerificationSerializer,
+)
 from utils.s3 import s3_object_url, s3_key_exists, upload_to_s3
 
 def x_accel_redirect(request, path, filename='',
@@ -99,6 +105,35 @@ class LoginView(generics.CreateAPIView):
             'username': user.username,
             'token': token
         })
+
+
+class EmailsView(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = EmailSerializer
+
+    def get_queryset(self):
+        return self.request.user.emailaddress_set.all()
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+
+class EmailDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = EmailSerializer
+    lookup_field = 'email'
+
+    def get_queryset(self):
+        return self.request.user.emailaddress_set.all()
+
+class ResendVerificationView(generics.GenericAPIView):
+    serializer_class = ResendVerificationSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RouteCreate(generics.CreateAPIView):
@@ -259,7 +294,7 @@ def strava_access_token(request):
         return Response({'strava_access_token': access_token['access_token'], 'expires_at': access_token['expires_at']})
     return Response({})
 
-        
+
 @api_view(['POST'])
 @login_required
 def strava_deauthorize(request):
