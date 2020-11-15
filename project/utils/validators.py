@@ -40,8 +40,8 @@ def validate_nice_slug(slug):
     if '--' in slug or '__' in slug or '-_' in slug or '_-' in slug:
         raise ValidationError(_('Cannot include 2 non alphanumeric '
                                 'character in a row.'))
-    if slug in settings.SLUG_BLACKLIST:
-        raise ValidationError(_('Forbidden slug.'))
+    if slug.lower() in settings.SLUG_BLACKLIST:
+        raise ValidationError(_('Forbidden word.'))
 
 
 def validate_image_data_uri(value):
