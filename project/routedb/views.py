@@ -112,7 +112,7 @@ class EmailsView(generics.ListCreateAPIView):
     serializer_class = EmailSerializer
 
     def get_queryset(self):
-        return self.request.user.emailaddress_set.all()
+        return self.request.user.emailaddress_set.all().order_by('-primary', '-verified', 'email')
 
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)

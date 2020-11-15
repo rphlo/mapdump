@@ -146,7 +146,7 @@ class EmailSerializer(serializers.ModelSerializer):
                 "validators": []
             }
         }
-        fields = ('id', 'email', 'primary', 'verified')
+        fields = ('email', 'primary', 'verified')
         model = EmailAddress
         read_only_fields = ('verified',)
 
@@ -160,9 +160,11 @@ class EmailSerializer(serializers.ModelSerializer):
             # email = email_query.get()
             # email.send_duplicate_notification()
             raise serializers.ValidationError(
-                _(
-                    "Emails already exists."
-                )
+                { 
+                    'email': [_(
+                        "Email address already exists."
+                    )]
+                }
             )
         else:
             email = super(EmailSerializer, self).create(validated_data)

@@ -1,6 +1,7 @@
 import React from 'react'
 import PasswordChange from './PasswordChange'
 import UserSettings from './UserSettings'
+import EmailsList from './EmailsList'
 import useGlobalState from '../utils/useGlobalState'
 
 const Settings = ({history}) => {
@@ -20,6 +21,8 @@ const Settings = ({history}) => {
          <UserSettings/>
          <hr/>
          <PasswordChange/>
+         <hr/>
+         <EmailsList/>
         </>
     )
 }
