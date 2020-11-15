@@ -44,7 +44,7 @@ const PasswordReset = (props) => {
                     {errors.email}
                 </div>)}
             </div>
-            <button type="submit" className="btn btn-primary btn-block"><i className="fas fa-paper-plane"></i> Send</button>
+            <button type="submit" className="btn btn-primary"><i className="fas fa-paper-plane"></i> Send</button>
         </form></>}
         {sent && (
             <div className="alert alert-success" role="alert">

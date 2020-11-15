@@ -54,7 +54,7 @@ const Register = (props) => {
                     {errors.new_password2}
                 </div>)}
             </div>
-            <button type="submit" className="btn btn-primary btn-block"><i className="fas fa-paper-plane"></i> Reset password</button>
+            <button type="submit" className="btn btn-primary"><i className="fas fa-paper-plane"></i> Reset password</button>
         </form></>}
         {sent && (
             <div className="alert alert-success" role="alert">

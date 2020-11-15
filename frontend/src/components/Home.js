@@ -8,10 +8,10 @@ const Home = () => {
     const { username } = globalState.user
     return (
     <div style={{textAlign:'center'}} >
-      <div class="alert alert-warning">
-        <p><i class="fa fa-warning"></i> DrawMyRoute is a open source project, available to all for free, and hosted by vonlunteer.</p>
+      <div className="alert alert-warning">
+        <p><i className="fa fa-warning"></i> DrawMyRoute is a open source project, available to all for free, and hosted by vonlunteer.</p>
         <p>You can help contribute to the payment of the cost of hosting this solution through monthly donations.</p>
-        <p>Follow this link if you want to contribute <a href="https://github.com/sponsors/rphlo"><i class="fa fa-heart"></i> Github Sponsor</a></p>
+        <p>Follow this link if you want to contribute <a href="https://github.com/sponsors/rphlo"><i className="fa fa-heart"></i> Github Sponsor</a></p>
       </div>
       <hr/>
       <Link to="/new"><button className="btn btn-primary"><i className="fas fa-plus"></i> Create New Route</button></Link>

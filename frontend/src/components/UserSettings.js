@@ -87,7 +87,7 @@ const UserSettings = () => {
                     {errors.last_name}
                 </div>)}
             </div>
-            <button type="submit" className="btn btn-primary btn-block"><i className="fas fa-save"></i> Save</button>
+            <button type="submit" className="btn btn-primary"><i className="fas fa-save"></i> Save</button>
         </form></>}
       </div>
 

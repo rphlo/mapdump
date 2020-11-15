@@ -29,6 +29,7 @@ from routedb.serializers import (
     LatestRouteListSerializer,
     EmailSerializer,
     ResendVerificationSerializer,
+    UserInfoSerializer,
 )
 from utils.s3 import s3_object_url, s3_key_exists, upload_to_s3
 
@@ -153,6 +154,16 @@ class UserDetail(generics.RetrieveAPIView):
     def get_queryset(self):
         username = self.kwargs['username']
         return User.objects.filter(username=username).prefetch_related('routes')
+
+class UserEditView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserInfoSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
+
+    def get_queryset(self):
+        return User.objects.none()
 
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RouteSerializer

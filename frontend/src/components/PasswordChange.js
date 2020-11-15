@@ -64,7 +64,7 @@ const PasswordChange = (props) => {
                     {errors.new_password2}
                 </div>)}
             </div>
-            <button type="submit" className="btn btn-primary btn-block"><i className="fas fa-save"></i> Change Password</button>
+            <button type="submit" className="btn btn-primary"><i className="fas fa-save"></i> Change Password</button>
         </form></>}
         
       </div>

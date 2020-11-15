@@ -85,11 +85,11 @@ const Register = (props) => {
                     {errors.password2}
                 </div>)}
             </div>
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="acceptTos" required/>
-                <label class="form-check-label" for="acceptTos">I agree to the terms of service.</label>
+            <div className="form-group form-check">
+                <input type="checkbox" className="form-check-input" id="acceptTos" required/>
+                <label className="form-check-label" for="acceptTos">I agree to the terms of service.</label>
             </div>
-            <button type="submit" className="btn btn-primary btn-block"><i className="fas fa-user-plus"></i> Sign up</button>
+            <button type="submit" className="btn btn-primary"><i className="fas fa-user-plus"></i> Sign up</button>
         </form></>}
         {registered && (
             <div className="alert alert-success" role="alert">

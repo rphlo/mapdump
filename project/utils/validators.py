@@ -29,8 +29,8 @@ def validate_nice_slug(slug):
     if re.search('[^-a-zA-Z0-9_]', slug):
         raise ValidationError(_('Only alphanumeric characters, '
                                 'hyphens and underscores are allowed.'))
-    if len(slug) < 1:
-        raise ValidationError(_('Too short. (min. 1 characters)'))
+    if len(slug) < 2:
+        raise ValidationError(_('Too short. (min. 2 characters)'))
     elif len(slug) > 32:
         raise ValidationError(_('Too long. (max. 32 characters)'))
     if slug[0] in "_-":

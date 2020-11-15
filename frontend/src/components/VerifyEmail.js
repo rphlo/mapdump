@@ -49,7 +49,7 @@ const VerifyEmail = ({match, history}) => {
                 <label htmlFor="email"><i className="fas fa-at"></i> Email</label>
                 <input onChange={(e)=>{setEmail(e.target.value)}} type="email" className={"form-control"} id="email" name="email" placeholder="Email"/>
             </div>
-            <button type="submit" className="btn btn-primary btn-block"><i className="fas fa-paper-plane"></i> Re-send</button>
+            <button type="submit" className="btn btn-primary"><i className="fas fa-paper-plane"></i> Re-send</button>
         </form>
             </>)}
             {verified && (

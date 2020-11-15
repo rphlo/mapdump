@@ -60,8 +60,8 @@ const EmailItem = (props) => {
       <h4><span className="badge badge-secondary">{email}</span>{primary && <> <span className="badge badge-success">Primary</span></>}{verified && <> <span className="badge badge-primary">Verified</span></>}{resent && <> <span className="badge badge-warning">Verification resent</span></>}</h4>
     </div>
     <div className="col-sm">
-      { !primary && verified && <><button onClick={makePrimary} className="btn btn-info">Make primary</button> </>}
-      { !verified && !resent && <><button  onClick={onResend} className="btn btn-warning">Resend Verification</button> </>}
+      { !primary && verified && <><button onClick={makePrimary} className="btn btn-info"><i className="fas fa-star"></i> Make primary</button> </>}
+      { !verified && !resent && <><button  onClick={onResend} className="btn btn-warning"><i className="fas fa-paper-plane"></i> Resend Verification</button> </>}
       { !primary && <button onClick={onDelete} className="btn btn-danger"><i className="fa fa-trash"></i> Delete</button>}
     </div>
       {verified}
@@ -70,7 +70,7 @@ const EmailItem = (props) => {
 
 const EmailsList = () => {
   const [emails, setEmails] = React.useState([]);
-  const [newEmail, setNewEmail] = React.useState();
+  const [newEmail, setNewEmail] = React.useState('');
   const [errorsAdding, setErrorsAdding] = React.useState({})
 
   const globalState = useGlobalState()
@@ -105,7 +105,8 @@ const EmailsList = () => {
       body: JSON.stringify({email: newEmail})
     })
     if (res.status === 201) {
-      await fetchEmails()
+      await fetchEmails();
+      setNewEmail('');
     } else if (res.status === 400) {
       setErrorsAdding(await res.json())
     }
@@ -113,9 +114,9 @@ const EmailsList = () => {
 
   return (
     <>
-    <h2><i className="fa fa-at"></i> Emails</h2>
+    <h3><i className="fa fa-at"></i> Emails</h3>
     <hr/>
-    <div className="container">
+    <div>
       {emails.map(
         (e) => (
           <EmailItem  key={e.email} email={e.email} verified={e.verified} primary={e.primary} onUpdate={fetchEmails}/>
@@ -123,17 +124,17 @@ const EmailsList = () => {
       )}
       <hr/>
       <h4>Register new email address</h4>
-      <div className="row" style={{marginBottom: '1em'}}>
-        <div className="col-sm">
+      <div>
+        <div>
           <form className="form-group" onSubmit={addEmail}>
             <div className="form-group">
               <label htmlFor="staticEmail" className="sr-only">Email</label>
-              <input type="email" onChange={(e) => setNewEmail(e.target.value)} className={"form-control" + (errorsAdding.email ? ' is-invalid' : '')} id="staticEmail" placeholder="email@example.com" required />
+              <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className={"form-control" + (errorsAdding.email ? ' is-invalid' : '')} id="staticEmail" placeholder="email@example.com" required />
               {errorsAdding.email && (<span className="invalid-feedback">
                     {errorsAdding.email.join('')}
                 </span>)}
             </div>
-            <button type="submit" className="btn btn-info"><i className="fa fa-plus"></i> Add</button>
+            <button type="submit" className="btn btn-primary"><i className="fa fa-plus"></i> Add</button>
           </form>
         </div>
       </div>
