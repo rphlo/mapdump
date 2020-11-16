@@ -92,6 +92,7 @@ const EmailsList = () => {
     if (api_token) {
       fetchEmails()
     }
+  // eslint-disable-next-line
   }, [api_token])
 
   const addEmail = async (e) => {

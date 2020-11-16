@@ -27,7 +27,7 @@ const VerifyEmail = ({match, history}) => {
 
     const onSubmitResend = async (e) => {
         e.preventDefault()
-        const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/registration/resend-verification/', {
+        await fetch(process.env.REACT_APP_API_URL+'/v1/auth/registration/resend-verification/', {
           method: 'POST',headers: {
             'Content-Type': 'application/json'
           },

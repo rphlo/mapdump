@@ -1,9 +1,10 @@
 {
   "name": "drawmyroute",
-  "version": "2020111501",
+  "version": "2020111600",
   "private": true,
   "dependencies": {
-    "@sentry/browser": "^5.10.2",
+    "@sentry/react": "^5.27.4",
+    "@sentry/tracing": "^5.27.4",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
