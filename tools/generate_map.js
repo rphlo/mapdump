@@ -2,7 +2,7 @@ const fs = require('fs');
 const {loadImage} = require('canvas');
 const {drawRoute} = require('./drawHelpers');
 
-const [imgFile, routeFile, cornersJSON, type] = process.argv.slice(2);
+const [imgFile, routeFile, cornersJSON, type, tz] = process.argv.slice(2);
 
 const routeJSON = fs.readFileSync(routeFile, {encoding:'utf8', flag:'r'});
 const routeRaw = JSON.parse(routeJSON);
@@ -17,8 +17,8 @@ const corners = {
 const showHeader = type.includes('h');
 const showRoute = type.includes('r');
 
-(async (imageFile, route, corners, showHeader, showRoute) => {
+(async (imageFile, route, corners, showHeader, showRoute, timezone) => {
     const img = await loadImage(imageFile);
-    const canvas = await drawRoute(img, corners, route, showHeader, showRoute);
+    const canvas = await drawRoute(img, corners, route, showHeader, showRoute, timezone);
     console.log(canvas.toDataURL('jpeg', {quality: 40}));
-})(imgFile, route, corners, showHeader, showRoute);
+})(imgFile, route, corners, showHeader, showRoute, tz);

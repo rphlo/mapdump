@@ -64,7 +64,7 @@ const getGpxData = (node, result) => {
 }
 
 const extractCornersCoordsFromFilename = (filename) => {
-  const re = /(_\d+\.\d+){8}_\.(gif|png|jpg|jpeg)$/ig;
+  const re = /(_-?\d+\.\d+){8}_\.(gif|png|jpg|jpeg)$/ig;
   const found = filename.match(re);
   if(!found) {
       return false

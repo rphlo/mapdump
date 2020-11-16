@@ -65,7 +65,7 @@ const extractBounds = function(img, corners_coords, route) {
   }
 };
 
-const drawRoute = async (img, corners_coords, route, includeHeader=false, includeRoute=true) => {
+const drawRoute = async (img, corners_coords, route, includeHeader=false, includeRoute=true, tz='Europe/Helsinki') => {
   const bounds = extractBounds(img, corners_coords, route);
   const canvas =  createCanvas(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
 
@@ -263,7 +263,7 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
       const dist = extractDistance(route);
       ctx4.fillText(`${(dist/1e3).toFixed(3)}km`, paletteX + paletteWidth + 30, paletteY - 5);
       ctx4.fillText(printTime(route[route.length-1].time-route[0].time), paletteX + paletteWidth + 100, paletteY - 5);
-      ctx4.fillText(`${(new Date(route[0].time))}`, paletteX + paletteWidth + 30, paletteY + 15);
+      ctx4.fillText(`${(new Date(route[0].time)).toLocaleString(undefined, {timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZoneName: 'long', hour12: false, hour: 'numeric', minute:'numeric', second:'numeric'})}`, paletteX + paletteWidth + 30, paletteY + 15);
     }
     ctx4.fillText('https://drawmyroute.com', canvas.width - 120, headerHeight - 5);
     return canvas4;

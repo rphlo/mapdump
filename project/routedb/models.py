@@ -288,7 +288,8 @@ class Route(models.Model):
                 img_file.name,
                 route_file.name,
                 json.dumps(self.raster_map.bounds),
-                arg
+                arg,
+                self.tz
             ], stderr=subprocess.STDOUT)
 
         if data_uri:
