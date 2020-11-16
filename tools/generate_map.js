@@ -1,5 +1,5 @@
 const fs = require('fs');
-const {loadImage} = require('skia-canvas');
+const {loadImage} = require('canvas');
 const {drawRoute} = require('./drawHelpers');
 
 const [imgFile, routeFile, cornersJSON, type] = process.argv.slice(2);

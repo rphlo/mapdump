@@ -1,5 +1,5 @@
-const {Canvas, loadImage} = require('skia-canvas');
-const { Point, LatLon, cornerCalTransform, cornerBackTransform } = require('./Utils');
+const {createCanvas, loadImage} = require('canvas');
+const { LatLon, cornerCalTransform } = require('./Utils');
 
 
 const extractSpeed = (route) => {
@@ -64,48 +64,10 @@ const extractBounds = function(img, corners_coords, route) {
     maxY: Math.ceil(maxY)
   }
 };
-const getCorners = function(img, corners_coords, route, includeHeader=false) {
-  const bounds = extractBounds(img, corners_coords, route);
-  const transform = cornerBackTransform(
-    img.width,
-    img.height,
-    corners_coords.top_left,
-    corners_coords.top_right,
-    corners_coords.bottom_right,
-    corners_coords.bottom_left
-  );
-  if (includeHeader) {
-    bounds.minY -= 70;
-  }
-  return {
-    top_left: transform(new Point(bounds.minX, bounds.minY)),
-    top_right: transform(new Point(bounds.maxX, bounds.minY)),
-    bottom_right: transform(new Point(bounds.maxX, bounds.maxY)),
-    bottom_left: transform(new Point(bounds.minX, bounds.maxY))
-  }
-}
-
-const drawOriginalMap = function(img, includeHeader) {
-  const canvas = new Canvas(img.width, img.height);
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(img, 0, 0);
-
-  if (includeHeader) {
-    const headerHeight = 70;
-    const canvas3 = new Canvas(canvas.width, canvas.height + headerHeight);
-    const ctx3 = canvas3.getContext('2d');
-    ctx3.drawImage(canvas, 0, headerHeight)
-    // draw a background
-    ctx3.fillStyle = '#222';
-    ctx3.fillRect(0, 0, canvas3.width, headerHeight);
-    return canvas3
-  }
-  return canvas;
-};
 
 const drawRoute = async (img, corners_coords, route, includeHeader=false, includeRoute=true) => {
   const bounds = extractBounds(img, corners_coords, route);
-  const canvas =  new Canvas(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+  const canvas =  createCanvas(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
 
   const ctx = canvas.getContext('2d');
 
@@ -115,8 +77,8 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
 
   ctx.drawImage(img, Math.round(-bounds.minX), Math.round(-bounds.minY), Math.round(img.width), Math.round(img.height));
 
-  const outlineWidth = 3;
-  const weight = 3;
+  const outlineWidth = 2;
+  const weight = 4;
 
   const speeds = extractSpeed(route);
 
@@ -132,7 +94,7 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
   }
 
   const palette = (function (initPalette) {
-    const pCanvas =  new Canvas(1, 256),
+    const pCanvas =  createCanvas(1, 256),
       pCtx = pCanvas.getContext('2d'),
       gradient = pCtx.createLinearGradient(0, 0, 0, 256);
 
@@ -168,9 +130,11 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
   };
 
   if (includeRoute) {
-    const canvas2 = new Canvas(canvas.width, canvas.height);
-    
+    const canvas2 = createCanvas(canvas.width, canvas.height);
     const ctx2 = canvas2.getContext('2d');
+    const canvas3 = createCanvas(canvas.width, canvas.height);
+    const ctx3 = canvas3.getContext('2d');
+
     const transform = cornerCalTransform(
       img.width,
       img.height,
@@ -181,16 +145,21 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
     );
 
     // drawOutline
-    ctx2.lineWidth = weight + 2 * outlineWidth;
-    ctx2.strokeStyle = 'black';
-    ctx2.beginPath();
+    ctx3.lineWidth = weight + 2 * outlineWidth;
+    ctx3.strokeStyle = 'black';
+    ctx3.beginPath();
     for(let i=0; i < route.length; i++) {
       const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
-      ctx2.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
+      ctx3.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
     }
-    ctx2.stroke();
+    ctx3.stroke();
 
-      // drawColoredPath
+    ctx3.globalCompositeOperation = 'destination-out'
+    ctx3.lineWidth = weight;
+    ctx3.stroke();
+    ctx3.globalCompositeOperation = 'source-over'
+    
+    // drawColoredPath
     for (let j = 1; j < route.length; j++) {
       const pointStart = transform(new LatLon(route[j-1].latLon[0], route[j-1].latLon[1]));
       const pointEnd = transform(new LatLon(route[j].latLon[0], route[j].latLon[1]));
@@ -218,29 +187,30 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
     if (route.length && route[0].time) {
       let prevT = +route[0].time-20e3;
       let count = 0;
-      ctx2.lineWidth = 1
-      ctx2.strokeStyle = '#000';
+      ctx3.lineWidth = 1
+      ctx3.strokeStyle = '#000';
       for (let j = 0; j < route.length; j++) {
         if (+route[j].time >= +prevT + 10e3) {
           const point = transform(new LatLon(route[j].latLon[0], route[j].latLon[1]));
-          ctx2.beginPath();
-          ctx2.arc(
+          ctx3.beginPath();
+          ctx3.arc(
             Math.round(point.x - bounds.minX),
             Math.round(point.y - bounds.minY),
-            count % 6 === 0 ? weight : 1,
+            count % 6 === 0 ? 3 : 1,
             0,
             2 * Math.PI
           );
-          ctx2.fill()
-          ctx2.stroke();
+          ctx3.fill()
+          ctx3.stroke();
           prevT = route[j].time;
           count++;
         }
       }
     }
-    ctx.globalAlpha = 0.5;
-    img2 = await loadImage(canvas2.toDataURL('png'))
-    ctx.drawImage(img2, 0, 0);
+    ctx.globalAlpha = 0.45;
+    ctx.drawImage(canvas2, 0, 0);
+    ctx.globalAlpha = 0.7;
+    ctx.drawImage(canvas3, 0, 0);
   }
   if (includeHeader) {
     const headerHeight = 70;
@@ -248,55 +218,55 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
     const paletteX = 40;
     const paletteY = 30
     const lineWidth = 16;
-    const canvas3 = new Canvas(canvas.width, canvas.height + headerHeight);
-    
-    const ctx3 = canvas3.getContext('2d');
-    ctx3.drawImage(canvas, 0, headerHeight)
+    const canvas4 = createCanvas(canvas.width, canvas.height + headerHeight);
+    const ctx4 = canvas4.getContext('2d');
+
+    ctx4.drawImage(canvas, 0, headerHeight)
     // draw a background
-    ctx3.fillStyle = '#222';
-    ctx3.fillRect(0, 0, canvas3.width, headerHeight);
+    ctx4.fillStyle = '#222';
+    ctx4.fillRect(0, 0, canvas4.width, headerHeight);
     
-    ctx3.font = '10px Arial';
-    ctx3.fillStyle = 'white';
+    ctx4.font = '10px Arial';
+    ctx4.fillStyle = 'white';
     if (includeRoute && route.length && route[0].time) {
-      const gradient = ctx3.createLinearGradient(paletteX, 0, paletteWidth + paletteX, 0);
+      const gradient = ctx4.createLinearGradient(paletteX, 0, paletteWidth + paletteX, 0);
       gradient.addColorStop(0, 'rgb(' + getRGBForPercent(0).join(',') + ')');
       gradient.addColorStop(0.5, 'rgb(' + getRGBForPercent(0.5).join(',') + ')');
       gradient.addColorStop(1, 'rgb(' + getRGBForPercent(1).join(',') + ')');
 
-      ctx3.lineWidth = 16;
-      ctx3.strokeStyle = gradient;
-      ctx3.beginPath();
-      ctx3.moveTo(paletteX, paletteY);
-      ctx3.lineTo(paletteX + paletteWidth, paletteY);
-      ctx3.stroke();
+      ctx4.lineWidth = 16;
+      ctx4.strokeStyle = gradient;
+      ctx4.beginPath();
+      ctx4.moveTo(paletteX, paletteY);
+      ctx4.lineTo(paletteX + paletteWidth, paletteY);
+      ctx4.stroke();
 
-      ctx3.lineWidth = 1;
-      ctx3.strokeStyle = '#222'
-      ctx3.beginPath();
-      ctx3.moveTo(paletteX + paletteWidth / 2, paletteY - lineWidth / 2);
-      ctx3.lineTo(paletteX + paletteWidth / 2, paletteY + lineWidth / 2);
-      ctx3.stroke();
+      ctx4.lineWidth = 1;
+      ctx4.strokeStyle = '#222'
+      ctx4.beginPath();
+      ctx4.moveTo(paletteX + paletteWidth / 2, paletteY - lineWidth / 2);
+      ctx4.lineTo(paletteX + paletteWidth / 2, paletteY + lineWidth / 2);
+      ctx4.stroke();
 
 
       const minSpeedTxt = getSpeedText(minSpeed);
       const medSpeedTxt = getSpeedText((maxSpeed + minSpeed)/2);
       const maxSpeedTxt = getSpeedText(maxSpeed);
       
-      ctx3.textAlign = 'center';
-      ctx3.fillText(minSpeedTxt, paletteX, paletteY + lineWidth / 2 + 12);
-      ctx3.fillText(medSpeedTxt, paletteX + paletteWidth/2, paletteY + lineWidth / 2 + 12);
-      ctx3.fillText(maxSpeedTxt, paletteX + paletteWidth, paletteY + lineWidth / 2 + 12);
+      ctx4.textAlign = 'center';
+      ctx4.fillText(minSpeedTxt, paletteX, paletteY + lineWidth / 2 + 12);
+      ctx4.fillText(medSpeedTxt, paletteX + paletteWidth/2, paletteY + lineWidth / 2 + 12);
+      ctx4.fillText(maxSpeedTxt, paletteX + paletteWidth, paletteY + lineWidth / 2 + 12);
     }
-    ctx3.textAlign = 'left';
+    ctx4.textAlign = 'left';
     if (includeRoute && route.length && route[0].time) {
       const dist = extractDistance(route);
-      ctx3.fillText(`${(dist/1e3).toFixed(3)}km`, paletteX + paletteWidth + 30, paletteY - 5);
-      ctx3.fillText(printTime(route[route.length-1].time-route[0].time), paletteX + paletteWidth + 100, paletteY - 5);
-      ctx3.fillText(`${(new Date(route[0].time))}`, paletteX + paletteWidth + 30, paletteY + 15);
+      ctx4.fillText(`${(dist/1e3).toFixed(3)}km`, paletteX + paletteWidth + 30, paletteY - 5);
+      ctx4.fillText(printTime(route[route.length-1].time-route[0].time), paletteX + paletteWidth + 100, paletteY - 5);
+      ctx4.fillText(`${(new Date(route[0].time))}`, paletteX + paletteWidth + 30, paletteY + 15);
     }
-    ctx3.fillText('https://drawmyroute.com', canvas.width - 120, headerHeight - 5);
-    return canvas3;
+    ctx4.fillText('https://drawmyroute.com', canvas.width - 120, headerHeight - 5);
+    return canvas4;
   }
   return canvas;
 };
@@ -328,8 +298,5 @@ const printTime = (t) => {
 }
 
 module.exports = {
-  printTime,
   drawRoute,
-  drawOriginalMap,
-  getCorners,
 }

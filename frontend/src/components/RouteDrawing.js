@@ -108,8 +108,7 @@ const RouteDrawing = (props) => {
     const tkn = api_token
     setSaving(true)
     const canvas = drawOriginalMap(
-      imgData,
-      false
+      imgData
     )
     canvas.toBlob(async (blob) => {
       var fd = new FormData();

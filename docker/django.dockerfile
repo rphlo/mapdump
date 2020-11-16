@@ -39,6 +39,8 @@ RUN DATABASE_URL=none /venv/bin/python project/manage.py collectstatic --noinput
 RUN apt-get update
 # install curl 
 RUN apt-get -y install curl
+# install canvas dependencies
+RUN apt-get -y install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 # get install script and pass it to execute: 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
 # and install node 
@@ -47,6 +49,7 @@ RUN node --version
 RUN npm --version
 RUN cd /app/tools/ && npm add yarn -g
 RUN cd /app/tools/ && yarn install
+RUN cd /app/tools/ && npm install canvas
 RUN chmod a+x /app/tools/generate_map.js
 
 ADD docker/wait-for-it.sh /wait-for-it.sh

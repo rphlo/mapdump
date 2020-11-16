@@ -83,7 +83,7 @@ export const getCorners = function(img, corners_coords, route, includeHeader=fal
   }
 }
 
-export const drawOriginalMap = function(img, includeHeader) {
+export const drawOriginalMap = function(img) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
@@ -91,21 +91,6 @@ export const drawOriginalMap = function(img, includeHeader) {
   canvas.height = img.height;
 
   ctx.drawImage(img, 0, 0);
-
-  if (includeHeader) {
-    const headerHeight = 70;
-    const canvas3 = document.createElement('canvas');
-    canvas3.width  = canvas.width;
-    canvas3.height = canvas.height + headerHeight;
-    
-
-    const ctx3 = canvas3.getContext('2d');
-    ctx3.drawImage(canvas, 0, headerHeight)
-    // draw a background
-    ctx3.fillStyle = '#222';
-    ctx3.fillRect(0, 0, canvas3.width, headerHeight);
-    return canvas3
-  }
   return canvas;
 };
 
@@ -123,8 +108,8 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
 
   ctx.drawImage(img, Math.round(-bounds.minX), Math.round(-bounds.minY), Math.round(img.width), Math.round(img.height));
 
-  const outlineWidth = 3;
-  const weight = 3;
+  const outlineWidth = 2;
+  const weight = 4;
 
   const speeds = extractSpeed(route);
 
@@ -182,8 +167,13 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     const canvas2 = document.createElement('canvas');
     canvas2.width  = canvas.width;
     canvas2.height = canvas.height;
-    
     const ctx2 = canvas2.getContext('2d');
+
+    const canvas3 = document.createElement('canvas');
+    canvas3.width  = canvas.width;
+    canvas3.height = canvas.height;
+    const ctx3 = canvas3.getContext('2d');
+
     const transform = cornerCalTransform(
       img.width,
       img.height,
@@ -194,14 +184,19 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     );
 
     // drawOutline
-    ctx2.lineWidth = weight + 2 * outlineWidth;
-    ctx2.strokeStyle = 'black';
-    ctx2.beginPath();
+    ctx3.lineWidth = weight + 2 * outlineWidth;
+    ctx3.strokeStyle = 'black';
+    ctx3.beginPath();
     for(let i=0; i < route.length; i++) {
       const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
-      ctx2.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
+      ctx3.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
     }
-    ctx2.stroke();
+    ctx3.stroke();
+
+    ctx3.globalCompositeOperation = 'destination-out'
+    ctx3.lineWidth = weight;
+    ctx3.stroke();
+    ctx3.globalCompositeOperation = 'source-over'
 
       // drawColoredPath
     for (let j = 1; j < route.length; j++) {
@@ -231,21 +226,21 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     if (route.length && route[0].time) {
       let prevT = +route[0].time-20e3;
       let count = 0;
-      ctx2.lineWidth = 1
-      ctx2.strokeStyle = '#000';
+      ctx3.lineWidth = 1
+      ctx3.strokeStyle = '#000';
       for (let j = 0; j < route.length; j++) {
         if (+route[j].time >= +prevT + 10e3) {
           const point = transform(new LatLon(route[j].latLon[0], route[j].latLon[1]));
-          ctx2.beginPath();
-          ctx2.arc(
+          ctx3.beginPath();
+          ctx3.arc(
             Math.round(point.x - bounds.minX),
             Math.round(point.y - bounds.minY),
-            count % 6 === 0 ? weight : 1,
+            count % 6 === 0 ? 3 : 1,
             0,
             2 * Math.PI
           );
-          ctx2.fill()
-          ctx2.stroke();
+          ctx3.fill()
+          ctx3.stroke();
           prevT = route[j].time;
           count++;
         }
@@ -253,6 +248,8 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     }
     ctx.globalAlpha = 0.45;
     ctx.drawImage(canvas2, 0, 0);
+    ctx.globalAlpha = 0.7;
+    ctx.drawImage(canvas3, 0, 0);
   }
   if (includeHeader) {
     const headerHeight = 70;
@@ -260,58 +257,58 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     const paletteX = 40;
     const paletteY = 30
     const lineWidth = 16;
-    const canvas3 = document.createElement('canvas');
-    canvas3.width  = canvas.width;
-    canvas3.height = canvas.height + headerHeight;
+    const canvas4 = document.createElement('canvas');
+    canvas4.width  = canvas.width;
+    canvas4.height = canvas.height + headerHeight;
     
 
-    const ctx3 = canvas3.getContext('2d');
-    ctx3.drawImage(canvas, 0, headerHeight)
+    const ctx4 = canvas4.getContext('2d');
+    ctx4.drawImage(canvas, 0, headerHeight)
     // draw a background
-    ctx3.fillStyle = '#222';
-    ctx3.fillRect(0, 0, canvas3.width, headerHeight);
+    ctx4.fillStyle = '#222';
+    ctx4.fillRect(0, 0, canvas4.width, headerHeight);
     
-    ctx3.font = '10px Arial';
-    ctx3.fillStyle = 'white';
+    ctx4.font = '10px Arial';
+    ctx4.fillStyle = 'white';
     if (includeRoute && route.length && route[0].time) {
-      const gradient = ctx3.createLinearGradient(paletteX, 0, paletteWidth + paletteX, 0);
+      const gradient = ctx4.createLinearGradient(paletteX, 0, paletteWidth + paletteX, 0);
       gradient.addColorStop(0, 'rgb(' + getRGBForPercent(0).join(',') + ')');
       gradient.addColorStop(0.5, 'rgb(' + getRGBForPercent(0.5).join(',') + ')');
       gradient.addColorStop(1, 'rgb(' + getRGBForPercent(1).join(',') + ')');
 
-      ctx3.lineWidth = 16;
-      ctx3.strokeStyle = gradient;
-      ctx3.beginPath();
-      ctx3.moveTo(paletteX, paletteY);
-      ctx3.lineTo(paletteX + paletteWidth, paletteY);
-      ctx3.stroke();
+      ctx4.lineWidth = 16;
+      ctx4.strokeStyle = gradient;
+      ctx4.beginPath();
+      ctx4.moveTo(paletteX, paletteY);
+      ctx4.lineTo(paletteX + paletteWidth, paletteY);
+      ctx4.stroke();
 
-      ctx3.lineWidth = 1;
-      ctx3.strokeStyle = '#222'
-      ctx3.beginPath();
-      ctx3.moveTo(paletteX + paletteWidth / 2, paletteY - lineWidth / 2);
-      ctx3.lineTo(paletteX + paletteWidth / 2, paletteY + lineWidth / 2);
-      ctx3.stroke();
+      ctx4.lineWidth = 1;
+      ctx4.strokeStyle = '#222'
+      ctx4.beginPath();
+      ctx4.moveTo(paletteX + paletteWidth / 2, paletteY - lineWidth / 2);
+      ctx4.lineTo(paletteX + paletteWidth / 2, paletteY + lineWidth / 2);
+      ctx4.stroke();
 
 
       const minSpeedTxt = getSpeedText(minSpeed);
       const medSpeedTxt = getSpeedText((maxSpeed + minSpeed)/2);
       const maxSpeedTxt = getSpeedText(maxSpeed);
       
-      ctx3.textAlign = 'center';
-      ctx3.fillText(minSpeedTxt, paletteX, paletteY + lineWidth / 2 + 12);
-      ctx3.fillText(medSpeedTxt, paletteX + paletteWidth/2, paletteY + lineWidth / 2 + 12);
-      ctx3.fillText(maxSpeedTxt, paletteX + paletteWidth, paletteY + lineWidth / 2 + 12);
+      ctx4.textAlign = 'center';
+      ctx4.fillText(minSpeedTxt, paletteX, paletteY + lineWidth / 2 + 12);
+      ctx4.fillText(medSpeedTxt, paletteX + paletteWidth/2, paletteY + lineWidth / 2 + 12);
+      ctx4.fillText(maxSpeedTxt, paletteX + paletteWidth, paletteY + lineWidth / 2 + 12);
     }
-    ctx3.textAlign = 'left';
+    ctx4.textAlign = 'left';
     if (includeRoute && route.length && route[0].time) {
       const dist = extractDistance(route);
-      ctx3.fillText(`${(dist/1e3).toFixed(3)}km`, paletteX + paletteWidth + 30, paletteY - 5);
-      ctx3.fillText(printTime(route[route.length-1].time-route[0].time), paletteX + paletteWidth + 100, paletteY - 5);
-      ctx3.fillText(`${(new Date(route[0].time))}`, paletteX + paletteWidth + 30, paletteY + 15);
+      ctx4.fillText(`${(dist/1e3).toFixed(3)}km`, paletteX + paletteWidth + 30, paletteY - 5);
+      ctx4.fillText(printTime(route[route.length-1].time-route[0].time), paletteX + paletteWidth + 100, paletteY - 5);
+      ctx4.fillText(`${(new Date(route[0].time))}`, paletteX + paletteWidth + 30, paletteY + 15);
     }
-    ctx3.fillText('https://drawmyroute.com', canvas.width - 120, headerHeight - 5);
-    return canvas3;
+    ctx4.fillText('https://drawmyroute.com', canvas.width - 120, headerHeight - 5);
+    return canvas4;
   }
   return canvas;
 };
