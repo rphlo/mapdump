@@ -33,7 +33,6 @@ footer {
   position: relative;
   z-index: 1;
 }
-
 .jumbotron::before {
   background: url(tove.jpg) no-repeat;
   -webkit-background-size: cover;
@@ -49,7 +48,9 @@ footer {
   opacity: .8; 
   z-index: -1;
 }
-
+.jumbotron a {
+  text-decoration: none;
+}
 .final-image {
   width: 100%;
 }

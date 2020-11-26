@@ -53,7 +53,7 @@ const Login = () => {
       globalState.setUser({})
     }
     return (
-      <div style={{marginTop: '-80px', marginBottom: '40px'}}>
+      <div style={{marginTop: '-80px', marginBottom: '40px', position: 'relative', zIndex: 2}}>
       {username && <div style={{textAlign:'right'}}>
           <Link to='/settings'><button className="btn btn-primary btn-sm"><i className="fas fa-user-cog"></i> Settings</button></Link>
           &nbsp;<button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Logout</button>
