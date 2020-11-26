@@ -7,6 +7,12 @@ const VerifyEmail = ({match, history}) => {
     const [email, setEmail] = React.useState()
     const [sent, setSent] = React.useState()
 
+    React.useEffect(() => {
+        if (verified) {
+          setTimeout(() => history.push('/'), 10e3);
+        }
+    }, [verified, history])
+
     React.useEffect(()=>{
         (async () => {
             const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/registration/verify-email/', {
