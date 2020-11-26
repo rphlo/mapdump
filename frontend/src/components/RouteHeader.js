@@ -134,8 +134,8 @@ const RouteHeader = (props) => {
   return (
     <div>
       <Helmet>
-          <title>{"DrawMyRoute.com | " + props.name  + " by " + props.athlete.first_name + " " + props.athlete.last_name}</title>
-          <meta name="description" content={"Map \""  + props.name + "\" by " + props.athlete.first_name + " " + props.athlete.last_name + " on DrawMyRoute.com"} />
+          <title>{"Karttamuovi.com | " + props.name  + " by " + props.athlete.first_name + " " + props.athlete.last_name}</title>
+          <meta name="description" content={"Map \""  + props.name + "\" by " + props.athlete.first_name + " " + props.athlete.last_name + " on Karttamuovi.com"} />
       </Helmet>
       <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span>&nbsp;
       { (!canEdit() || !nameEditing) && <>{name}</>}

@@ -7,7 +7,7 @@ import serviceWorkerConfig from './serviceWorkerConfig'
 import * as Sentry from '@sentry/react';
 import { Integrations } from "@sentry/tracing";
 
-if (window.location.host === 'drawmyroute.com') {
+if (window.location.host === 'karttamuovi.com') {
   Sentry.init({
     dsn: "https://faebc23b4f554998b7d05c57f25c0815@o91052.ingest.sentry.io/1435575",
     integrations: [

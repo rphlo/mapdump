@@ -76,8 +76,8 @@ const UserView = ({match}) => {
         { found && data &&   
             <>
             <Helmet>
-                <title>{"DrawMyRoute.com | " + data.first_name + " " + data.last_name + " profile"}</title>
-                <meta name="description" content={ data.first_name + " " + data.last_name + " profile on DrawMyRoute.com"} />
+                <title>{"Karttamuovi.com | " + data.first_name + " " + data.last_name + " profile"}</title>
+                <meta name="description" content={ data.first_name + " " + data.last_name + " profile on Karttamuovi.com"} />
                 <link rel="alternate" type="application/rss+xml" title="RSS Feed" href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'} />
             </Helmet>
             <h2>{data.first_name + ' ' + data.last_name} <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
