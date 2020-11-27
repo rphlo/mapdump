@@ -181,7 +181,7 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
             return super().get_queryset().filter(athlete_id=self.request.user.id)
         return super().get_queryset()
 
-    def destroy(request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         obj = self.get_object()
         rmap = obj.raster_map
         if rmap.route_set.exclude(id=obj.id).count() == 0:
