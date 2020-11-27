@@ -103,9 +103,9 @@ class RasterMap(models.Model):
         validators=[validate_corners_coordinates]
     )
     mime_type = models.CharField(max_length=256, editable=False, default='image/jpeg')
-    country = models.CharField(max_length=2)
-    _latitude = models.FloatField(validators=[validate_latitude])
-    _longitude = models.FloatField(validators=[validate_longitude])
+    country = models.CharField(max_length=2, editable=False)
+    _latitude = models.FloatField(validators=[validate_latitude], editable=False)
+    _longitude = models.FloatField(validators=[validate_longitude], editable=False)
 
     def prefetch_map_extras(self, *args, **kwargs):
         self._latitude, self._longitude = self.get_center()
@@ -242,19 +242,6 @@ class RasterMap(models.Model):
     @property
     def image_url(self):
         return reverse('raster_map_image', kwargs={'uid': self.uid})
-
-    @property
-    def get_location_map(self):
-        from staticmap import StaticMap, CircleMarker
-        m = StaticMap(720, 480, url_template='http://a.tile.osm.org/{z}/{x}/{y}.png')
-        marker_outline = CircleMarker((10, 47), 'white', 18)
-        marker = CircleMarker((10, 47), '#0036FF', 12)
-        m.add_marker(marker_outline)
-        m.add_marker(marker)
-        buffer = BytesIO()
-        image = m.render(zoom=2)
-        image.save(buffer)
-        return buffer
 
     @property
     def location_image_url(self):

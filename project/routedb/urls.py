@@ -13,7 +13,6 @@ urlpatterns = [
     re_path(r'^route/(?P<uid>[a-zA-Z0-9_-]+)/map/?$', views.map_download, name='map_image'),
     re_path(r'^route/(?P<uid>[a-zA-Z0-9_-]+)/thumbnail/?$', views.map_thumbnail, name='map_thumbnail'),
     re_path(r'^map/(?P<uid>[a-zA-Z0-9_-]+)/image/?$', views.raster_map_download, name='raster_map_image'),
-    re_path(r'^map/(?P<uid>[a-zA-Z0-9_-]+)/location-map/?$', views.raster_map_location_map, name='raster_map_location_image'),
     path('auth/user/', view=views.UserEditView.as_view(), name='auth_user_detail'),
     path('auth/', include('rest_auth.urls')),
     path('auth/registration/', include('rest_auth.registration.urls')),

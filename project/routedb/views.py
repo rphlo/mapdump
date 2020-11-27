@@ -197,12 +197,6 @@ def raster_map_download(request, uid, *args, **kwargs):
         mime=mime_type
     )
 
-def raster_map_location_map(request, uid):
-    rmap = get_object_or_404(
-        RasterMap,
-        uid=uid,
-    )
-    return rmap.get_location_map()
 
 def map_download(request, uid, *args, **kwargs):
     show_header = request.GET.get('show_header', False)
