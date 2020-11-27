@@ -31,7 +31,7 @@ const RasterMap = ({match, history}) => {
             startTime: rawData.start_time,
             country: rawData.country,
             mapBounds: transformMapBounds(rawData.map_bounds),
-            mapImage: rawData.map_image_url,
+            mapImage: rawData.map_url,
             gpx: rawData.gpx_url,
             name: rawData.name,
             route: transformRoute(rawData.route_data),

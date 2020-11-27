@@ -103,6 +103,13 @@ class RasterMap(models.Model):
         validators=[validate_corners_coordinates]
     )
     mime_type = models.CharField(max_length=256, editable=False, default='image/jpeg')
+    country = models.CharField(max_length=2)
+    _latitude = models.FloatField(validators=[validate_latitude])
+    _longitude = models.FloatField(validators=[validate_longitude])
+
+    def prefetch_map_extras(self, *args, **kwargs):
+        self._latitude, self._longitude = self.get_center()
+        self.country = self.get_country()
 
     @property
     def path(self):
@@ -170,7 +177,7 @@ class RasterMap(models.Model):
 
     @property
     def bounds(self):
-        cal_values = self.corners_coordinates.split(',')
+        cal_values = [float(x) for x in self.corners_coordinates.split(',')]
         return {
             'top_left': [cal_values[0], cal_values[1]],
             'top_right': [cal_values[2], cal_values[3]],
@@ -186,6 +193,19 @@ class RasterMap(models.Model):
             value['bottom_right'][0], value['bottom_right'][1],
             value['bottom_left'][0], value['bottom_left'][1],
         )
+
+    @property
+    def center(self):
+        return [self._latitude, self._longitude]
+
+    def get_center(self):
+        cal_values = [float(x) for x in self.corners_coordinates.split(',')]
+        lats = cal_values[::2]
+        lons = cal_values[1::2]
+        return [sum(lats)/4, sum(lons)/4]
+
+    def get_country(self):
+        return country_at_coords(*self.center)
 
     @property
     def thumbnail(self):
@@ -218,6 +238,27 @@ class RasterMap(models.Model):
         img_out.paste(img, (0, 0))
         img.close()
         return img_out
+
+    @property
+    def image_url(self):
+        return reverse('raster_map_image', kwargs={'uid': self.uid})
+
+    @property
+    def get_location_map(self):
+        from staticmap import StaticMap, CircleMarker
+        m = StaticMap(720, 480, url_template='http://a.tile.osm.org/{z}/{x}/{y}.png')
+        marker_outline = CircleMarker((10, 47), 'white', 18)
+        marker = CircleMarker((10, 47), '#0036FF', 12)
+        m.add_marker(marker_outline)
+        m.add_marker(marker)
+        buffer = BytesIO()
+        image = m.render(zoom=2)
+        image.save(buffer)
+        return buffer
+
+    @property
+    def location_image_url(self):
+        return reverse('raster_map_location_image', kwargs={'uid': self.uid})
 
     def __str__(self):
         return 'map <{}>'.format(self.uid)

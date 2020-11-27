@@ -30,6 +30,7 @@ from routedb.serializers import (
     EmailSerializer,
     ResendVerificationSerializer,
     UserInfoSerializer,
+    MapListSerializer,
 )
 from utils.s3 import s3_object_url, s3_key_exists, upload_to_s3
 
@@ -147,6 +148,11 @@ class LatestRoutesList(generics.ListAPIView):
     queryset = Route.objects.all().select_related('athlete')[:24]
     serializer_class = LatestRouteListSerializer
 
+
+class MapsList(generics.ListAPIView):
+    queryset = RasterMap.objects.all().prefetch_related('route_set', 'route_set__athlete')
+    serializer_class = MapListSerializer
+
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserMainSerializer
     lookup_field = 'username'
@@ -175,6 +181,28 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
             return super().get_queryset().filter(athlete_id=self.request.user.id)
         return super().get_queryset()
 
+
+def raster_map_download(request, uid, *args, **kwargs):
+    rmap = get_object_or_404(
+        RasterMap,
+        uid=uid,
+    )
+    file_path = rmap.path
+    mime_type = rmap.mime_type
+    return serve_from_s3(
+        'drawmyroute-maps',
+        request,
+        '/internal/' + file_path,
+        filename='{}.{}'.format(rmap.uid, mime_type[6:]),
+        mime=mime_type
+    )
+
+def raster_map_location_map(request, uid):
+    rmap = get_object_or_404(
+        RasterMap,
+        uid=uid,
+    )
+    return rmap.get_location_map()
 
 def map_download(request, uid, *args, **kwargs):
     show_header = request.GET.get('show_header', False)

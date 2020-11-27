@@ -29,7 +29,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 class RouteSerializer(serializers.ModelSerializer):
     map_image = serializers.ImageField(source='raster_map.image', write_only=True)
     gpx_url = RelativeURLField()
-    map_image_url = RelativeURLField(source='image_url')
+    map_url = RelativeURLField(source='image_url')
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
     route_data = serializers.JSONField(source='route')
     map_bounds = serializers.JSONField(source='raster_map.bounds')
@@ -83,6 +83,7 @@ class RouteSerializer(serializers.ModelSerializer):
             mime_type=validated_data['raster_map']['image'].content_type
         )
         raster_map.bounds = validated_data['raster_map']['bounds']
+        raster_map.prefetch_map_extras()
         raster_map.save()
         route = Route(
             athlete=user,
@@ -96,12 +97,13 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'gpx_url', 'map_thumbnail_url', 'map_image_url', 'map_bounds', 'comment', 'route_data')
+        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'gpx_url', 'map_url', 'map_thumbnail_url', 'map_bounds', 'comment', 'route_data')
 
 class UserRouteListSerializer(serializers.ModelSerializer):
-    data_url = RelativeURLField(source='api_url')
+    url = RelativeURLField(source='api_url')
     id = serializers.ReadOnlyField(source='uid')
     country = serializers.ReadOnlyField()
+    map_url = RelativeURLField(source='image_url')
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
@@ -110,12 +112,13 @@ class UserRouteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'data_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name', 'map_thumbnail_url')
+        fields = ('id', 'url', 'map_url', 'map_thumbnail_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name')
 
 class LatestRouteListSerializer(serializers.ModelSerializer):
-    data_url = RelativeURLField(source='api_url')
+    url = RelativeURLField(source='api_url')
     id = serializers.ReadOnlyField(source='uid')
     country = serializers.ReadOnlyField()
+    map_url = RelativeURLField(source='image_url')
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
@@ -125,7 +128,7 @@ class LatestRouteListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Route
-        fields = ('id', 'data_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name', 'map_thumbnail_url', 'athlete')
+        fields = ('id', 'url', 'map_url', 'map_thumbnail_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name',  'athlete')
 
 
 class UserMainSerializer(serializers.ModelSerializer):
@@ -203,3 +206,14 @@ class ResendVerificationSerializer(serializers.Serializer):
         except EmailAddress.DoesNotExist:
             # email does not exists in db, just ignore
             pass
+
+
+
+class MapListSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='uid')
+    image_url = RelativeURLField()
+    bounds = serializers.JSONField()
+    routes = LatestRouteListSerializer(source='route_set', many=True)
+    class Meta:
+        model = RasterMap
+        fields = ('id', 'image_url', 'country', 'bounds', 'routes')
