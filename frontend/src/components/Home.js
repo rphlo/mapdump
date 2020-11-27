@@ -14,7 +14,8 @@ const Home = () => {
         <p>Follow this link if you want to contribute <a href="https://github.com/sponsors/rphlo"><i className="fa fa-heart"></i> Github Sponsor</a></p>
       </div>
       <hr/>
-      <Link to="/new"><button className="btn btn-primary"><i className="fas fa-plus"></i> Create New Route</button></Link>
+      <Link to="/new"><button className="btn btn-primary"><i className="fas fa-plus"></i> Create New Route</button></Link><> </>
+      <Link to="/map"><button className="btn btn-info"><i className="fas fa-globe"></i> Browse Maps</button></Link>
       {username && <><hr/>
       <Link to={'/athletes/'+username}><button className="btn btn-primary"><i className="fas fa-link"></i> Your routes</button></Link>
       </>}

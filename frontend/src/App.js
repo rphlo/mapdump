@@ -13,6 +13,7 @@ import Register from './components/Register'
 import VerifyEmail from './components/VerifyEmail'
 import PasswordReset from './components/PasswordReset'
 import Settings from './components/Settings'
+import BrowseMap from './components/BrowseMap'
 import PasswordResetConfirmation from './components/PasswordResetConfirmation'
 import { GlobalStateProvider} from './utils/useGlobalState'
 
@@ -26,6 +27,7 @@ function App() {
       <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/new" component={NewMap} />
+          <Route exact path="/map" component={BrowseMap} />
           <Route exact path="/tos" component={TOS} />
           <Route exact path="/privacy-policy" component={PrivacyPolicy} />
           <Route exact path="/sign-up" component={Register} />

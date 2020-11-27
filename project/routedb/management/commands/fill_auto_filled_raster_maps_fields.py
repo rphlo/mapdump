@@ -3,7 +3,7 @@ from routedb.models import RasterMap
 
 
 class Command(BaseCommand):
-    help = 'Remove image cache'
+    help = 'fill auto generated field'
 
     def handle(self, *args, **options):
         qs = RasterMap.objects.all()
