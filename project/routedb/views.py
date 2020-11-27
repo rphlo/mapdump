@@ -183,7 +183,7 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def destroy(request, *args, **kwargs):
         obj = self.get_object()
-        rmap = .raster_map
+        rmap = obj.raster_map
         if rmap.route_set.exclude(id=obj.id).count() == 0:
             rmap.delete()
         return super().destroy(request, *args, **kwargs)
