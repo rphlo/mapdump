@@ -27,12 +27,13 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    map_image = serializers.ImageField(source='raster_map.image', write_only=True)
+    map_image = serializers.ImageField(source='raster_map.image', write_only=True, required=False)
+    map_id = serializers.ChoiceField([], write_only=True, allow_blank=True, required=False)
     gpx_url = RelativeURLField()
     map_url = RelativeURLField(source='image_url')
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
     route_data = serializers.JSONField(source='route')
-    map_bounds = serializers.JSONField(source='raster_map.bounds')
+    map_bounds = serializers.JSONField(source='raster_map.bounds', required=False)
     id = serializers.ReadOnlyField(source='uid')
     athlete = UserInfoSerializer(read_only=True)
     country = serializers.ReadOnlyField()
@@ -40,6 +41,10 @@ class RouteSerializer(serializers.ModelSerializer):
     start_time = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['map_id'].choices = [None] + list(RasterMap.objects.all().values_list('uid', flat=True))
 
     def validate_map_bounds(self, value):
         try:
@@ -70,6 +75,14 @@ class RouteSerializer(serializers.ModelSerializer):
             raise ValidationError('Invalid route data')
         return value
 
+    def validate(self, data):
+        if data.get('map_id') and data.get('raster_map', {}).get('image'):
+            raise ValidationError('Either set map_image or map_id, not both')
+        if not data.get('map_id') and not data.get('raster_map', {}).get('image'):
+            raise ValidationError('Either set map_image or map_id')
+        if not data.get('map_id') and data.get('raster_map', {}).get('image') and not data.get('raster_map', {})['bounds']:
+            raise ValidationError('You must define map_bounds fields along with map_image')
+        return data
 
     def create(self, validated_data):
         user = None
@@ -77,14 +90,17 @@ class RouteSerializer(serializers.ModelSerializer):
         if request and hasattr(request, "user"):
             user = request.user
         
-        raster_map = RasterMap(
-            uploader=user,
-            image=validated_data['raster_map']['image'],
-            mime_type=validated_data['raster_map']['image'].content_type
-        )
-        raster_map.bounds = validated_data['raster_map']['bounds']
-        raster_map.prefetch_map_extras()
-        raster_map.save()
+        if validated_data.get('map_id'):
+            raster_map = RasterMap.objects.get(uid=validated_data['map_id'])
+        else:
+            raster_map = RasterMap(
+                uploader=user,
+                image=validated_data['raster_map']['image'],
+                mime_type=validated_data['raster_map']['image'].content_type
+            )
+            raster_map.bounds = validated_data['raster_map']['bounds']
+            raster_map.prefetch_map_extras()
+            raster_map.save()
         route = Route(
             athlete=user,
             raster_map=raster_map,
@@ -97,7 +113,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'gpx_url', 'map_url', 'map_thumbnail_url', 'map_bounds', 'comment', 'route_data')
+        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'map_id', 'gpx_url', 'map_url', 'map_thumbnail_url', 'map_bounds', 'comment', 'route_data')
 
 class UserRouteListSerializer(serializers.ModelSerializer):
     url = RelativeURLField(source='api_url')

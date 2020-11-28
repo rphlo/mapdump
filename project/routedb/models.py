@@ -289,7 +289,7 @@ class Route(models.Model):
         elif self.start_time is None:
             self.start_time = now()
         self.country = self.get_country()
-        self.tz = self.get_tz()
+        self.tz = self.get_tz() or 'UTC'
         self.distance = self.get_distance()
 
     @property

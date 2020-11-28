@@ -141,7 +141,7 @@ class ResendVerificationView(generics.GenericAPIView):
 class RouteCreate(generics.CreateAPIView):
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
-    permission_class = IsAuthenticated
+    permission_classes = (IsAuthenticated,)
 
 
 class LatestRoutesList(generics.ListAPIView):
