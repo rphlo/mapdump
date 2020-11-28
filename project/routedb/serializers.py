@@ -79,10 +79,10 @@ class RouteSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         request = self.context.get("request")
-        if request and request.method == 'PATCH':
+        if request and request.method in ('PUT', 'PATCH'):
             if data.get('raster_map'):
                 raise ValidationError('This method does not allow to update to map')
-        else:   # Method if PUT or POST
+        else:   # Method is POST
             if not data.get('raster_map', {}).get('uid') and not data.get('raster_map', {}).get('image'):
                 raise ValidationError('Either set map_image or map_id %r %r'%(request.method,data.get('raster_map') ))
             if data.get('raster_map', {}).get('uid') and data.get('raster_map', {}).get('image'):
