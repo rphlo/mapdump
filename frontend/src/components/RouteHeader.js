@@ -139,13 +139,13 @@ const RouteHeader = (props) => {
       </Helmet>
       <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span>&nbsp;
       { (!canEdit() || !nameEditing) && <>{name}</>}
-      { canEdit() && nameEditing && <input ref={inputRef} type="text" maxLength={52} defaultValue={name} onBlur={saveName}/>}
+      { canEdit() && nameEditing && <input ref={inputRef} type="text" maxLength={52} defaultValue={name} onBlur={saveName} data-testid="editNameInput"/>}
       { canEdit() && <div className="btn-group float-right">
-        <button type="button" className="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" className="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-testid="actionMenuBtn">
           <i className="fas fa-ellipsis-v"></i>
         </button>
         <div className="dropdown-menu dropdown-menu-right">
-          <a className={"dropdown-item" + (nameEditing ? ' disabled': '')} href="/#" onClick={enableNameEditing}><i className="fa fa-pen"></i> Edit title</a>
+          <a className={"dropdown-item" + (nameEditing ? ' disabled': '')} href="/#" onClick={enableNameEditing} data-testid="editNameBtn"><i className="fa fa-pen"></i> Edit title</a>
           <a className={"dropdown-item" + (commentEditing ? ' disabled': '')} href="/#" onClick={enableCommentEditing}><i className="fa fa-pen"></i> Edit description</a>
           <div className="dropdown-divider"></div>
           <a className="dropdown-item" href="/#" onClick={deleteMap}><i className="fa fa-trash"></i> Delete</a>
