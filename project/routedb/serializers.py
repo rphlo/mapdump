@@ -28,7 +28,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
 class RouteSerializer(serializers.ModelSerializer):
     map_image = serializers.ImageField(source='raster_map.image', write_only=True, required=False)
-    map_id = serializers.ChoiceField([], write_only=True, allow_blank=True, required=False)
+    map_id = serializers.ChoiceField([], source='raster_map.uid', allow_blank=True, required=False)
     gpx_url = RelativeURLField()
     map_url = RelativeURLField(source='image_url')
     map_thumbnail_url = RelativeURLField(source='thumbnail_url')
@@ -47,6 +47,8 @@ class RouteSerializer(serializers.ModelSerializer):
         self.fields['map_id'].choices = [None] + list(RasterMap.objects.all().values_list('uid', flat=True))
 
     def validate_map_bounds(self, value):
+        if not value:
+            return None
         try:
             assert isinstance(value, dict)
             for x in 'top_left', 'top_right', 'bottom_right', 'bottom_left':
@@ -76,12 +78,17 @@ class RouteSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        if data.get('map_id') and data.get('raster_map', {}).get('image'):
-            raise ValidationError('Either set map_image or map_id, not both')
-        if not data.get('map_id') and not data.get('raster_map', {}).get('image'):
-            raise ValidationError('Either set map_image or map_id')
-        if not data.get('map_id') and data.get('raster_map', {}).get('image') and not data.get('raster_map', {})['bounds']:
-            raise ValidationError('You must define map_bounds fields along with map_image')
+        request = self.context.get("request")
+        if request and request.method == 'PATCH':
+            if data.get('raster_map'):
+                raise ValidationError('This method does not allow to update to map')
+        else:   # Method if PUT or POST
+            if not data.get('raster_map', {}).get('uid') and not data.get('raster_map', {}).get('image'):
+                raise ValidationError('Either set map_image or map_id %r %r'%(request.method,data.get('raster_map') ))
+            if data.get('raster_map', {}).get('uid') and data.get('raster_map', {}).get('image'):
+                raise ValidationError('Either set map_image or map_id, not both')
+            if not data.get('raster_map', {}).get('uid') and data.get('raster_map', {}).get('image') and not data.get('raster_map', {})['bounds']:
+                raise ValidationError('You must define map_bounds fields along with map_image')
         return data
 
     def create(self, validated_data):
@@ -90,8 +97,8 @@ class RouteSerializer(serializers.ModelSerializer):
         if request and hasattr(request, "user"):
             user = request.user
         
-        if validated_data.get('map_id'):
-            raster_map = RasterMap.objects.get(uid=validated_data['map_id'])
+        if validated_data.get('raster_map', {}).get('uid'):
+            raster_map = RasterMap.objects.get(uid=validated_data['raster_map']['uid'])
         else:
             raster_map = RasterMap(
                 uploader=user,
