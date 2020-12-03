@@ -17,7 +17,7 @@ try:
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 
-from rest_auth.serializers import PasswordResetSerializer
+from dj_rest_auth.serializers import PasswordResetSerializer
 from rest_framework import serializers
 from requests.exceptions import HTTPError
 

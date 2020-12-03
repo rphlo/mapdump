@@ -10,7 +10,7 @@ raven
 django-rest-knox
 timezonefinder
 reverse_geocoder
-django-rest-auth[with_social]
+dj-rest-auth[with_social]
 django-s3-storage
 gpxpy
 stravalib

@@ -4,7 +4,7 @@ import '../utils/Leaflet.SmoothWheelZoom';
 import '../utils/Leaflet.ImageTransform';
 
 const RouteReplay = () => {
-
+/*
   const loadMap = (lmap, m, polygon) => {
     console.log(m)
     const bound = [m.bounds.top_left, m.bounds.top_right, m.bounds.bottom_right, m.bounds.bottom_left];
@@ -12,7 +12,28 @@ const RouteReplay = () => {
     polygon.remove();
     transformedImage.addTo(lmap);
   };
-
+*/
+  const onClickLayer = (e, map, m) => {
+    const point = e.latlng;
+    const layers = [];
+    map.eachLayer((layer) => {
+      if (layer instanceof L.Polygon) {
+        const bounds = layer.getBounds();
+        if(bounds.contains(point)) {
+          layers.push(layer);
+        }
+      }
+    })
+    e.target.bindPopup(layers.map(n=>n.myData.routes.map(r => `<span><a href="/routes/${r.id}"><i class='fa fa-circle' style="color: ${n.options.color}"></i> ${r.name}</a></span>`).join('<br/>')).join('<br/>')).openPopup();
+  }
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
   useEffect(() => {   
     const map = L.map('map', {minZoom: 0, maxZoom:18, zoomSnap: 0, scrollWheelZoom: false, smoothWheelZoom: true});
     L.TileLayer.Common = L.TileLayer.extend({initialize: function(options){L.TileLayer.prototype.initialize.call(this, this.url, options);}});
@@ -26,11 +47,14 @@ const RouteReplay = () => {
       const loadedMaps = await res.json();
       loadedMaps.forEach((m) => {
         const bound = [m.bounds.top_left, m.bounds.top_right, m.bounds.bottom_right, m.bounds.bottom_left];
-        const polygon = new L.Polygon(bound);
-        polygon.on('click', () => {loadMap(map, m, polygon)})
+        const color = getRandomColor()
+        const polygon = new L.Polygon(bound, {color});
+        polygon.myData = m;
+        polygon.on('click', (e) => {onClickLayer(e, map)})
         map.addLayer(polygon);
       })
     })();
+    // eslint-disable-next-line
   }, []);
 
 

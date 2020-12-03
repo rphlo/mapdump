@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'rest_auth',
-    'rest_auth.registration',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
 
     'django_s3_storage',
 ]
@@ -173,7 +173,7 @@ REST_AUTH_SERIALIZERS = {
     'PASSWORD_RESET_SERIALIZER': 'utils.serializers.CustomPasswordResetSerializer',
 }
 
-ACCOUNT_ADAPTER = 'utils.adapters.DefaultAccountAdapterCustom'
+ACCOUNT_ADAPTER = 'utils.adapters.CustomAccountAdapter'
 
 URL_FRONT = 'http://localhost:3000'
 

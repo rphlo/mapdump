@@ -2,7 +2,7 @@ from allauth.account.adapter import DefaultAccountAdapter
 from django.conf import settings
 from rest_framework.response import Response
 
-class DefaultAccountAdapterCustom(DefaultAccountAdapter):
+class CustomAccountAdapter(DefaultAccountAdapter):
 
     def send_mail(self, template_prefix, email, context):
         context['activate_url'] = settings.URL_FRONT + \
