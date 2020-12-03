@@ -28,6 +28,7 @@ describe('Create a new map', function() {
                 cy.get('button[data-testid="actionMenuBtn"]').click()
                 cy.get('a[data-testid="editNameBtn"]').click()
                 cy.get('input[data-testid="editNameInput"]').clear().type('Jukola 2019 - First Leg').blur()
+                cy.wait(2000)
                 cy.reload()
                 cy.contains('Jukola 2019 - First Leg')
                 cy.visit('/athletes/tester')
