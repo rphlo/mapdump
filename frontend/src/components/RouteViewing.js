@@ -13,7 +13,18 @@ const RouteViewing = (props) => {
   const [zoom, setZoom] = useState(200)
   const [imgURL, setImgURL] = useState(null)
   const [imgLoaded, setImgLoaded] = useState(false)
+  const [firstLoad, setFirstLoad] = useState(true)
   let finalImage = createRef();
+
+  const loadCache = async (url) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = url;
+    })
+  }
 
   useEffect(() => {
     const qp = new URLSearchParams();
@@ -93,13 +104,20 @@ const RouteViewing = (props) => {
     setZoom(zoom + 10)
   }
 
-  const onImgLoaded = () => {
+  const onImgLoaded = async () => {
     setImgLoaded(true)
     if (togglingHeader) {
       setTogglingHeader(false)
     }
     if (togglingRoute) {
       setTogglingRoute(false)
+    }
+    if(firstLoad) {
+      setFirstLoad(false);
+      const qp = new URLSearchParams();
+      qp.set('show_header', '1');
+      const url = props.mapDataURL + '?' + qp.toString();
+      await loadCache(url);
     }
   }
 
