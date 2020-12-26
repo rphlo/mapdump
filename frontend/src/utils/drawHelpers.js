@@ -47,7 +47,7 @@ const extractBounds = function(img, corners_coords, route, hOffset=0) {
   );
   let minX = 0;
   let maxX = img.width;
-  let minY = 0;
+  let minY = hOffset;
   let maxY = img.height + hOffset;
   for(let i = 0; i < route.length; i++) {
     const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
@@ -59,7 +59,7 @@ const extractBounds = function(img, corners_coords, route, hOffset=0) {
   return {
     minX: Math.floor(minX),
     maxX: Math.ceil(maxX),
-    minY: Math.floor(minY),
+    minY: Math.min(0, Math.floor(minY)),
     maxY: Math.ceil(maxY)
   }
 };
