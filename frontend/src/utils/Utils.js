@@ -124,17 +124,17 @@ function project(m, x, y) {
     return [v[0] / v[2], v[1] / v[2]];
 }
 
-function cornerCalTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon) {
+function cornerCalTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon, hOffset=0) {
     var proj = new SpheroidProjection();
     var top_left_meters = proj.LatLonToMeters(top_left_latlon);
     var top_right_meters = proj.LatLonToMeters(top_right_latlon);
     var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);
     var bottom_left_meters = proj.LatLonToMeters(bottom_left_latlon);
     var matrix3d = general2DProjection(
-        top_left_meters.x, top_left_meters.y, 0, 0,
-        top_right_meters.x, top_right_meters.y, width, 0,
-        bottom_right_meters.x, bottom_right_meters.y, width, height,
-        bottom_left_meters.x, bottom_left_meters.y, 0, height
+        top_left_meters.x, top_left_meters.y, 0, hOffset,
+        top_right_meters.x, top_right_meters.y, width, hOffset,
+        bottom_right_meters.x, bottom_right_meters.y, width, height+hOffset,
+        bottom_left_meters.x, bottom_left_meters.y, 0, height+hOffset
     )
     return function(latLon){
         var meters = proj.LatLonToMeters(latLon);
@@ -143,17 +143,17 @@ function cornerCalTransform(width, height, top_left_latlon, top_right_latlon, bo
     };
 }
 
-function cornerBackTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon) {
+function cornerBackTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon, hOffset=0) {
     var proj = new SpheroidProjection();
     var top_left_meters = proj.LatLonToMeters(top_left_latlon);
     var top_right_meters = proj.LatLonToMeters(top_right_latlon);
     var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);
     var bottom_left_meters = proj.LatLonToMeters(bottom_left_latlon);
     var matrix3d = general2DProjection(
-        0, 0, top_left_meters.x, top_left_meters.y,
-        width, 0, top_right_meters.x, top_right_meters.y,
-        width, height, bottom_right_meters.x, bottom_right_meters.y,
-        0, height, bottom_left_meters.x, bottom_left_meters.y
+        0, hOffset, top_left_meters.x, top_left_meters.y,
+        width, hOffset, top_right_meters.x, top_right_meters.y,
+        width, height+hOffset, bottom_right_meters.x, bottom_right_meters.y,
+        0, height+hOffset, bottom_left_meters.x, bottom_left_meters.y
     )
     return function(coords){
         var xy = project(matrix3d, coords.x, coords.y);

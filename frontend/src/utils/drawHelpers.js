@@ -35,19 +35,20 @@ const extractDistance = (route) => {
   return d;
 };
 
-const extractBounds = function(img, corners_coords, route) {
+const extractBounds = function(img, corners_coords, route, hOffset=0) {
   const transform = cornerCalTransform(
     img.width,
     img.height,
     corners_coords.top_left,
     corners_coords.top_right,
     corners_coords.bottom_right,
-    corners_coords.bottom_left
+    corners_coords.bottom_left,
+    hOffset
   );
   let minX = 0;
   let maxX = img.width;
   let minY = 0;
-  let maxY = img.height;
+  let maxY = img.height + hOffset;
   for(let i = 0; i < route.length; i++) {
     const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
     minX = pt.x < minX ? pt.x : minX;
@@ -63,18 +64,17 @@ const extractBounds = function(img, corners_coords, route) {
   }
 };
 export const getCorners = function(img, corners_coords, route, includeHeader=false) {
-  const bounds = extractBounds(img, corners_coords, route);
+  const bounds = extractBounds(img, corners_coords, route, includeHeader ? 70 : 0);
   const transform = cornerBackTransform(
     img.width,
     img.height,
     corners_coords.top_left,
     corners_coords.top_right,
     corners_coords.bottom_right,
-    corners_coords.bottom_left
+    corners_coords.bottom_left,
+    includeHeader ? 70 : 0
   );
-  if (includeHeader) {
-    bounds.minY -= 70;
-  }
+  bounds.minY -= includeHeader ? 70 : 0;
   return {
     top_left: transform(new Point(bounds.minX, bounds.minY)),
     top_right: transform(new Point(bounds.maxX, bounds.minY)),
