@@ -1,6 +1,6 @@
 {
   "name": "drawmyroute",
-  "version": "2020121400",
+  "version": "2020122600",
   "private": true,
   "dependencies": {
     "@sentry/react": "^5.27.4",
