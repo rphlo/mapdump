@@ -1,6 +1,7 @@
 import boto3
 from django.conf import settings
 
+
 def get_s3_client():
     return boto3.client(
         's3',

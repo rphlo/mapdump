@@ -148,8 +148,8 @@ const RouteViewing = (props) => {
       </div>
       <button className="btn btn-sm btn-default" onClick={zoomIn} aria-label="Zoom in"><i className={"fa fa-plus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={zoomOut} aria-label="Zoom out"><i className={"fa fa-minus"}></i></button>&nbsp;
-      <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))}></i> Header</button>&nbsp;
-      <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))}></i> Route</button>&nbsp;
+      <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))} style={includeHeader ? {color: '#3c2'}: {}}></i> Header</button>&nbsp;
+      <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))} style={includeRoute ? {color: '#3c2'}: {}}></i> Route</button>&nbsp;
       <div>
         {imgURL && (
           <center>
