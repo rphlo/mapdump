@@ -26,6 +26,8 @@ jobs:
           cd frontend
           ~/.yarn/bin/yarn cypress install
           ~/.yarn/bin/yarn cypress run
+          ~/.yarn/bin/yarn install
+          ~/.yarn/bin/yarn deploy
     - store_artifacts:
         path: frontend/cypress/videos
     - store_artifacts:

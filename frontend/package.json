@@ -33,7 +33,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "yarn run build && cp CNAME ./build",
-    "deploy": "mv build/index.html build/200.html && surge build",
+    "deploy": "mv build/index.html build/200.html && surge build --token $SURGE_TOKEN",
     "uploadsources": "node ./uploadSourcemaps.js"
   },
   "eslintConfig": {
