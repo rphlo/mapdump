@@ -26,6 +26,7 @@ jobs:
           cd frontend
           ~/.yarn/bin/yarn cypress install
           ~/.yarn/bin/yarn cypress run
+          rm -rf node_modules
           ~/.yarn/bin/yarn install
           ~/.yarn/bin/yarn deploy
     - store_artifacts:
