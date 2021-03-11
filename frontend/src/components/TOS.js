@@ -32,7 +32,7 @@ const TOS = () => {
         We respond to notices of alleged copyright infringement and terminate accounts of repeat infringers according to the process set out in the U.S. Digital Millennium Copyright Act.
       </p>
       <p>
-        If you think somebody is violating your copyrights and want to notify us, you can contact rphl@rphl.net with details of the infringement.
+        If you think somebody is violating your copyrights and want to notify us, you can contact info@karttamuovi.com with details of the infringement.
       </p>
       <h3>Disclaimer</h3>
       <ol type="a">
