@@ -122,7 +122,7 @@ const RouteViewing = (props) => {
   }
 
   let webShareApiAvailable = false
-  if (navigator.share) {
+  if (navigator.canShare) {
     webShareApiAvailable = true
   }
 
@@ -130,9 +130,9 @@ const RouteViewing = (props) => {
   const share = () => {
     if(webShareApiAvailable) {
       try {
-        navigator.share({url: document.location.href})
+        navigator.share({url: document.location.href}).then(()=>{}).catch(()=>{})
       } catch (e) {}
-      } else {
+    } else {
       setShareModalOpen(true)
     }
   }

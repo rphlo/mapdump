@@ -190,7 +190,7 @@ const RouteReplay = (props) => {
   }
 
   let webShareApiAvailable = false
-  if (navigator.share) {
+  if (navigator.canShare) {
     webShareApiAvailable = true
   }
 
@@ -198,7 +198,7 @@ const RouteReplay = (props) => {
   const share = () => {
     if(webShareApiAvailable) {
       try {
-        navigator.share({url: document.location.href})
+        navigator.share({url: document.location.href}).then(()=>{}).catch(()=>{});
       } catch (e) {}
     } else {
       setShareModalOpen(true)
