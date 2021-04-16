@@ -48,9 +48,7 @@ footer {
   opacity: .8; 
   z-index: -1;
 }
-.jumbotron a {
-  text-decoration: none;
-}
+
 .final-image {
   width: 100%;
 }
