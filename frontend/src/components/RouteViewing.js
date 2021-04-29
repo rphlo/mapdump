@@ -10,7 +10,7 @@ const RouteViewing = (props) => {
   const [name, setName] = useState();
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
-  const [zoom, setZoom] = useState(200)
+  const [zoom, setZoom] = useState(100)
   const [imgURL, setImgURL] = useState(null)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [firstLoad, setFirstLoad] = useState(true)
@@ -138,7 +138,8 @@ const RouteViewing = (props) => {
   }
 
   return (
-    <div>
+    <>
+    <div class="container main-container">
       <RouteHeader {...props} onNameChanged={setName} />
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
@@ -150,6 +151,8 @@ const RouteViewing = (props) => {
       <button className="btn btn-sm btn-default" onClick={zoomOut} aria-label="Zoom out"><i className={"fa fa-minus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))} style={includeHeader ? {color: '#3c2'}: {}}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))} style={includeRoute ? {color: '#3c2'}: {}}></i> Route</button>&nbsp;
+    </div>
+    <div class="container-fluid">
       <div>
         {imgURL && (
           <center>
@@ -171,6 +174,7 @@ const RouteViewing = (props) => {
       </div>
       {shareModalOpen && <ShareModal url={document.location.href} onClose={()=>setShareModalOpen(false)}/> }
     </div>
+    </>
   )
 }
 

@@ -74,12 +74,13 @@ const RasterMap = ({match, history}) => {
       }
       return <RouteViewing {...props} />
     }
+
     return (
-    <div>
+    <>
       { found && data && getComponent() }
       { found !== false && !data && <h2><i className="fa fa-spin fa-spinner"></i> Loading...</h2>}
       { found === false && <h2>Not found</h2> }
-    </div>
+    </>
     );
   }
 

@@ -142,7 +142,7 @@ const RouteHeader = (props) => {
       { canEdit() && nameEditing && <input ref={inputRef} type="text" maxLength={52} defaultValue={name} onBlur={saveName} data-testid="editNameInput"/>}
       { canEdit() && <div className="btn-group float-right">
         <button type="button" className="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-testid="actionMenuBtn">
-          <i className="fas fa-ellipsis-v"></i>
+          Edit <i className="fas fa-pen"></i>
         </button>
         <div className="dropdown-menu dropdown-menu-right">
           <a className={"dropdown-item" + (nameEditing ? ' disabled': '')} href="/#" onClick={enableNameEditing} data-testid="editNameBtn"><i className="fa fa-pen"></i> Edit title</a>

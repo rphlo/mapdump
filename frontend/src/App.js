@@ -27,25 +27,23 @@ function App() {
           <Link to='/' style={{textDecoration: 'none', color:'#f3f'}}><h1 style={{whiteSpace: 'nowrap'}}><img src="/logo.svg" alt="logo" height="60px"/> <small>Karttamuovi.com</small></h1>
           <p style={{padding: '0 0 20px 0', margin: '-20px 0 0 -15px'}}>KEEPS YOUR MAPS SAFE...</p></Link>
         </div>
-        <div class="container main-container">
-          <Login />
-          <Switch>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/new" component={NewMap} />
-              <Route exact path="/map" component={BrowseMap} />
-              <Route exact path="/tos" component={TOS} />
-              <Route exact path="/privacy-policy" component={PrivacyPolicy} />
-              <Route exact path="/sign-up" component={Register} />
-              <Route exact path="/settings" component={Settings} />
-              <Route exact path="/password-reset" component={PasswordReset} />
-              <Route exact path="/password-reset-confirmation/:key" component={PasswordResetConfirmation} />
-              <Route exact path="/verify-email/:key" component={VerifyEmail} />
-              <Route exact path="/routes/:uid/" component={RasterMap} />
-              <Route exact path="/routes/:uid/player" component={RasterMapRedirect} />
-              <Route exact path="/athletes/:username" component={UserView} />
-              <Route exact path="*" component={NotFound} />
-          </Switch>
-        </div>
+        <Login />
+        <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/new" component={NewMap} />
+            <Route exact path="/map" component={BrowseMap} />
+            <Route exact path="/tos" component={TOS} />
+            <Route exact path="/privacy-policy" component={PrivacyPolicy} />
+            <Route exact path="/sign-up" component={Register} />
+            <Route exact path="/settings" component={Settings} />
+            <Route exact path="/password-reset" component={PasswordReset} />
+            <Route exact path="/password-reset-confirmation/:key" component={PasswordResetConfirmation} />
+            <Route exact path="/verify-email/:key" component={VerifyEmail} />
+            <Route exact path="/routes/:uid/" component={RasterMap} />
+            <Route exact path="/routes/:uid/player" component={RasterMapRedirect} />
+            <Route exact path="/athletes/:username" component={UserView} />
+            <Route exact path="*" component={NotFound} />
+        </Switch>
         <footer class="container-fluid text-center">
           <span>&copy;2019-{new Date().getFullYear()}&nbsp;Karttamuovi.com - <a href="mailto:info@karttamuovi.com">Contact</a> - <Link to="/privacy-policy">Privacy Policy</Link> - <Link to="/tos">Terms of Service</Link></span>
         </footer>

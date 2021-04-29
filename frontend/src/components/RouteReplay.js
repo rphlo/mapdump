@@ -206,7 +206,7 @@ const RouteReplay = (props) => {
   }
 
   return (
-    <div>
+    <div class="container main-container">
       <RouteHeader {...props} />
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>

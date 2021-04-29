@@ -260,6 +260,7 @@ function NewMap() {
       setDrawRoute(false)
     }
     return (
+      <div class="container main-container">
       <div className="App">
         { (!route && !drawRoute ) && <>
           <h1>GPS File</h1><GPXDropzone onDrop={onDropGPX} />
@@ -301,6 +302,7 @@ function NewMap() {
           />
         )}
         <span style={{color:'white'}}>v{pkg.version}</span>
+      </div>
       </div>
     );
   }

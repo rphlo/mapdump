@@ -72,7 +72,7 @@ const UserView = ({match}) => {
         return null
     }
     return (
-        <div>
+        <div class="container main-container">
         { found && data &&   
             <>
             <Helmet>

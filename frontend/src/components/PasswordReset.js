@@ -30,7 +30,7 @@ const PasswordReset = (props) => {
       }
     }
     return (
-      <div>
+      <div class="container main-container">
         { !sent && <><h1><i className="fas fa-question"></i> Forgot Password</h1><hr/><form onSubmit={onSubmit}>
             {errors.non_field_errors && errors.non_field_errors.map(e=>
                 <div className="alert alert-danger" role="alert">

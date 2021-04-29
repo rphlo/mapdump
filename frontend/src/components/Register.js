@@ -35,7 +35,7 @@ const Register = (props) => {
       }
     }
     return (
-      <div>
+      <div class="container main-container">
         { !registered && <><h1><i className="fas fa-user-plus"></i> Sign up</h1><hr/>
             {errors.non_field_errors && errors.non_field_errors.map(e=>
                 <div className="alert alert-danger" role="alert">

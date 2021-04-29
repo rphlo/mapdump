@@ -15,7 +15,7 @@ const Settings = ({history}) => {
     }, [username, history])
 
     return (
-        <>
+        <div class="container main-container">
          <h1><i className="fas fa-user-cog"></i> Settings</h1>
          <hr/>
          <UserSettings/>
@@ -23,7 +23,7 @@ const Settings = ({history}) => {
          <PasswordChange/>
          <hr/>
          <EmailsList/>
-        </>
+        </div>
     )
 }
 

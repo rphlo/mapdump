@@ -32,7 +32,7 @@ const Register = (props) => {
       }
     }
     return (
-      <div>
+      <div class="container main-container">
         { !sent && <><h1><i className="fas fa-key"></i> Reset Password</h1><hr/>
             {errors.token && (
                 <div className="alert alert-danger" role="alert">
