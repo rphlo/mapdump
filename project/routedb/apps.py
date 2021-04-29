@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class MyRoutechoicesConfig(AppConfig):
-    name = 'myroutechoices'
+class RouteDBConfig(AppConfig):
+    name = 'routedb'
