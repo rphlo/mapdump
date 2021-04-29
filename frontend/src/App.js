@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom'
+import * as Panelbear from '@panelbear/panelbear-js'
 import Login from './components/Login'
 import Home from './components/Home'
 import RasterMap from './components/RasterMap'
@@ -20,6 +21,10 @@ import { GlobalStateProvider} from './utils/useGlobalState'
 window.drawmyroute = {};
 
 function App() {
+  useEffect(() => {
+    Panelbear.load(process.env.REACT_APP_PANELBEAR_ID);
+  }, [])
+
   return (
     <GlobalStateProvider>
       <Router basename='/'>
@@ -28,6 +33,12 @@ function App() {
           <p style={{padding: '0 0 20px 0', margin: '-20px 0 0 -15px'}}>KEEPS YOUR MAPS SAFE...</p></Link>
         </div>
         <Login />
+        <Route
+          path="/" 
+          render={() => {
+            Panelbear.trackPageview();
+          }}
+        />
         <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/new" component={NewMap} />
