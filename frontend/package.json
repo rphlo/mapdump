@@ -1,6 +1,6 @@
 {
   "name": "drawmyroute",
-  "version": "2021042900",
+  "version": "2021050100",
   "private": true,
   "dependencies": {
     "@panelbear/panelbear-js": "^1.2.0",

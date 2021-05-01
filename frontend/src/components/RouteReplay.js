@@ -88,9 +88,18 @@ const RouteReplay = (props) => {
     } else if(currentPos && !isNaN(currentPos.coords.latitude)){
       const pt = transform(new LatLon(currentPos.coords.latitude, currentPos.coords.longitude))
       if(!leafletMarker){
-        const m = new L.circleMarker(
+        var svgRect = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" preserveAspectRatio="xMidYMid meet" x="955"  stroke="red"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>';
+        var pulseIcon = L.icon({
+          iconUrl: encodeURI("data:image/svg+xml," + svgRect).replace('#','%23'),
+          iconSize: [40, 40],
+          shadowSize: [40, 40],
+          iconAnchor: [20, 20],
+          shadowAnchor: [0, 0],
+          popupAnchor: [0, 0]
+        });
+        const m = new L.marker(
           [-pt.y, pt.x],
-          {weight:5, radius: 7, color: 'red', fill: false, fillOpacity:0, opacity: 0.75}
+          {icon: pulseIcon}
         )
         m.addTo(leafletMap);
         setLeafletMarker(m)
@@ -222,7 +231,7 @@ const RouteReplay = (props) => {
           <button className="btn btn-light" onClick={onPause}><i className="fa fa-pause"></i></button>
         )}
         <span style={{paddingLeft: '15px'}}><Slider style={{width:'calc(100% - 65px)'}} axis='x' onChange={onChangeProgress} xmin="0" xmax="100" xstep=".1" x={progress}/></span></div>
-        <div><span className="badge badge-secondary" style={{fontSize: '1em',fontVariantNumeric: 'tabular-nums'}}>{ getFormattedTimeSinceStart() }</span><span className="badge badge-secondary" style={{fontSize: '1em', marginLeft: '5px'}}>{'x' + speed }</span> <button className="btn btn-sm btn-light" onClick={onSlower}>Slower</button> <button onClick={onFaster} className="btn btn-sm btn-light">Faster</button></div>
+        <div><span className="badge badge-secondary" style={{fontSize: '1em',fontVariantNumeric: 'tabular-nums'}}>{ getFormattedTimeSinceStart() }</span><span className="badge badge-secondary" style={{fontSize: '1em', marginLeft: '5px'}}>{'x' + speed }</span> <button className="btn btn-sm btn-light" onClick={onSlower}>Slower</button> <button onClick={onFaster} className="btn btn-sm btn-light">Faster</button> <span class="badge badge-info float-right" style={{fontSize: '1em', marginLeft: '25px'}}>Tail: 1min</span></div>
       </>) : (
       <>
         <div className="alert alert-warning"><i className="fas fa-exclamation-triangle"></i> Can not display player as route does not contain time information.</div>
