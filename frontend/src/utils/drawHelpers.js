@@ -187,9 +187,13 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     ctx3.lineWidth = weight + 2 * outlineWidth;
     ctx3.strokeStyle = 'black';
     ctx3.beginPath();
+    let prevPt = null
     for(let i=0; i < route.length; i++) {
       const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
-      ctx3.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
+      if(!prevPt || Math.sqrt(Math.pow(Math.round(prevPt.x) - Math.round(pt.x), 2) + Math.pow(Math.round(prevPt.y) - Math.round(pt.y), 2)) > weight) {
+        prevPt = pt;
+        ctx3.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
+      }
     }
     ctx3.stroke();
 
@@ -199,10 +203,13 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     ctx3.globalCompositeOperation = 'source-over'
 
       // drawColoredPath
+    let prevIdx = 0;
     for (let j = 1; j < route.length; j++) {
-      const pointStart = transform(new LatLon(route[j-1].latLon[0], route[j-1].latLon[1]));
+      const pointStart = transform(new LatLon(route[prevIdx].latLon[0], route[prevIdx].latLon[1]));
       const pointEnd = transform(new LatLon(route[j].latLon[0], route[j].latLon[1]));
-
+      /*if (Math.sqrt(Math.pow(Math.round(pointEnd.x) - Math.round(pointStart.x), 2) + Math.pow(Math.round(pointEnd.y) - Math.round(pointStart.y), 2)) < 2) {
+        continue;
+      }*/
       // Create a gradient for each segment, pick start end end colors from palette gradient
       const gradient = ctx2.createLinearGradient(
           Math.round(pointStart.x - bounds.minX),
@@ -210,7 +217,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
           Math.round(pointEnd.x - bounds.minX),
           Math.round(pointEnd.y - bounds.minY)
       );
-      const gradientStartRGB = getRGBForValue(speeds[j-1]);
+      const gradientStartRGB = getRGBForValue(speeds[prevIdx]);
       const gradientEndRGB = getRGBForValue(speeds[j]);
       gradient.addColorStop(0, 'rgb(' + gradientStartRGB.join(',') + ')');
       gradient.addColorStop(1, 'rgb(' + gradientEndRGB.join(',') + ')');
@@ -221,6 +228,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
       ctx2.moveTo(Math.round(pointStart.x - bounds.minX), Math.round(pointStart.y - bounds.minY));
       ctx2.lineTo(Math.round(pointEnd.x - bounds.minX), Math.round(pointEnd.y - bounds.minY));
       ctx2.stroke();
+      prevIdx++;
     }
 
     if (route.length && route[0].time) {

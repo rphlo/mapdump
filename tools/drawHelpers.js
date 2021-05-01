@@ -148,9 +148,13 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
     ctx3.lineWidth = weight + 2 * outlineWidth;
     ctx3.strokeStyle = 'black';
     ctx3.beginPath();
+    let prevPt = null
     for(let i=0; i < route.length; i++) {
       const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
-      ctx3.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
+      if(!prevPt || Math.sqrt(Math.pow(Math.round(prevPt.x) - Math.round(pt.x), 2) + Math.pow(Math.round(prevPt.y) - Math.round(pt.y), 2)) > weight) {
+        prevPt = pt;
+        ctx3.lineTo(Math.round(pt.x - bounds.minX), Math.round(pt.y - bounds.minY));
+      }
     }
     ctx3.stroke();
 
