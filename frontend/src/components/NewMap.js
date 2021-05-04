@@ -146,11 +146,11 @@ function NewMap() {
           const filePath = go.getElementsByTagName('href')[0].innerHTML;
           const fileU8 = await kmz.file(filePath).async('uint8array');
           const filename = kmz.file(filePath).name;
-          const extension = filename.slice(-3).toLowerCase();
+          const extension = filename.toLowerCase().split('.').pop();
           let mime = ''
           if(extension === 'jpg') {
             mime = 'image/jpeg;';
-          } else if (['png, gif'].includes(extension)) {
+          } else if (['png, gif', 'jpeg'].includes(extension)) {
             mime = 'image/' + extension + ';';
           }
           const imageDataURI = 'data:' + mime + 'base64,' + Buffer.from(fileU8).toString('base64');
