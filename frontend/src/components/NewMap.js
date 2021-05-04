@@ -138,11 +138,11 @@ function NewMap() {
       const parser = new DOMParser();
       const parsedText = parser.parseFromString(kmlText, "text/xml");
       const go = parsedText.getElementsByTagName('GroundOverlay')[0];
+      const nameEl = parsedText.getElementsByTagName('name')[0].innerHTML;
       if (go) {
         try {
-          const nameEl = go.getElementsByTagName('name')[0].innerHTML;
-          const latLonboxEl = go.getElementsByTagName('LatLonBox')[0];
-          const latLonQuadEl = go.getElementsByTagName('gx:LatLonQuad')[0];
+          const latLonboxElNodes = go.getElementsByTagName('LatLonBox');
+          const latLonQuadElNodes = go.getElementsByTagName('gx:LatLonQuad');
           const filePath = go.getElementsByTagName('href')[0].innerHTML;
           const fileU8 = await kmz.file(filePath).async('uint8array');
           const filename = kmz.file(filePath).name;
@@ -155,7 +155,8 @@ function NewMap() {
           }
           const imageDataURI = 'data:' + mime + 'base64,' + Buffer.from(fileU8).toString('base64');
           let bounds;
-          if (latLonboxEl) {
+          if (latLonboxElNodes.length) {
+            const latLonboxEl = latLonboxElNodes[0];
             bounds = computeBoundsFromLatLonBox(
               parseFloat(latLonboxEl.getElementsByTagName('north')[0].innerHTML),
               parseFloat(latLonboxEl.getElementsByTagName('east')[0].innerHTML),
@@ -163,7 +164,8 @@ function NewMap() {
               parseFloat(latLonboxEl.getElementsByTagName('west')[0].innerHTML),
               parseFloat(latLonboxEl.getElementsByTagName('rotation')[0] ? latLonboxEl.getElementsByTagName('rotation')[0].innerHTML : 0)
             )
-          } else {
+          } else if (latLonQuadElNodes) {
+            const latLonQuadEl = latLonQuadElNodes[0];
             let [sw, se, ne, nw] = latLonQuadEl.getElementsByTagName('coordinates')[0].innerHTML.trim().split(' ');
             nw = nw.split(',');
             ne = ne.split(',');
@@ -175,6 +177,8 @@ function NewMap() {
               [parseFloat(se[1]), parseFloat(se[0])],
               [parseFloat(sw[1]), parseFloat(sw[0])],
             ];
+          } else {
+            throw new Error('No coordinates');
           }
           return {
             name: nameEl,
