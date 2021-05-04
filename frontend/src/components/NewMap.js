@@ -208,7 +208,6 @@ function NewMap() {
         const data = await extractKMZInfo(kml, zip);
         if (data) {
           setMapDataURL(data.imageDataURI)
-          setName(data.name)
           setMapCornersCoords(data.bounds)
         }
       } else {
