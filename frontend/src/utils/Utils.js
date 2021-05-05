@@ -125,7 +125,8 @@ function project(m, x, y) {
 }
 
 function cornerCalTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon, hOffset=0) {
-    var proj = new SpheroidProjection();
+ 
+  var proj = new SpheroidProjection();
     var top_left_meters = proj.LatLonToMeters(top_left_latlon);
     var top_right_meters = proj.LatLonToMeters(top_right_latlon);
     var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);

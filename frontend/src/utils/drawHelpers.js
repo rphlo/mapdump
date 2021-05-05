@@ -74,7 +74,7 @@ export const getCorners = function(img, corners_coords, route, includeHeader=fal
     corners_coords.bottom_left,
     includeHeader ? 70 : 0
   );
-  bounds.minY -= includeHeader ? 70 : 0;
+
   return {
     top_left: transform(new Point(bounds.minX, bounds.minY)),
     top_right: transform(new Point(bounds.maxX, bounds.minY)),

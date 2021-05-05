@@ -263,50 +263,52 @@ function NewMap() {
       setDrawRoute(false)
     }
     return (
+      <>
       <div class="container main-container">
-      <div className="App">
-        { (!route && !drawRoute ) && <>
-          <h1>GPS File</h1><GPXDropzone onDrop={onDropGPX} />
-          {username && <>
+        <div className="App">
+          { (!route && !drawRoute ) && <>
+            <h1>GPS File</h1><GPXDropzone onDrop={onDropGPX} />
+            {username && <>
+              <hr/>
+              <StravaPicker onRouteDownloaded={(name, route) => {setName(name);onRouteLoaded(route)}} />
+            </> }
             <hr/>
-            <StravaPicker onRouteDownloaded={(name, route) => {setName(name);onRouteLoaded(route)}} />
-          </> }
-          <hr/>
-          or <button className="btn btn-primary" onClick={()=>{setDrawRoute(true);setName('Untitled Run')}}><i className="fas fa-pen"></i> Draw route manually</button>
+            or <button className="btn btn-primary" onClick={()=>{setDrawRoute(true);setName('Untitled Run')}}><i className="fas fa-pen"></i> Draw route manually</button>
+            <span style={{color:'white'}}>v{pkg.version}</span>
+          </>}
+          { (drawRoute || route) && !mapDataURL && <>
+            <h1>Map Image File</h1>
+            <ImageDropzone onDrop={onDropImg}/>
+            <button className="btn btn-danger" onClick={onRestart}><i className="fas fa-undo"></i> Back</button>
         </>}
-        { (drawRoute || route) && !mapDataURL && <>
-          <h1>Map Image File</h1>
-          <ImageDropzone onDrop={onDropImg}/>
-          <button className="btn btn-danger" onClick={onRestart}><i className="fas fa-undo"></i> Back</button>
-      </>}
-        { (drawRoute || route) && mapDataURL && !mapCornersCoords &&(
-          <>
-            <h1>Calibration</h1>
-            <CornerCoordsInput
-              onSet={onSetCornerCoords}
-              onUndo={onRemoveMap}
-              coordsCallback={onSetCornerCoords}
+          { (drawRoute || route) && mapDataURL && !mapCornersCoords &&(
+            <>
+              <h1>Calibration</h1>
+              <CornerCoordsInput
+                onSet={onSetCornerCoords}
+                onUndo={onRemoveMap}
+                coordsCallback={onSetCornerCoords}
+              />
+            </>
+          )}
+          { drawRoute && !route && mapDataURL && mapCornersCoords && (
+            <PathDrawing
+              mapCornersCoords={mapCornersCoords}
+              mapDataURL={mapDataURL}
+              onRoute={setRoute}
             />
-          </>
-        )}
-        { drawRoute && !route && mapDataURL && mapCornersCoords && (
-          <PathDrawing
-            mapCornersCoords={mapCornersCoords}
-            mapDataURL={mapDataURL}
-            onRoute={setRoute}
-          />
-        )}
-        { route && mapDataURL && mapCornersCoords && (
-          <RouteDrawing
-            route={route}
-            mapCornersCoords={mapCornersCoords}
-            mapDataURL={mapDataURL}
-            name={name}
-          />
-        )}
-        <span style={{color:'white'}}>v{pkg.version}</span>
+          )}
+        </div>
       </div>
-      </div>
+      { route && mapDataURL && mapCornersCoords && (
+        <RouteDrawing
+          route={route}
+          mapCornersCoords={mapCornersCoords}
+          mapDataURL={mapDataURL}
+          name={name}
+        />
+      )}
+      </>
     );
   }
 
