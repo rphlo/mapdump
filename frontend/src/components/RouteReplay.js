@@ -215,7 +215,7 @@ const RouteReplay = (props) => {
   }
 
   return (
-    <div class="container main-container">
+    <div className="container main-container">
       <RouteHeader {...props} />
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
@@ -231,7 +231,7 @@ const RouteReplay = (props) => {
           <button className="btn btn-light" onClick={onPause}><i className="fa fa-pause"></i></button>
         )}
         <span style={{paddingLeft: '15px'}}><Slider style={{width:'calc(100% - 65px)'}} axis='x' onChange={onChangeProgress} xmin="0" xmax="100" xstep=".1" x={progress}/></span></div>
-        <div><span className="badge badge-secondary" style={{fontSize: '1em',fontVariantNumeric: 'tabular-nums'}}>{ getFormattedTimeSinceStart() }</span><span className="badge badge-secondary" style={{fontSize: '1em', marginLeft: '5px'}}>{'x' + speed }</span> <button className="btn btn-sm btn-light" onClick={onSlower}>Slower</button> <button onClick={onFaster} className="btn btn-sm btn-light">Faster</button> <span class="badge badge-info float-right" style={{fontSize: '1em', marginLeft: '25px'}}>Tail: 1min</span></div>
+        <div><span className="badge badge-secondary" style={{fontSize: '1em',fontVariantNumeric: 'tabular-nums'}}>{ getFormattedTimeSinceStart() }</span><span className="badge badge-secondary" style={{fontSize: '1em', marginLeft: '5px'}}>{'x' + speed }</span> <button className="btn btn-sm btn-light" onClick={onSlower}>Slower</button> <button onClick={onFaster} className="btn btn-sm btn-light">Faster</button> <span className="badge badge-info float-right" style={{fontSize: '1em', marginLeft: '25px'}}>Tail: 1min</span></div>
       </>) : (
       <>
         <div className="alert alert-warning"><i className="fas fa-exclamation-triangle"></i> Can not display player as route does not contain time information.</div>

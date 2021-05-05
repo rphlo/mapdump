@@ -12,7 +12,7 @@ const ShareModal = (props) => {
     }
 
     return (
-      <div className="modal" role="dialog" style={{display: 'block'}}>
+      <div className="modal" role="dialog" style={{display: 'block', zIndex: 1e19}}>
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header" style={{padding:'35px 50px'}}>

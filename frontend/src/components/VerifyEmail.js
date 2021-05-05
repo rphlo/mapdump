@@ -43,7 +43,7 @@ const VerifyEmail = ({match, history}) => {
       }
 
     return (
-      <div class="container main-container">
+      <div className="container main-container">
         {!sent && errors.key && (
             <>
             <div className="alert alert-danger" role="alert">

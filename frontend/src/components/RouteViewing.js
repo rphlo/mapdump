@@ -145,7 +145,7 @@ const RouteViewing = (props) => {
 
   return (
     <>
-    <div class="container main-container">
+    <div className="container main-container">
       <RouteHeader {...props} onNameChanged={setName} />
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
@@ -158,7 +158,7 @@ const RouteViewing = (props) => {
       <button className="btn btn-sm btn-default" onClick={toggleHeader}><i className={togglingHeader ? "fa fa-spinner fa-spin" : ("fa fa-toggle-"+(includeHeader ? 'on': 'off'))} style={includeHeader ? {color: '#3c2'}: {}}></i> Header</button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={toggleRoute}><i className={togglingRoute ? "fa fa-spinner fa-spin":("fa fa-toggle-"+(includeRoute ? 'on': 'off'))} style={includeRoute ? {color: '#3c2'}: {}}></i> Route</button>&nbsp;
     </div>
-    <div class="container-fluid">
+    <div className="container-fluid">
       <div>
         {imgURL && (
           <center>

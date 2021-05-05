@@ -264,7 +264,7 @@ function NewMap() {
     }
     return (
       <>
-      <div class="container main-container">
+      <div className="container main-container">
         <div className="App">
           { (!route && !drawRoute ) && <>
             <h1>GPS File</h1><GPXDropzone onDrop={onDropGPX} />

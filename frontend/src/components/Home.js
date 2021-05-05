@@ -7,7 +7,7 @@ const Home = () => {
     const globalState = useGlobalState()
     const { username } = globalState.user
     return (
-    <div class="container main-container">
+    <div className="container main-container">
     <div style={{textAlign:'center'}} >
       {/*
       <div className="alert alert-warning">

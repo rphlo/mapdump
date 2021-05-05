@@ -181,7 +181,7 @@ const RouteDrawing = (props) => {
 
   return (
     <>
-    <div class="container main-container">
+    <div className="container main-container">
       <h2><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={(e)=>setName(e.target.value)}/></h2>
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>
@@ -194,7 +194,7 @@ const RouteDrawing = (props) => {
 
       {!saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
     </div>
-    <div class="container-fluid">
+    <div className="container-fluid">
       {imgURL && <center><img ref={finalImage} className="final-image" src={imgURL} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
       {!imgURL && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
     </div>

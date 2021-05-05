@@ -59,7 +59,7 @@ const RouteReplay = () => {
 
 
   return (
-    <div class="container main-container">
+    <div className="container main-container">
       <div id="map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
     </div>)
 }

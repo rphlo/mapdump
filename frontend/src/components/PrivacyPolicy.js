@@ -2,7 +2,7 @@
 import React from 'react'
 
 const PrivacyPolicy = () => {
-    return (<div class="container main-container">
+    return (<div className="container main-container">
       <h1>Karttamuovi.com Privacy Policy</h1>
       <h2>Images you create</h2>
       <p>Karttamuovi.com is a public image website, so any content submitted to the Karttamuovi.com community may be shown to the public.
