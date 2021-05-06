@@ -30,14 +30,15 @@ const RasterMap = ({match, history}) => {
             tz: rawData.tz,
             startTime: rawData.start_time,
             country: rawData.country,
-            mapBounds: transformMapBounds(rawData.map_bounds),
-            mapImage: rawData.map_url,
+            mapCornersCoords: transformMapBounds(rawData.map_bounds),
+            mapDataURL: rawData.map_url,
             gpx: rawData.gpx_url,
             name: rawData.name,
             route: transformRoute(rawData.route_data),
             distance: rawData.distance,
             duration: rawData.duration,
             comment: rawData.comment,
+            mapSize: rawData.map_size,
           })
           setFound(true)
         } else if(res.status === 404) {
@@ -52,22 +53,10 @@ const RasterMap = ({match, history}) => {
 
     const getComponent = () => {
       const props = {
-        athlete: data.athlete,
         history,
-        id: data.id,
-        route: data.route,
-        startTime: data.startTime,
-        tz: data.tz,
-        country: data.country,
-        mapCornersCoords: data.mapBounds,
-        mapDataURL: data.mapImage,
-        gpx: data.gpx,
         onReset: null,
-        name: data.name,
-        duration: data.duration,
-        distance: data.distance,
-        comment: data.comment,
         togglePlayer,
+        ...data
       }
       if(showPlayer) {
         return <RouteReplay {...props}/>

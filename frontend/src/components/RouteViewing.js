@@ -11,7 +11,6 @@ const RouteViewing = (props) => {
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
   const [zoom, setZoom] = useState(100)
-  const [imgData, setImgData] = useState()
   const [imgURL, setImgURL] = useState(null)
   const [imgLoaded, setImgLoaded] = useState(false)
   const [firstLoad, setFirstLoad] = useState(true)
@@ -46,15 +45,6 @@ const RouteViewing = (props) => {
     setName(props.name); 
   }, [props.name])
 
-  useEffect(() => {   
-    var img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.onload = function(){
-      setImgData(this);
-    };
-    img.src = props.mapDataURL
-  }, [props.mapDataURL])
-
   const round5 = v => {
     return Math.round(v*1e5)/1e5;
   }
@@ -73,7 +63,8 @@ const RouteViewing = (props) => {
   }
 
   const downloadMap = () => {
-    const newCorners = getCorners(imgData, props.mapCornersCoords, props.route, includeHeader, includeRoute);
+    console.log(props.mapSize);
+    const newCorners = getCorners(props.mapSize, props.mapCornersCoords, props.route, includeHeader, includeRoute);
     const downloadName = name + '_' + (includeRoute ? '' : 'blank_') + printCornersCoords(newCorners, '_') + '_.jpg'
     console.log(downloadName)
     saveAs(finalImage.current.src, downloadName);
