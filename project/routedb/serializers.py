@@ -41,6 +41,7 @@ class RouteSerializer(serializers.ModelSerializer):
     start_time = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
+    map_size = serializers.ReadOnlyField(source='raster_map.size')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -120,7 +121,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'map_id', 'gpx_url', 'map_url', 'map_thumbnail_url', 'map_bounds', 'comment', 'route_data')
+        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'map_id', 'gpx_url', 'map_url', 'map_thumbnail_url', 'map_bounds', 'map_size', 'comment', 'route_data')
 
 class UserRouteListSerializer(serializers.ModelSerializer):
     url = RelativeURLField(source='api_url')

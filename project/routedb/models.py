@@ -195,6 +195,10 @@ class RasterMap(models.Model):
         )
 
     @property
+    def size(self):
+        return {'width': self.width, 'height': self.height}
+
+    @property
     def center(self):
         return [self._latitude, self._longitude]
 
