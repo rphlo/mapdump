@@ -2,6 +2,7 @@ import React, { useEffect, useState, createRef } from 'react'
 import { drawRoute, drawOriginalMap, getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver';
 import useGlobalState from '../utils/useGlobalState'
+import * as Panelbear from '@panelbear/panelbear-js'
 
 const RouteDrawing = (props) => {
   const [name, setName] = useState();
@@ -22,6 +23,10 @@ const RouteDrawing = (props) => {
 
   const globalState = useGlobalState()
   const { username, api_token } = globalState.user
+
+ useEffect(() => {
+  Panelbear.track('map_generated');
+ }, [])
 
  useEffect(() => {
     if (!imgData) {
@@ -52,7 +57,7 @@ const RouteDrawing = (props) => {
     var img = new Image();
     img.crossOrigin = "Anonymous";
     img.onload = function(){
-        setImgData(this);
+      setImgData(this);
     };
     img.src = props.mapDataURL
   }, [props.mapDataURL])
