@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from routedb.models import RasterMap, Route
+from routedb.models import RasterMap, Route, UserSettings
 
 class RasterMapAdmin(admin.ModelAdmin):
     list_display = (
@@ -30,6 +30,14 @@ class RouteAdmin(admin.ModelAdmin):
     list_filter = ('athlete', )
 
 
+class UserSettingsAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'strava_access_token'
+    )
+    list_filter = ('user', )
+
 
 admin.site.register(RasterMap, RasterMapAdmin)
 admin.site.register(Route, RouteAdmin)
+admin.site.register(UserSettings, UserSettingsAdmin)

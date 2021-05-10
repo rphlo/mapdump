@@ -63,6 +63,10 @@ class UserSettings(models.Model):
     )
     strava_access_token = models.TextField(blank=True, null=True)
 
+    class Meta:
+        verbose_name = 'user settings'
+        verbose_name_plural = 'user settings'
+
 User.settings = property(lambda u: UserSettings.objects.get_or_create(user=u)[0])
 
 class RasterMap(models.Model):
