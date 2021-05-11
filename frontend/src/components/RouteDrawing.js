@@ -6,6 +6,7 @@ import * as Panelbear from '@panelbear/panelbear-js'
 
 const RouteDrawing = (props) => {
   const [name, setName] = useState();
+  const [desc, setDesc] = useState();
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
   const [togglingRoute, setTogglingRoute] = useState();
@@ -52,6 +53,10 @@ const RouteDrawing = (props) => {
   useEffect(() => {
     setName(props.name); 
   }, [props.name])
+
+  useEffect(() => {
+    setDesc(props.desc); 
+  }, [props.desc])
 
   useEffect(() => {   
     var img = new Image();
@@ -121,6 +126,7 @@ const RouteDrawing = (props) => {
       fd.append('map_bounds', formatMapBounds(bounds));
       fd.append('route_data', formatRoute(props.route));
       fd.append('name', name);
+      fd.append('comment', desc);
       try {
         const response = await fetch(process.env.REACT_APP_API_URL+'/v1/routes/new', {
           method: 'POST',

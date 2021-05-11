@@ -112,7 +112,8 @@ class RouteSerializer(serializers.ModelSerializer):
         route = Route(
             athlete=user,
             raster_map=raster_map,
-            name=validated_data['name']
+            name=validated_data['name'],
+            comment=validated_data['comment'],
         )
         route.route = validated_data['route']
         route.prefetch_route_extras()

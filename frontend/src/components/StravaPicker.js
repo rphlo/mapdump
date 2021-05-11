@@ -104,7 +104,7 @@ const Settings = (props) => {
         latlngs.forEach((pos, i)=>{
           route.push({time: startTime + ~~times[i]*1e3, latLon: pos})
         });
-        props.onRouteDownloaded(a.name, route);
+        props.onRouteDownloaded(a.id, a.name, route);
     }
 
 
