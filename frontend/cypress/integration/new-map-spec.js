@@ -17,7 +17,7 @@ describe('Create a new map', function() {
                 );
                 cy.contains('Loading')
                 cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
-                cy.contains('Download')
+                cy.contains('JPEG')
                 cy.wait(3000)
                 cy.get('.final-image')
                 cy.get('[data-testid="saveBtn"]').should('not.exist');
@@ -53,7 +53,7 @@ describe('Create a new map', function() {
                 );
                 cy.contains('Loading')
                 cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
-                cy.contains('Download')
+                cy.contains('JPEG')
                 cy.wait(3000)
                 cy.get('.final-image')
             });
@@ -80,7 +80,7 @@ describe('Create a new map', function() {
                 cy.get('[data-testid="nextBtn"]').click()
                 cy.wait(10000)
                 cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
-                cy.contains('Download')
+                cy.contains('JPEG')
                 cy.get('.final-image')
             });
         });
