@@ -3,6 +3,7 @@ import { drawRoute, drawOriginalMap, getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver';
 import useGlobalState from '../utils/useGlobalState'
 import * as Panelbear from '@panelbear/panelbear-js'
+import { saveKMZ } from '../utils/fileHelpers'
 
 const RouteDrawing = (props) => {
   const [name, setName] = useState();
@@ -164,6 +165,20 @@ const RouteDrawing = (props) => {
     }, 'image/jpeg', 0.4)
   }
 
+  const downloadKmzWithRoute = (e) => {
+    const newCorners = getCorners(imgData, bounds, props.route, includeHeader, includeRoute);
+    const canvas = drawRoute(
+      imgData,
+      bounds,
+      props.route,
+      includeHeader,
+      includeRoute,
+    )
+    canvas.toBlob(function(blob) {
+      saveKMZ(name + (includeRoute ? '' : '_blank') + '.kmz', name, newCorners, blob);
+    }, 'image/jpeg', 0.4)
+  }
+
   const toggleHeader = (ev) => {
     if (togglingHeader) {
       return
@@ -195,7 +210,8 @@ const RouteDrawing = (props) => {
     <div className="container main-container">
       <h2><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={(e)=>setName(e.target.value)}/></h2>
       <div>
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> Download Map</button>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> JPEG</button>&nbsp;
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadKmzWithRoute}><i className="fas fa-download"></i> KMZ</button>
       </div>
       <button className="btn btn-sm btn-default" onClick={zoomIn}><i className={"fa fa-plus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={zoomOut}><i className={"fa fa-minus"}></i></button>&nbsp;

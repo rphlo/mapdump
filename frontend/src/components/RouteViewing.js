@@ -3,6 +3,7 @@ import { getCorners } from '../utils/drawHelpers'
 import { saveAs } from 'file-saver'
 import RouteHeader from './RouteHeader'
 import ShareModal from './ShareModal'
+import { saveKMZ } from '../utils/fileHelpers'
 
 const RouteViewing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
@@ -63,11 +64,16 @@ const RouteViewing = (props) => {
   }
 
   const downloadMap = () => {
-    console.log(props.mapSize);
     const newCorners = getCorners(props.mapSize, props.mapCornersCoords, props.route, includeHeader, includeRoute);
     const downloadName = name + '_' + (includeRoute ? '' : 'blank_') + printCornersCoords(newCorners, '_') + '_.jpg'
-    console.log(downloadName)
     saveAs(finalImage.current.src, downloadName);
+  }
+
+  const downloadKmz = (e) => {
+    fetch(finalImage.current.src).then(r => r.blob()).then(blob => {
+      const newCorners = getCorners(props.mapSize, props.mapCornersCoords, props.route, includeHeader, includeRoute);
+      saveKMZ(name + (includeRoute ? '' : '_blank') + '.kmz', name, newCorners, blob);
+    });
   }
 
   const downloadGPX = (ev) => {
@@ -140,8 +146,9 @@ const RouteViewing = (props) => {
       <RouteHeader {...props} onNameChanged={setName} />
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMap}><i className="fas fa-download"></i> Download Map</button>&nbsp;
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> Download GPX</button>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMap}><i className="fas fa-download"></i> JPEG</button>&nbsp;
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadKmz}><i className="fas fa-download"></i> KMZ</button>&nbsp;
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> GPX</button>
         { hasRouteTime() && <button style={{marginBottom: '5px'}} className="btn btn-sm btn-primary float-right" onClick={props.togglePlayer}><i className="fas fa-play"></i> View animation</button> }
       </div>
       <button className="btn btn-sm btn-default" onClick={zoomIn} aria-label="Zoom in"><i className={"fa fa-plus"}></i></button>&nbsp;
