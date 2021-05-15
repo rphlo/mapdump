@@ -244,7 +244,6 @@ $(function(){
         'Finally give a name to your map and set a privacy level.'
     ];
 
-    var baseLayers = {};
     L.TileLayer.Common = L.TileLayer.extend({initialize: function(options){L.TileLayer.prototype.initialize.call(this, this.url, options);}});
     L.TileLayer['osm'] = L.TileLayer.Common.extend({url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', options:{attribution: '\u0026copy\u003B \u003Ca href\u003D\u0022http://openstreetmap.org\u0022\u003EOpenStreetMap\u003C/a\u003E contributors, \u003Ca href\u003D\u0022http://creativecommons.org/licenses/by\u002Dsa/2.0/\u0022\u003ECC\u002DBY\u002DSA\u003C/a\u003E'}});
     L.TileLayer['gmap-street'] = L.TileLayer.Common.extend({url: 'https://mt0.google.com/vt/x\u003D{x}\u0026y\u003D{y}\u0026z\u003D{z}', options:{attribution: '\u0026copy\u003B Google'}});
@@ -256,14 +255,6 @@ $(function(){
         'https://mapant.es/mapserv?map=/mapas/geotiff.map&SERVICE=WMS',
         {layers: 'geotiff', format: 'image/png', version: '1.3.0', transparent: true}
     );
-    var defaultLayer = new L.TileLayer['osm'];
-    baseLayers["Open Street Map"] = defaultLayer;
-    baseLayers["Google Map Street"] = new L.TileLayer['gmap-street'];
-    baseLayers["Google Map Satellite"] = new L.TileLayer['gmap-hybrid'];
-    baseLayers["Finland Topo"] = new L.TileLayer['finland-topo'];
-    baseLayers["Mapant Finland"] = new L.TileLayer['mapant-fi'];
-    baseLayers["Norway Topo"] = new L.TileLayer['norway-topo'];
-    baseLayers["Mapant Spain"] = L.TileLayer['mapant-es'];
 
     function color_icon(color){
         return new L.Icon({
@@ -331,6 +322,17 @@ $(function(){
         } else {
           map_b.setView([0, 0], 2)
         }
+        
+        var defaultLayer = new L.TileLayer['osm'];
+        var baseLayers = {};
+        baseLayers["Open Street Map"] = defaultLayer;
+        baseLayers["Google Map Street"] = new L.TileLayer['gmap-street'];
+        baseLayers["Google Map Satellite"] = new L.TileLayer['gmap-hybrid'];
+        baseLayers["Finland Topo"] = new L.TileLayer['finland-topo'];
+        baseLayers["Mapant Finland"] = new L.TileLayer['mapant-fi'];
+        baseLayers["Norway Topo"] = new L.TileLayer['norway-topo'];
+        baseLayers["Mapant Spain"] = L.TileLayer['mapant-es'];
+
         map_b.addLayer(defaultLayer);
         map_b.addControl(new L.Control.Layers(baseLayers))
         map_b.on('click', function(e) {
@@ -338,20 +340,28 @@ $(function(){
         });
     }
     function display_preview_map(){
-        map_c = L.map('preview_map');
+        var bounds = corners_latlng;
+        map_c = L.map('preview_map').fitBounds(bounds);
 
         var route = route_data;
         var latlngs = route.map(pt=>[pt.latLon[0], pt.latLon[1]]);
         var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map_c);
-
-        map_c.addLayer(defaultLayer);
-        map_c.addControl(new L.Control.Layers(baseLayers))
-        var bounds = corners_latlng;
-
+        
         var transformedImage = L.imageTransform(raster_map_image.src, bounds , {opacity: 0.7});
         transformedImage.addTo(map_c);
+        
+        var defaultLayer = new L.TileLayer['osm'];
+        var baseLayers = {};
+        baseLayers["Open Street Map"] = defaultLayer;
+        baseLayers["Google Map Street"] = new L.TileLayer['gmap-street'];
+        baseLayers["Google Map Satellite"] = new L.TileLayer['gmap-hybrid'];
+        baseLayers["Finland Topo"] = new L.TileLayer['finland-topo'];
+        baseLayers["Mapant Finland"] = new L.TileLayer['mapant-fi'];
+        baseLayers["Norway Topo"] = new L.TileLayer['norway-topo'];
+        baseLayers["Mapant Spain"] = L.TileLayer['mapant-es'];
 
-        map_c.fitBounds(bounds)
+        map_c.addLayer(defaultLayer);
+        map_c.addControl(new L.Control.Layers(baseLayers, {'Map': transformedImage}))
     }
 
     function set_ref_pts_a(xy){
