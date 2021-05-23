@@ -56,11 +56,11 @@ const Login = () => {
       <div style={{marginTop: '-80px', marginBottom: '40px', position: 'relative', zIndex: 2e3}}>
       {username && <div style={{textAlign:'right'}}>
           <Link to='/settings'><button className="btn btn-primary btn-sm"><i className="fas fa-user-cog"></i> Settings</button></Link>
-          &nbsp;<button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Logout</button>
+          &nbsp;<button onClick={onLogout} className="btn btn-danger btn-sm"><i className="fas fa-power-off"></i> Logout</button>&nbsp;
         </div>}
       {!username && (<div style={{textAlign:'right'}}>
           <button data-testid="loginBtn" onClick={()=>setWantLogin(true)} className="btn btn-primary btn-sm"><i className="fas fa-sign-in-alt"></i> Login</button>
-          &nbsp;<Link to='/sign-up'><button className="btn btn-success btn-sm"><i className="fas fa-user-plus"></i> Sign up for free</button></Link>
+          &nbsp;<Link to='/sign-up'><button className="btn btn-success btn-sm"><i className="fas fa-user-plus"></i> Sign up for free</button></Link>&nbsp;
         </div>)}
       {!username && wantLogin && (<div>
         <div className="modal" role="dialog" style={{display: 'block'}}>

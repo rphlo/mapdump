@@ -70,9 +70,9 @@ const RouteViewing = (props) => {
   }
 
   const downloadKmz = (e) => {
-    fetch(finalImage.current.src).then(r => r.blob()).then(blob => {
-      const newCorners = getCorners(props.mapSize, props.mapCornersCoords, props.route, includeHeader, includeRoute);
-      saveKMZ(name + (includeRoute ? '' : '_blank') + '.kmz', name, newCorners, blob);
+    fetch(props.mapDataURL).then(r => r.blob()).then(blob => {
+      const newCorners = getCorners(props.mapSize, props.mapCornersCoords, [], false, false);
+      saveKMZ(name + '_blank.kmz', name, newCorners, blob);
     });
   }
 
