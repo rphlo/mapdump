@@ -25,11 +25,18 @@ function App() {
     Panelbear.load(process.env.REACT_APP_PANELBEAR_ID);
   }, [])
 
+  const onClickHome = (e) => {
+    if (window.location.pathname === '/') {
+      e.preventDefault();
+      window.location.reload();
+    } 
+  }
+
   return (
     <GlobalStateProvider>
       <Router basename='/'>
         <div className="jumbotron text-center">
-          <Link to='/' style={{textDecoration: 'none', color:'#f3f'}}><h1 style={{whiteSpace: 'nowrap'}}><img src="/logo.svg" alt="logo" height="60px"/> <small>Karttamuovi.com</small></h1>
+          <Link to='/' onClick={onClickHome} style={{textDecoration: 'none', color:'#f3f'}}><h1 style={{whiteSpace: 'nowrap'}}><img src="/logo.svg" alt="logo" height="60px"/> <small>Karttamuovi.com</small></h1>
           <p style={{padding: '0 0 20px 0', margin: '-20px 0 0 -15px'}}>KEEPS YOUR MAPS SAFE...</p></Link>
         </div>
         <Login />
