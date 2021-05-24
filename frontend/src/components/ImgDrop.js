@@ -37,7 +37,7 @@ const ImageDropzone = (props) => {
     isDragActive,
     isDragAccept,
     isDragReject
-  } = useDropzone({onDrop, accept: '.png,.jpg,.jpeg,.gif,.kmz'})
+  } = useDropzone({onDrop, accept: '.png,.jpg,.jpeg,.gif,.kmz,.pdf'})
 
   const style = useMemo(() => ({
     ...baseStyle,
@@ -56,7 +56,7 @@ const ImageDropzone = (props) => {
       {
         isDragActive ?
           <p>Drop the map here...</p> :
-          <p>Drag 'n' drop an image or a kmz file here, or click to select a file</p>
+          <p>Drag 'n' drop an image a kmz or a pdf file here, or click to select a file</p>
       }
     </div>
   )

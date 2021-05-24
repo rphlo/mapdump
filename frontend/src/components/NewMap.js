@@ -10,6 +10,11 @@ import CornerCoordsInput from './CornerCoordsInput'
 import { parseGpx, extractCornersCoordsFromFilename, validateCornersCoords } from '../utils/fileHelpers'
 import { LatLon } from '../utils/Utils'
 import { parseTCXString } from '../utils/tcxParser'
+import { pdfjs as pdfjsLib } from "react-pdf";
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
 const pkg = require('../../package.json')
 
 function NewMap() {
@@ -215,6 +220,35 @@ function NewMap() {
         window.alert('Invalid KMZ');
       }
     }
+
+    const onPdfLoaded = async (ev) => {
+      const file = ev.target.result;
+      var loadingTask = pdfjsLib.getDocument({data: new Uint8Array(file)});
+      loadingTask.promise.then(function(pdf) {
+        pdf.getPage(1).then(function(page) {
+            var PRINT_RESOLUTION = 300;
+            var PRINT_UNITS = PRINT_RESOLUTION / 72.0;
+            var viewport = page.getViewport({scale: 1});;
+            
+            // Prepare canvas using PDF page dimensions
+            var canvas = document.createElement('canvas');
+            canvas.height = Math.floor(viewport.height * PRINT_UNITS);
+            canvas.width = Math.floor(viewport.width * PRINT_UNITS);
+            var context = canvas.getContext('2d')
+            // Render PDF page into canvas context
+            var renderContext = {
+                canvasContext: context,
+                transform: [PRINT_UNITS, 0, 0, PRINT_UNITS, 0, 0],
+                viewport: viewport
+            };
+            var renderTask = page.render(renderContext);
+            renderTask.promise.then(function () {
+                console.log('Page rendered');
+                setMapDataURL(canvas.toDataURL('image/jpeg', 0.8));
+            });
+        });
+      });
+    }
   
     const onDropImg = acceptedFiles => {
       if(!acceptedFiles.length) {
@@ -238,6 +272,10 @@ function NewMap() {
         }
       } else if (filename.toLowerCase().endsWith('.kmz')) {
         onKmzLoaded(file);
+      } else if (filename.toLowerCase().endsWith('.pdf')) {
+        var fr = new FileReader();
+        fr.onload = onPdfLoaded;
+        fr.readAsArrayBuffer(file);
       } else {
         window.alert("Invalid image format");
       }
