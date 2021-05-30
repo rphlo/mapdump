@@ -20,5 +20,5 @@ const showRoute = type.includes('r');
 (async (imageFile, route, corners, showHeader, showRoute, timezone) => {
     const img = await loadImage(imageFile);
     const canvas = await drawRoute(img, corners, route, showHeader, showRoute, timezone);
-    console.log(canvas.toDataURL('image/jpeg', {quality: 0.4}));
+    console.log(canvas.toDataURL('image/jpeg', {quality: 0.8}));
 })(imgFile, route, corners, showHeader, showRoute, tz);

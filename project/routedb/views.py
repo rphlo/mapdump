@@ -258,13 +258,13 @@ def map_thumbnail(request, uid, *args, **kwargs):
     if not route.has_image_thumbnail:
         image = route.raster_map.thumbnail
         up_buffer = BytesIO()
-        image.save(up_buffer, 'JPEG', quality=40)
+        image.save(up_buffer, 'JPEG', quality=80)
         up_buffer.seek(0)
         upload_to_s3('drawmyroute-maps', file_path, up_buffer)
         route.has_image_thumbnail = True
         route.save()
         response = HttpResponse(content_type='image/jpeg')
-        image.save(response, 'JPEG', quality=40)
+        image.save(response, 'JPEG', quality=80)
         return response
     return serve_from_s3(
         'drawmyroute-maps',

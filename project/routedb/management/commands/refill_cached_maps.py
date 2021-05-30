@@ -14,7 +14,7 @@ class Command(BaseCommand):
         if not route.has_image_thumbnail:
             image = route.raster_map.thumbnail
             up_buffer = BytesIO()
-            image.save(up_buffer, 'JPEG', quality=40)
+            image.save(up_buffer, 'JPEG', quality=80)
             up_buffer.seek(0)
             upload_to_s3('drawmyroute-maps', file_path, up_buffer)
             route.has_image_thumbnail = True

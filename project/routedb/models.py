@@ -163,7 +163,7 @@ class RasterMap(models.Model):
             #if image.size[0] > 2000 or image.size[1] > 2000:
             #    rgb_img.thumbnail((2000, 2000), Image.ANTIALIAS)
             out_buffer = BytesIO()
-            rgb_img.save(out_buffer, 'JPEG', quality=60, dpi=(300, 300))
+            rgb_img.save(out_buffer, 'JPEG', quality=80, dpi=(300, 300))
             f_new = File(out_buffer, name=self.image.name)
             self.image.save(
                 'filename',

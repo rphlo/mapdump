@@ -36,7 +36,7 @@ const RouteReplay = (props) => {
         ctx.drawImage(img, 0, 0);
 
         // export base64
-        callback(canvas.toDataURL('image/jpeg', 0.4));
+        callback(canvas.toDataURL('image/jpeg', 0.8));
     }
     img.src = src;
   }
