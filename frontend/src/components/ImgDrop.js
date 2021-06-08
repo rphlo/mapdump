@@ -37,7 +37,7 @@ const ImageDropzone = (props) => {
     isDragActive,
     isDragAccept,
     isDragReject
-  } = useDropzone({onDrop, accept: '.png,.jpg,.jpeg,.gif,.kmz,.pdf'})
+  } = useDropzone({onDrop, accept: 'image/*,application/pdf,application/vnd.google-earth.kmz,.png,.jpg,.jpeg,.gif,.kmz,.pdf'})
 
   const style = useMemo(() => ({
     ...baseStyle,
