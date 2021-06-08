@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './serviceWorkerRegistration';
 import serviceWorkerConfig from './serviceWorkerConfig'
 import * as Sentry from '@sentry/react';
 import { Integrations } from "@sentry/tracing";
