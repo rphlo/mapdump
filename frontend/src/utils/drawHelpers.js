@@ -1,4 +1,4 @@
-import { Point, LatLon, cornerCalTransform, cornerBackTransform } from './Utils';
+import { Point, LatLon, cornerCalTransform, cornerBackTransform, getResolution } from './Utils';
 
 
 const extractSpeed = (route) => {
@@ -96,7 +96,14 @@ export const drawOriginalMap = function(img) {
 
 export const drawRoute = (img, corners_coords, route, includeHeader=false, includeRoute=true) => {
   const bounds = extractBounds(img, corners_coords, route);
-
+  const resolution = getResolution(
+    img.width,
+    img.height,
+    corners_coords.top_left,
+    corners_coords.top_right,
+    corners_coords.bottom_right,
+    corners_coords.bottom_left
+  ) / 1.702
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
@@ -108,8 +115,8 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
 
   ctx.drawImage(img, Math.round(-bounds.minX), Math.round(-bounds.minY), Math.round(img.width), Math.round(img.height));
 
-  const outlineWidth = 2;
-  const weight = 4;
+  const outlineWidth = 2 / resolution;
+  const weight = 4 / resolution;
 
   const speeds = extractSpeed(route);
 
@@ -234,7 +241,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     if (route.length && route[0].time) {
       let prevT = +route[0].time-20e3;
       let count = 0;
-      ctx3.lineWidth = 1
+      ctx3.lineWidth = 1 / resolution
       ctx3.strokeStyle = '#000';
       for (let j = 0; j < route.length; j++) {
         if (+route[j].time >= +prevT + 10e3) {
@@ -243,7 +250,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
           ctx3.arc(
             Math.round(point.x - bounds.minX),
             Math.round(point.y - bounds.minY),
-            count % 6 === 0 ? 3 : 1,
+            (count % 6 === 0 ? 3 : 1) / resolution,
             0,
             2 * Math.PI
           );

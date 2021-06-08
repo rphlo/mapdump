@@ -144,6 +144,25 @@ function cornerCalTransform(width, height, top_left_latlon, top_right_latlon, bo
     };
 }
 
+function getResolution(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon) {
+  const transform = cornerCalTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon)
+  const topLeftMapXY = transform(top_left_latlon)
+  const topRightMapXY = transform(top_right_latlon)
+  const bottomRightMapXY = transform(bottom_right_latlon)
+  const bottomLeftMapXY = transform(bottom_left_latlon)
+  var proj = new SpheroidProjection();
+  var top_left_meters = proj.LatLonToMeters(top_left_latlon);
+  var top_right_meters = proj.LatLonToMeters(top_right_latlon);
+  var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);
+  var bottom_left_meters = proj.LatLonToMeters(bottom_left_latlon);
+  
+  const resA = Math.abs(top_left_meters.x - top_right_meters.x)/Math.abs(topLeftMapXY.x - topRightMapXY.x)
+  const resB = Math.abs(bottom_left_meters.x - bottom_right_meters.x)/Math.abs(bottomLeftMapXY.x - bottomRightMapXY.x)
+  const resC = Math.abs(top_left_meters.y - bottom_left_meters.y)/Math.abs(topLeftMapXY.y - bottomLeftMapXY.y)
+  const resD = Math.abs(top_right_meters.y - bottom_right_meters.y)/Math.abs(topRightMapXY.y - bottomRightMapXY.y)
+  return (resA+resB+resC+resD)/4;
+}
+
 function cornerBackTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon, hOffset=0) {
     var proj = new SpheroidProjection();
     var top_left_meters = proj.LatLonToMeters(top_left_latlon);
@@ -188,5 +207,6 @@ module.exports = {
     SpheroidProjection,
     cornerCalTransform,
     cornerBackTransform,
-    dataURItoBlob
+    dataURItoBlob,
+    getResolution
 }

@@ -1,5 +1,5 @@
-const {createCanvas, loadImage} = require('canvas');
-const { LatLon, cornerCalTransform } = require('./Utils');
+const { createCanvas } = require('canvas');
+const { LatLon, cornerCalTransform, getResolution } = require('./Utils');
 
 
 const extractSpeed = (route) => {
@@ -67,6 +67,16 @@ const extractBounds = function(img, corners_coords, route) {
 
 const drawRoute = async (img, corners_coords, route, includeHeader=false, includeRoute=true, tz='Europe/Helsinki') => {
   const bounds = extractBounds(img, corners_coords, route);
+
+  const resolution = getResolution(
+    img.width,
+    img.height,
+    corners_coords.top_left,
+    corners_coords.top_right,
+    corners_coords.bottom_right,
+    corners_coords.bottom_left
+  ) / 1.702
+
   const canvas =  createCanvas(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
 
   const ctx = canvas.getContext('2d');
@@ -77,8 +87,8 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
 
   ctx.drawImage(img, Math.round(-bounds.minX), Math.round(-bounds.minY), Math.round(img.width), Math.round(img.height));
 
-  const outlineWidth = 2;
-  const weight = 4;
+  const outlineWidth = 2 / resolution;
+  const weight = 4 / resolution;
 
   const speeds = extractSpeed(route);
 
@@ -191,7 +201,7 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
     if (route.length && route[0].time) {
       let prevT = +route[0].time-20e3;
       let count = 0;
-      ctx3.lineWidth = 1
+      ctx3.lineWidth = 1 / resolution
       ctx3.strokeStyle = '#000';
       for (let j = 0; j < route.length; j++) {
         if (+route[j].time >= +prevT + 10e3) {
@@ -200,7 +210,7 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
           ctx3.arc(
             Math.round(point.x - bounds.minX),
             Math.round(point.y - bounds.minY),
-            count % 6 === 0 ? 3 : 1,
+            (count % 6 === 0 ? 3 : 1) / resolution,
             0,
             2 * Math.PI
           );
