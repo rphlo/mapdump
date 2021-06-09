@@ -155,11 +155,9 @@ function getResolution(width, height, top_left_latlon, top_right_latlon, bottom_
   var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);
   var bottom_left_meters = proj.LatLonToMeters(bottom_left_latlon);
   
-  const resA = Math.abs(top_left_meters.x - top_right_meters.x)/Math.abs(topLeftMapXY.x - topRightMapXY.x)
-  const resB = Math.abs(bottom_left_meters.x - bottom_right_meters.x)/Math.abs(bottomLeftMapXY.x - bottomRightMapXY.x)
-  const resC = Math.abs(top_left_meters.y - bottom_left_meters.y)/Math.abs(topLeftMapXY.y - bottomLeftMapXY.y)
-  const resD = Math.abs(top_right_meters.y - bottom_right_meters.y)/Math.abs(topRightMapXY.y - bottomRightMapXY.y)
-  return (resA+resB+resC+resD)/4;
+  const resA = Math.sqrt(Math.pow(top_left_meters.x - bottom_right_meters.x, 2) + Math.pow(top_left_meters.y - bottom_right_meters.y, 2))/Math.sqrt(Math.pow(topLeftMapXY.x - bottomRightMapXY.x, 2) + Math.pow(topLeftMapXY.y - bottomRightMapXY.y, 2))
+  const resB = Math.sqrt(Math.pow(top_right_meters.x - bottom_left_meters.x, 2) + Math.pow(top_right_meters.y - bottom_left_meters.y, 2))/Math.sqrt(Math.pow(topRightMapXY.x - bottomLeftMapXY.x, 2) + Math.pow(topRightMapXY.y - bottomLeftMapXY.y, 2))
+  return (resA + resB) / 2;
 }
 
 function cornerBackTransform(width, height, top_left_latlon, top_right_latlon, bottom_right_latlon, bottom_left_latlon) {
