@@ -17,7 +17,7 @@ const RouteDrawing = (props) => {
   const [saved, setSaved] = useState(false);
   const [imgData, setImgData] = useState()
   const [imgURL, setImgURL] = useState(null)
-  const [zoom, setZoom] = useState(200)
+  const [zoom, setZoom] = useState(100)
   const [bounds, setBounds] = useState(props.mapCornersCoords) 
   const [redraw, setRedraw] = useState(true)
 

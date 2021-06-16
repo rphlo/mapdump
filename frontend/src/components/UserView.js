@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
 import {Helmet} from 'react-helmet'
 import 'react-calendar-heatmap/dist/styles.css'
 import LazyLoad from 'vanilla-lazyload'
-import {printTime} from '../utils/drawHelpers'
+import {printTime, printPace} from '../utils/drawHelpers'
 
 const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
 
@@ -116,8 +116,7 @@ const UserView = ({match}) => {
                     <Link to={'/routes/'+r.id}><img className="card-img-top lazyload" src="/placeholder-image.png" data-src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
                     <div className="card-body">
                     <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
-                    <p className="card-text">{DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('DDDD, T')}<br/>{(r.distance/1000).toFixed(1) + 'km'} {r.duration? printTime(r.duration*1000) : ''}</p>
-                    </div>
+                    <p className="card-text">{DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('DDDD, T')}<br/>{(r.distance/1000).toFixed(1) + 'km'}{r.duration? ' - ' + printTime(r.duration*1000) : ''}{r.duration? ' - ' + printPace(r.duration/r.distance*1000) : ''}</p>                    </div>
                 </div>
                 </div>))}
                 </div>

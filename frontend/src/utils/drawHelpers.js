@@ -353,3 +353,7 @@ export const printTime = (t) => {
   }
   return hPart + mPart + sPart
 }
+
+export const printPace = (p) => {
+  return `${printTime(p*1000)}/km`
+}
