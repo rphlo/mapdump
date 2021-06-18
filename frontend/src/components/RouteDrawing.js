@@ -117,7 +117,7 @@ const RouteDrawing = (props) => {
       imgData
     )
     const comment = `${
-      props.stravaDetails.description
+      props.stravaDetails.description || ''
     }${
       props.stravaDetails.description && props.stravaDetails.id ? '\r\n\r\n' : ''
     }${
