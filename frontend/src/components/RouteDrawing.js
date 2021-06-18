@@ -141,14 +141,15 @@ const RouteDrawing = (props) => {
         setSaving(false)
         if (response.status===200 || response.status===201) {
           const res = await response.json(); // parses JSON response into native JavaScript objects
-          const description = `${
-            props.stravaDetails.description
-          }${
-            props.stravaDetails.description && res.id ? '\r\n\r\n' : ''
-          }${
-            props.stravaDetails.id ? `https://karttamuovi.com/routes/${res.id}` : ''
-          }`
+          
           if (props.stravaDetails.client) {
+            const description = `${
+              props.stravaDetails.description || ''
+            }${
+              props.stravaDetails.description && res.id ? '\r\n\r\n' : ''
+            }${
+              res.id ? `https://karttamuovi.com/routes/${res.id}` : ''
+            }`
             await props.stravaDetails.client.activities.update({id: props.stravaDetails.id, description})
           }
           setSaved(res.id)
