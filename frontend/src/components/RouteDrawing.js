@@ -148,7 +148,9 @@ const RouteDrawing = (props) => {
           }${
             props.stravaDetails.id ? `https://karttamuovi.com/routes/${res.id}` : ''
           }`
-          await props.stravaDetails.client.activities.update({id: props.stravaDetails.id, description})
+          if (props.stravaDetails.client) {
+            await props.stravaDetails.client.activities.update({id: props.stravaDetails.id, description})
+          }
           setSaved(res.id)
           window.location = '/routes/'+res.id
         } else {

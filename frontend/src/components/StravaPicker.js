@@ -84,6 +84,7 @@ const Settings = (props) => {
     }
 
     const downloadGPX = async (a) => {
+        const act = await client.activities.get({id: a.id})
         const data = await client.streams.activity({id: a.id, types: ['time', 'latlng'], key_by_type: true});
         let times = null;
         let latlngs = null;
@@ -104,7 +105,7 @@ const Settings = (props) => {
         latlngs.forEach((pos, i)=>{
           route.push({time: startTime + ~~times[i]*1e3, latLon: pos})
         });
-        props.onRouteDownloaded(a.name, route, {client, id: a.id, description: a.description});
+        props.onRouteDownloaded(a.name, route, {client, id: a.id, description: act.description});
     }
 
 

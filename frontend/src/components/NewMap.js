@@ -345,7 +345,7 @@ function NewMap() {
           mapCornersCoords={mapCornersCoords}
           mapDataURL={mapDataURL}
           name={name}
-          desc={desc}
+          stravaDetails={stravaDetails}
         />
       )}
       </>
