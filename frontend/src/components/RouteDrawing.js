@@ -7,7 +7,6 @@ import { saveKMZ } from '../utils/fileHelpers'
 
 const RouteDrawing = (props) => {
   const [name, setName] = useState();
-  const [desc, setDesc] = useState();
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
   const [togglingRoute, setTogglingRoute] = useState();
@@ -54,10 +53,6 @@ const RouteDrawing = (props) => {
   useEffect(() => {
     setName(props.name); 
   }, [props.name])
-
-  useEffect(() => {
-    setDesc(props.desc); 
-  }, [props.desc])
 
   useEffect(() => {   
     var img = new Image();
@@ -121,13 +116,20 @@ const RouteDrawing = (props) => {
     const canvas = drawOriginalMap(
       imgData
     )
+    const comment = `${
+      props.stravaDetails.description
+    }${
+      props.stravaDetails.description && props.stravaDetails.id ? '\r\n\r\n' : ''
+    }${
+      props.stravaDetails.id ? `https://www.strava.com/activities/${props.stravaDetails.id}` : ''
+    }`
     canvas.toBlob(async (blob) => {
       var fd = new FormData();
       fd.append('map_image', blob, name + '.jpg') 
       fd.append('map_bounds', formatMapBounds(bounds));
       fd.append('route_data', formatRoute(props.route));
       fd.append('name', name);
-      fd.append('comment', desc);
+      fd.append('comment', comment);
       try {
         const response = await fetch(process.env.REACT_APP_API_URL+'/v1/routes/new', {
           method: 'POST',
@@ -139,6 +141,14 @@ const RouteDrawing = (props) => {
         setSaving(false)
         if (response.status===200 || response.status===201) {
           const res = await response.json(); // parses JSON response into native JavaScript objects
+          const description = `${
+            props.stravaDetails.description
+          }${
+            props.stravaDetails.description && res.id ? '\r\n\r\n' : ''
+          }${
+            props.stravaDetails.id ? `https://karttamuovi.com/routes/${res.id}` : ''
+          }`
+          await props.stravaDetails.client.activities.update({id: props.stravaDetails.id, description})
           setSaved(res.id)
           window.location = '/routes/'+res.id
         } else {

@@ -25,7 +25,7 @@ function NewMap() {
     const [mapCornersCoords, setMapCornersCoords] = React.useState();
     const [mapDataURL, _setMapDataURL] = React.useState();
     const [name, setName] = React.useState();
-    const [desc, setDesc] = React.useState('');
+    const [stravaDetails, setStravaDetails] = React.useState('');
   
     const setRoute = (newRoute) =>{
       window.drawmyroute.route = newRoute;
@@ -309,7 +309,7 @@ function NewMap() {
             <h1>GPS File</h1><GPXDropzone onDrop={onDropGPX} />
             {username && <>
               <hr/>
-              <StravaPicker onRouteDownloaded={(id, name, route) => {setDesc('https://www.strava.com/activities/'+id);setName(name);onRouteLoaded(route)}} />
+              <StravaPicker onRouteDownloaded={(name, route, stravaInfo) => {setStravaDetails(stravaInfo);setName(name);onRouteLoaded(route)}} />
             </> }
             <hr/>
             or <button className="btn btn-primary" onClick={()=>{setDrawRoute(true);setName('Untitled Run')}}><i className="fas fa-pen"></i> Draw route manually</button>

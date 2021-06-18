@@ -75,7 +75,7 @@ const Settings = (props) => {
         qp.set('redirect_uri', process.env.REACT_APP_API_URL + '/v1/strava/authorization?auth_token=' + api_token);
         qp.set('response_type', 'code');
         qp.set('approval_prompt', 'auto');
-        qp.set('scope', 'activity:read,read');
+        qp.set('scope', 'activity:read_all,activity:write,read');
         return (
             <a href={`${url}?${qp.toString()}`}>
               <img height="50px" src={logo} alt="With strava" />
@@ -104,7 +104,7 @@ const Settings = (props) => {
         latlngs.forEach((pos, i)=>{
           route.push({time: startTime + ~~times[i]*1e3, latLon: pos})
         });
-        props.onRouteDownloaded(a.id, a.name, route);
+        props.onRouteDownloaded(a.name, route, {client, id: a.id, description: a.description});
     }
 
 

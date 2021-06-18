@@ -296,7 +296,7 @@ def gpx_download(request, uid, *args, **kwargs):
 def strava_authorize(request):
     code = request.GET.get('code')
     scopes = request.GET.get('scope', '').split(',')
-    if not code or 'activity:read' not in scopes:
+    if not code or 'activity:read_all' not in scopes or 'activity:write' not in scopes:
         return HttpResponseRedirect(settings.URL_FRONT+'/new')
     client = StravaClient()
     access_token = client.exchange_code_for_token(
