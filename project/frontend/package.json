@@ -62,8 +62,6 @@
   },
   "devDependencies": {
     "@sentry/cli": "^1.49.0",
-    "cypress": "^4.0.2",
-    "cypress-file-upload": "^3.5.3",
     "dotenv": "^8.2.0",
     "surge": "^0.21.3"
   }

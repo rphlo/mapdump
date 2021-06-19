@@ -21,3 +21,4 @@ env/*
 project/project/local_settings.py
 log/*
 var/*
+nnode_modul

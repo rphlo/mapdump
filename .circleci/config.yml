@@ -33,6 +33,7 @@ jobs:
           [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
           nvm install v10 && nvm use v10 && nvm alias default v10
           node -v
+          ~/.yarn/bin/yarn install
           ~/.yarn/bin/yarn cypress install
           ~/.yarn/bin/yarn cypress run
     - store_artifacts:
