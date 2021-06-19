@@ -320,7 +320,7 @@ class Route(models.Model):
             route_file.flush()
             data_uri = subprocess.check_output([
                 'node',
-                os.path.join(settings.BASE_DIR, '..', 'tools/generate_map.js'),
+                os.path.join(settings.BASE_DIR, 'jstools', 'generate_map.js'),
                 img_file.name,
                 route_file.name,
                 json.dumps(self.raster_map.bounds),

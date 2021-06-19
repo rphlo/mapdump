@@ -10,5 +10,5 @@ def url_front(request):
 
 def site(request):
     return {
-        'site': project.objects.get_current()
+        'site': Site.objects.get_current()
     }

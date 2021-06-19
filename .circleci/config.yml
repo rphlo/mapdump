@@ -11,9 +11,9 @@ jobs:
     - run: mkdir -p media/drawmyroute-maps/
     - run: ./dc build
     - run: ./dc up -d
-    - run: ./dc run react yarn install
-    - run: ./dc restart react
-    - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:3000)" != "200" ]]; do sleep 5; done' || false
+    - run: ./da migrate
+    - run: ./da build_frontend
+    - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost)" != "200" ]]; do sleep 5; done' || false
     - run:
         name: Install Node.js 10 and run cypress
         # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
@@ -23,16 +23,12 @@ jobs:
           nvm install v10 && nvm use v10 && nvm alias default v10
           node -v
           curl -o- -L https://yarnpkg.com/install.sh | bash
-          cd frontend
           ~/.yarn/bin/yarn cypress install
           ~/.yarn/bin/yarn cypress run
-          sudo rm -rf node_modules
-          ~/.yarn/bin/yarn install
-          ~/.yarn/bin/yarn deploy
     - store_artifacts:
-        path: frontend/cypress/videos
+        path: cypress/videos
     - store_artifacts:
-        path: frontend/cypress/screenshots
+        path: cypress/screenshots
 workflows:
   build:
     jobs:

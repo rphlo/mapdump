@@ -1,5 +1,4 @@
 #!/bin/sh
-
 if [ "$1" = "pytest" ]; then
     shift
     /wait-for-it.sh --host=db --port=5432

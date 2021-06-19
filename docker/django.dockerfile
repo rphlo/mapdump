@@ -21,13 +21,11 @@ ADD . /app/
 EXPOSE 8000
 
 # Add any custom, static environment variables needed by Django or your settings file here:
-ENV DJANGO_SETTINGS_MODULE=project.settings
+ENV DJANGO_SETTINGS_MODULE=config.settings
 
 # uWSGI configuration (customize as needed):
 # ENV UWSGI_VIRTUALENV=/venv UWSGI_WSGI_FILE=routechoices/wsgi.py UWSGI_HTTP=:8000 UWSGI_MASTER=1 UWSGI_WORKERS=2 UWSGI_THREADS=8 UWSGI_UID=1000 UWSGI_GID=2000 UWSGI_LAZY_APPS=1 UWSGI_WSGI_ENV_BEHAVIOR=holy
 
-# Call collectstatic (customize the following line with the minimal environment variables needed for manage.py to run):
-RUN DATABASE_URL=none /venv/bin/python project/manage.py collectstatic --noinput
 
 # ENTRYPOINT ["/app/docker-entrypoint.sh"]
 # Start uWSGI
@@ -47,10 +45,11 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
 RUN apt-get -y  install nodejs
 RUN node --version
 RUN npm --version
-RUN cd /app/tools/ && npm add yarn -g
-RUN cd /app/tools/ && yarn install
-RUN cd /app/tools/ && npm install canvas
-RUN chmod a+x /app/tools/generate_map.js
+RUN cd /app/project/jstools/ && npm add yarn -g
+RUN cd /app/project/jstools/ && yarn install
+RUN cd /app/project/jstools/ && npm install canvas
+RUN chmod a+x /app/project/jstools/generate_map.js
+
 
 ADD docker/wait-for-it.sh /wait-for-it.sh
 ADD docker/run-django.sh /run.sh

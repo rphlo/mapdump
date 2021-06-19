@@ -46,6 +46,7 @@ services:
       - ../:/app/:rw
     environment:
       DATABASE_URL: postgres://app_user:changeme@db/app_db
+      REACT_APP_API_URL: http://localhost/api
     expose:
       - "8000"
     user: ${USERID}:${GROUPID}
@@ -53,14 +54,4 @@ services:
       - minio
       - db
       - smtp
-  react:
-    build:
-      context: ..
-      dockerfile: docker/react.dockerfile
-    volumes:
-      - ../frontend/:/app/:rw
-    ports:
-      - "3000:3000"
-    tty: true
-    stdin_open: true
 
