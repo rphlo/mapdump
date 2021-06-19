@@ -32,8 +32,8 @@ jobs:
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
           nvm install v14 && nvm use v14 && nvm alias default v14
-          apt-get update
-          apt-get install -y libgbm-dev
+          sudo apt-get update
+          sudo apt-get install -y libgbm-dev
           node -v
           ~/.yarn/bin/yarn install
           ~/.yarn/bin/yarn cypress install
