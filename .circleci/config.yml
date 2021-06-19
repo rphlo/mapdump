@@ -18,7 +18,7 @@ jobs:
         command: |
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-          nvm install v10 && nvm use v10 && nvm alias default v10
+          nvm install v14 && nvm use v14 && nvm alias default v14
           node -v
           curl -o- -L https://yarnpkg.com/install.sh | bash
           cd project/frontend/
@@ -31,7 +31,7 @@ jobs:
         command: |
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-          nvm install v10 && nvm use v10 && nvm alias default v10
+          nvm install v14 && nvm use v14 && nvm alias default v14
           node -v
           ~/.yarn/bin/yarn install
           ~/.yarn/bin/yarn cypress install
