@@ -4,16 +4,16 @@ describe('Create a new map', function() {
         cy.contains('GPS File')
         const fileName = 'Jukola_1st_leg.gpx';
         cy.fixture(fileName).then(fileContent => {
-            cy.get('[data-testid="dropzone"]').upload(
+            cy.get('[data-testid="dropzone"]').attachFile(
                 { fileContent, fileName, mimeType: 'application/xml', encoding: 'utf-8' },
                 { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
             );
             cy.contains('Map Image File')
             const mapFileName = 'Jukola_1st_leg_blank_61.45075_24.18994_61.44656_24.24721_61.42094_24.23851_61.42533_24.18156_.jpg'
             cy.fixture(mapFileName, 'base64').then(mapFileContent => {
-                cy.get('[data-testid="dropzoneImg"]').upload(
-                    { fileContent: mapFileContent, fileName: mapFileName, mimeType: 'image/png' },
-                    { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
+                cy.get('[data-testid="dropzoneImg"]').attachFile(
+                    { fileContent: mapFileContent, fileName: mapFileName, mimeType: 'image/png', encoding: 'base64' },
+                    { subjectType: 'drag-n-drop', force: true, events: ['dragenter', 'drop'] },
                 );
                 cy.contains('Loading')
                 cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
@@ -40,16 +40,16 @@ describe('Create a new map', function() {
         cy.visit('/new')
         const fileName = 'Jukola_1st_leg.tcx';
         cy.fixture(fileName).then(fileContent => {
-            cy.get('[data-testid="dropzone"]').upload(
+            cy.get('[data-testid="dropzone"]').attachFile(
                 { fileContent, fileName, mimeType: 'application/xml', encoding: 'utf-8' },
                 { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
             );
             cy.contains('Map Image File')
             const mapFileName = 'Jukola_1st_leg_blank_61.45075_24.18994_61.44656_24.24721_61.42094_24.23851_61.42533_24.18156_.jpg'
             cy.fixture(mapFileName, 'base64').then(mapFileContent => {
-                cy.get('[data-testid="dropzoneImg"]').upload(
-                    { fileContent: mapFileContent, fileName: mapFileName, mimeType: 'image/png' },
-                    { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
+                cy.get('[data-testid="dropzoneImg"]').attachFile(
+                    { fileContent: mapFileContent, fileName: mapFileName, mimeType: 'image/png', encoding: 'base64' },
+                    { subjectType: 'drag-n-drop', force: true, events: ['dragenter', 'drop'] },
                 );
                 cy.contains('Loading')
                 cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
@@ -63,22 +63,22 @@ describe('Create a new map', function() {
         cy.visit('/new')
         const fileName = 'Jukola_1st_leg.gpx';
         cy.fixture(fileName).then(fileContent => {
-            cy.get('[data-testid="dropzone"]').upload(
+            cy.get('[data-testid="dropzone"]').attachFile(
                 { fileContent, fileName, mimeType: 'application/xml', encoding: 'utf-8' },
-                { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
+                { subjectType: 'drag-n-drop', force: true, events: ['dragenter', 'drop'] },
             );
             cy.contains('Map Image File')
             const mapFileName = 'Jukola_1st_leg_blank_61.45075_24.18994_61.44656_24.24721_61.42094_24.23851_61.42533_24.18156_.jpg'
             cy.fixture(mapFileName, 'base64').then(mapFileContent => {
-                cy.get('[data-testid="dropzoneImg"]').upload(
-                    { fileContent: mapFileContent, fileName: 'Jukola_1st_leg_blank.jpg', mimeType: 'image/png' },
+                cy.get('[data-testid="dropzoneImg"]').attachFile(
+                    { fileContent: mapFileContent, fileName: 'Jukola_1st_leg_blank.jpg', mimeType: 'image/png', encoding: 'base64' },
                     { subjectType: 'drag-n-drop', events: ['dragenter', 'drop'] },
                 );
                 cy.contains('Calibration')
                 cy.contains('Corners Coordinates')
                 cy.get('#cornersCoordsInput').type('61.45075,24.18994,61.44656,24.24721,61.42094,24.23851,61.42533,24.18156')
                 cy.get('[data-testid="nextBtn"]').click()
-                cy.wait(10000)
+                cy.wait(3000)
                 cy.get('input[data-testid="nameInput"]').should('have.value', 'Jukola_1st_leg')
                 cy.contains('JPEG')
                 cy.get('.final-image')
