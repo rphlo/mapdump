@@ -7,7 +7,7 @@ cd $BASEDIR
 git fetch
 git reset origin/master --hard
 source $BASEDIR/env/bin/activate
-pip install -U -r requirements.txt
-./manage.py migrate --noinput
-./manage.py build_frontend
+pip install -U -r project/requirements.txt
+project/manage.py migrate --noinput
+project/manage.py build_frontend
 ./bin/reload
