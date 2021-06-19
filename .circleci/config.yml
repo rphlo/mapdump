@@ -12,10 +12,8 @@ jobs:
     - run: ./dc build
     - run: ./dc up -d
     - run: ./da migrate
-    - run: ./da build_frontend
-    - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost)" != "200" ]]; do sleep 5; done' || false
     - run:
-        name: Install Node.js 10 and run cypress
+        name: Install Yarn and add react-scripts
         # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
         command: |
           export NVM_DIR="/opt/circleci/.nvm"
@@ -23,6 +21,14 @@ jobs:
           nvm install v10 && nvm use v10 && nvm alias default v10
           node -v
           curl -o- -L https://yarnpkg.com/install.sh | bash
+          cd project/frontend/
+          ~/.yarn/bin/yarn add react-scripts
+    - run: ./da build_frontend
+    - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost)" != "200" ]]; do sleep 5; done' || false
+    - run:
+        name: Run cypress
+        # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
+        command:
           ~/.yarn/bin/yarn cypress install
           ~/.yarn/bin/yarn cypress run
     - store_artifacts:
