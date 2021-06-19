@@ -21,4 +21,6 @@ env/*
 project/project/local_settings.py
 log/*
 var/*
-nnode_modul
+node_modules/*
+cypress/screenshots/*
+cypress/videos/*
