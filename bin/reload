@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BASEDIR=$(dirname $DIR)
+UWSGI=${BASEDIR}/env/bin/uwsgi
+PID_FILE=${BASEDIR}/var/django.pid
+INI_FILE=${BASEDIR}/bin/uwsgi.ini
+if [ -f $PID_FILE ];
+then
+ pid=`cat $PID_FILE`
+ echo "checks PID $pid"
+ if ps -p $pid > /dev/null 2>&1
+ then
+  echo "reloading"
+  $UWSGI --reload $PID_FILE
+ else
+  echo "starting"
+  $UWSGI $INI_FILE
+ fi
+else
+ echo "starting"
+ $UWSGI $INI_FILE
+fi

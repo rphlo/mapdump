@@ -1,10 +1,11 @@
 version: 2
 jobs:
-  build:
+  build-and-test:
     # to speed up Dockers builds turn on layer caching
     # which is a paid CircleCI feature
     # https://circleci.com/docs/2.0/docker-layer-caching/
     machine:
+      image: ubuntu-2004:202104-01
       docker_layer_caching: false
     steps:
     - checkout
@@ -42,8 +43,27 @@ jobs:
         path: cypress/videos
     - store_artifacts:
         path: cypress/screenshots
+
+  deploy:
+    machine:
+        image: ubuntu-2004:202104-01
+        docker_layer_caching: false
+    steps:
+    - run:
+        name: Deploy
+        command: |
+          ssh root@routechoices.com 'sudo -u apps /apps/drawmyroute/bin/deploy'
+
 workflows:
-  build:
-    jobs:
-    - build
   version: 2
+  build_test_and_deploy:
+    jobs:
+    - build-and-test
+    - deploy:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only:
+                - master
+
