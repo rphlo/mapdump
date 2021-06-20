@@ -2,8 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon';
 import LazyLoad from 'vanilla-lazyload'
-import Helmet from 'react-helmet'
 import {printPace, printTime} from '../utils/drawHelpers'
+import {capitalizeFirstLetter} from '../utils/Utils'
 
 const LatestRoute = () => {
     const [routes, setRoutes] = React.useState(false)
@@ -22,9 +22,6 @@ const LatestRoute = () => {
     
     return (
       <>
-        <Helmet>
-          <link rel="alternate" type="application/rss+xml" title="RSS Feed" href={process.env.REACT_APP_API_URL + '/v1/latest-routes/feed/'} />
-        </Helmet>
         <h3>Latest Routes <a href={process.env.REACT_APP_API_URL + '/v1/latest-routes/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h3>
         <div className="container" style={{textAlign: 'left'}}>
             { routes === false && <div style={{textAlign: 'center'}}><span><i className="fa fa-spinner fa-spin"></i> Loading</span></div>}
@@ -40,7 +37,7 @@ const LatestRoute = () => {
                         <div className="card-body">
                           <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
                           <p className="card-text">{DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('DDDD, T')}<br/>{(r.distance/1000).toFixed(1) + 'km'}{r.duration? ' - ' + printTime(r.duration*1000) : ''}{r.duration? ' - ' + printPace(r.duration/r.distance*1000) : ''}</p>
-                          <p className="card-text">By <Link to={'/athletes/'+r.athlete.username}>{r.athlete.first_name} {r.athlete.last_name}</Link></p>
+                          <p className="card-text">By <Link to={'/athletes/'+r.athlete.username}>{capitalizeFirstLetter(r.athlete.first_name)} {capitalizeFirstLetter(r.athlete.last_name)}</Link></p>
                         </div>
                       </div>
                     </div>))}

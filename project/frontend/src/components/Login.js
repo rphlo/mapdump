@@ -35,6 +35,7 @@ const Login = () => {
       e.preventDefault()
       const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/login', {
         method: 'POST',
+        credentials: 'omit',
         headers: {
           'Content-Type': 'application/json'
         },

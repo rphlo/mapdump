@@ -7,6 +7,7 @@ import {Helmet} from 'react-helmet'
 import 'react-calendar-heatmap/dist/styles.css'
 import LazyLoad from 'vanilla-lazyload'
 import {printTime, printPace} from '../utils/drawHelpers'
+import {capitalizeFirstLetter} from '../utils/Utils'
 
 const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
 
@@ -76,11 +77,9 @@ const UserView = ({match}) => {
         { found && data &&   
             <>
             <Helmet>
-                <title>{"Karttamuovi.com | " + data.first_name + " " + data.last_name + " profile"}</title>
-                <meta name="description" content={ data.first_name + " " + data.last_name + " profile on Karttamuovi.com"} />
-                <link rel="alternate" type="application/rss+xml" title="RSS Feed" href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'} />
+                <title>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name) +  " Map Collection | Karttamuovi.com"}</title>
             </Helmet>
-            <h2>{data.first_name + ' ' + data.last_name} <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
+            <h2>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)} <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
             <h5>@{data.username}</h5>
             <CalendarHeatmap
                 startDate={shiftDate(new Date(), -365)}

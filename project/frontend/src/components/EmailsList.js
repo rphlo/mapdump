@@ -12,6 +12,7 @@ const EmailItem = (props) => {
     e.preventDefault();
     const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/emails/' + email, {
       method: 'PATCH',
+      credentials: 'omit',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token ' + api_token,
@@ -30,6 +31,7 @@ const EmailItem = (props) => {
     }
     await fetch(process.env.REACT_APP_API_URL + '/v1/auth/emails/' + email, {
       method: 'DELETE',
+      credentials: 'omit',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token ' + api_token,
@@ -42,6 +44,7 @@ const EmailItem = (props) => {
     e.preventDefault();
     const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/registration/resend-verification/', {
       method: 'POST',
+      credentials: 'omit',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token ' + api_token,
@@ -99,6 +102,7 @@ const EmailsList = () => {
     e.preventDefault();
     const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/emails/', {
       method: 'POST',
+      credentials: 'omit',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token ' + api_token,

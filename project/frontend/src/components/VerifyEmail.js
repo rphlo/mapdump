@@ -16,8 +16,10 @@ const VerifyEmail = ({match, history}) => {
     React.useEffect(()=>{
         (async () => {
             const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/registration/verify-email/', {
-                method: 'POST',headers: {
-                'Content-Type': 'application/json'
+                method: 'POST',
+                credentials: 'omit',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({key: match.params.key})
             })
@@ -34,7 +36,9 @@ const VerifyEmail = ({match, history}) => {
     const onSubmitResend = async (e) => {
         e.preventDefault()
         await fetch(process.env.REACT_APP_API_URL+'/v1/auth/registration/resend-verification/', {
-          method: 'POST',headers: {
+          method: 'POST',
+          credentials: 'omit',
+          headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({email})

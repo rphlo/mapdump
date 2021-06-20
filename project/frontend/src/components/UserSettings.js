@@ -38,6 +38,7 @@ const UserSettings = () => {
       }
       const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/user/', {
         method: 'PATCH',
+        credentials: 'omit',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Token ' + api_token,

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { DateTime } from 'luxon';
 import useGlobalState from '../utils/useGlobalState'
 import {printTime, printPace} from '../utils/drawHelpers'
+import {capitalizeFirstLetter} from '../utils/Utils'
 
 const RouteHeader = (props) => {  
   const [name, setName] = useState()
@@ -74,6 +75,7 @@ const RouteHeader = (props) => {
     try {
       const response = await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
         method: 'PATCH',
+        credentials: 'omit',
         headers: {
           'Authorization': 'Token ' + tkn,
           'Content-Type': 'application/json'
@@ -98,6 +100,7 @@ const RouteHeader = (props) => {
     try {
       const response = await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
         method: 'PATCH',
+        credentials: 'omit',
         headers: {
           'Authorization': 'Token ' + tkn,
           'Content-Type': 'application/json'
@@ -122,6 +125,7 @@ const RouteHeader = (props) => {
     if (conf) {
       await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
         method: 'DELETE',
+        credentials: 'omit',
         headers: {
           'Authorization': 'Token ' + api_token,
           'Content-Type': 'application/json'
@@ -134,8 +138,7 @@ const RouteHeader = (props) => {
   return (
     <div>
       <Helmet>
-          <title>{"Karttamuovi.com | " + props.name  + " by " + props.athlete.first_name + " " + props.athlete.last_name}</title>
-          <meta name="description" content={"Map \""  + props.name + "\" by " + props.athlete.first_name + " " + props.athlete.last_name + " on Karttamuovi.com"} />
+          <title>{ props.name  + " by " + capitalizeFirstLetter(props.athlete.first_name) + " " + capitalizeFirstLetter(props.athlete.last_name)+ " | Karttamuovi.com" } </title>
       </Helmet>
       <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span>&nbsp;
       { (!canEdit() || !nameEditing) && <>{name}</>}

@@ -46,6 +46,7 @@ const Settings = (props) => {
     const disconnect = async () => {
         await fetch(process.env.REACT_APP_API_URL + '/v1/strava/deauthorize', {
             method: 'POST',
+            credentials: 'omit',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Token ' + api_token,

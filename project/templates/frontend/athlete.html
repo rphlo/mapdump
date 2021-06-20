@@ -1,2 +1,13 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    <title>{{ athlete.first_name|title }} {{athlete.last_name|title }} Map Collection | {{ site.name }}</title>
+    <meta name="description" content="Map collection of {{ athlete.first_name|title }} {{athlete.last_name|title }} on {{ site.name }}"/>
+    <meta property="og:title" content="Map collection of {{ athlete.first_name|title }} {{athlete.last_name|title }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="{{ site.name }}" />
+    <meta property="og:description" content="Map collection of {{ athlete.first_name|title }} {{athlete.last_name|title }} on {{ site.name }}" />
+    <meta property="og:url" content="http{% if request.is_secure %}s{% endif %}://{{site.domain}}/athletes/{{ athlete.username }}" />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http{% if request.is_secure %}s{% endif %}://{{site.domain}}/api/v1/user/{{ athlete.username }}/feed/" />
+{% endblock head %}

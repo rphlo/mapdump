@@ -82,6 +82,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'utils.context_processors.site',
             ],
         },
     },
@@ -180,7 +181,7 @@ REST_AUTH_SERIALIZERS = {
 
 ACCOUNT_ADAPTER = 'utils.adapters.CustomAccountAdapter'
 
-URL_FRONT = 'http://localhost:3000'
+URL_FRONT = 'http://localhost'
 
 
 SLUG_BLACKLIST = [

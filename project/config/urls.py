@@ -18,12 +18,14 @@ from django.urls import path, include, re_path
 
 from django.views.generic import TemplateView
 
+from routedb import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('drf-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/v1/', include('routedb.urls')),
-    path('', TemplateView.as_view(template_name='base.html'), name='index'),
-    re_path(r'routes/[a-zA-Z0-9-_]{11}', TemplateView.as_view(template_name='frontend/route.html'), name='route_page'),
-    re_path(r'athletes/[a-zA-Z0-9-_]{11}', TemplateView.as_view(template_name='frontend/athlete.html'), name='athlete_page'),
+    path('', views.index_view, name='index'),
+    re_path(r'routes/(?P<route_id>[a-zA-Z0-9_-]{11})/?', views.route_view, name='route_page'),
+    re_path(r'athletes/(?P<athlete_username>[a-zA-Z0-9_-]{2,})/?', views.athlete_view, name='athlete_page'),
     re_path(r'.+', TemplateView.as_view(template_name='base.html'), name='catch_all')
 ]

@@ -17,7 +17,9 @@ const PasswordReset = (props) => {
     const onSubmit = async (e) => {
       e.preventDefault()
       const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/password/reset/', {
-        method: 'POST',headers: {
+        method: 'POST',
+        credentials: 'omit',
+        headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({email})

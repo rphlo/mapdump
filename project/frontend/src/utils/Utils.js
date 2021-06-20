@@ -199,6 +199,10 @@ const dataURItoBlob = (dataURI) => {
   return new Blob([ia], {type:mimeString});
 }
 
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 module.exports = {
     Point,
     LatLon,
@@ -206,5 +210,6 @@ module.exports = {
     cornerCalTransform,
     cornerBackTransform,
     dataURItoBlob,
-    getResolution
+    getResolution,
+    capitalizeFirstLetter
 }

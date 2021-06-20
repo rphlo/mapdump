@@ -7,7 +7,7 @@ import time
 
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -349,3 +349,16 @@ def strava_deauthorize(request):
         user_settings.strava_access_token = None
         user_settings.save()
     return Response({})
+
+
+def index_view(request):
+    return render(request, 'frontend/index.html')
+
+def route_view(request, route_id):
+    route = get_object_or_404(Route.objects.select_related('athlete'), uid=route_id)
+    return render(request, 'frontend/route.html', {'route': route, 'athlete': route.athlete})
+
+def athlete_view(request, athlete_username):
+    athlete = get_object_or_404(User, username__iexact=athlete_username)
+    return render(request, 'frontend/athlete.html', {'athlete': athlete})
+

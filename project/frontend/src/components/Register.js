@@ -22,7 +22,9 @@ const Register = (props) => {
     const onRegister = async (e) => {
       e.preventDefault()
       const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/registration/', {
-        method: 'POST',headers: {
+        method: 'POST',
+        credentials: 'omit',
+        headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({email, username: login, first_name: firstName, last_name: lastName, password1: pass, password2: pass2})

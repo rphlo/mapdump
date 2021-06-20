@@ -19,7 +19,9 @@ const Register = (props) => {
       e.preventDefault()
       const [uid, token] = props.match.params.key.split(':')
       const res = await fetch(process.env.REACT_APP_API_URL+'/v1/auth/password/reset/confirm/', {
-        method: 'POST',headers: {
+        method: 'POST',
+        credentials: 'omit',
+        headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({new_password1: pass, new_password2: pass2, uid, token})

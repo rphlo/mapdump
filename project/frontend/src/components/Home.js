@@ -2,11 +2,17 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import useGlobalState from '../utils/useGlobalState'
 import LatestRoutes from './LatestRoutes'
+import {Helmet} from 'react-helmet'
 
 const Home = () => {
     const globalState = useGlobalState()
     const { username } = globalState.user
     return (
+      <>
+      <Helmet>
+        <title>Karttamuovi.com</title>
+      </Helmet>
+
     <div className="container main-container">
     <div style={{textAlign:'center'}} >
       {/*
@@ -25,7 +31,7 @@ const Home = () => {
       <hr/>
       <LatestRoutes/>
     </div>
-    </div>
+    </div></>
     )
 }
 
