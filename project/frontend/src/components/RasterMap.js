@@ -1,4 +1,5 @@
 import React from 'react'
+import NotFound from './NotFound'
 import RouteViewing from './RouteViewing'
 import RouteReplay from './RouteReplay'
 
@@ -68,7 +69,7 @@ const RasterMap = ({match, history}) => {
     <>
       { found && data && getComponent() }
       { found !== false && !data && <h2><i className="fa fa-spin fa-spinner"></i> Loading...</h2>}
-      { found === false && <h2>Not found</h2> }
+      { found === false && <NotFound /> }
     </>
     );
   }

@@ -1,13 +1,14 @@
 import React from 'react'
+import {Helmet} from 'react-helmet'
 import { Link } from 'react-router-dom'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import ReactTooltip from 'react-tooltip'
 import { DateTime } from 'luxon';
-import {Helmet} from 'react-helmet'
 import 'react-calendar-heatmap/dist/styles.css'
 import LazyLoad from 'vanilla-lazyload'
 import {printTime, printPace} from '../utils/drawHelpers'
 import {capitalizeFirstLetter} from '../utils/Utils'
+import NotFound from './NotFound'
 
 const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
 
@@ -73,9 +74,9 @@ const UserView = ({match}) => {
         return null
     }
     return (
+        <>
+        { found && data &&
         <div className="container main-container">
-        { found && data &&   
-            <>
             <Helmet>
                 <title>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name) +  " Map Collection | Karttamuovi.com"}</title>
             </Helmet>
@@ -119,11 +120,11 @@ const UserView = ({match}) => {
                 </div>
                 </div>))}
                 </div>
-                </div>
-            </>
-        }
-        { found === false && <h2>Not found</h2> }
+            </div>
         </div>
+        }
+        { found === false && <NotFound/> }
+        </>
         );
     }
 
