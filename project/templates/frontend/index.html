@@ -4,5 +4,5 @@
     <title>Karttamuovi.com</title>
     <meta name="description" content="Draw your routes on your maps, save and share them with your friends."/>
     <meta name="keywords" content="gps, orienteering, plot, draw, route, gpx, map, orienteer, analysis" />
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http{% if request.is_secure %}s{% endif %}://{{site.domain}}/v1/latest-routes/feed/" />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http{% if request.is_secure %}s{% endif %}://{{site.domain}}{% url 'latest_routes_feed' %}" />
 {% endblock head %}

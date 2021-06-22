@@ -8,5 +8,10 @@
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="{{ site.name }}" />
     <meta property="og:description" content="Activity {{ route.name }} of {{ athlete.first_name|title }} {{athlete.last_name|title }} on {{ site.name }}" />
-    <meta property="og:url" content="http{% if request.is_secure %}s{% endif %}://{{site.domain}}/routes/{{ route.uid }}" />
+    <meta name="twitter:card" content="summary">
+    <meta property="og:url" content="http{% if request.is_secure %}s{% endif %}://{{site.domain}}{% url 'route_page' route.uid %}" />
+    <meta property="og:image" content="http{% if request.is_secure %}s{% endif %}://{{site.domain}}{% url 'map_thumbnail' route.uid %}" />
+    {% if request.is_secure %}<meta property="og:image:secure_url" content="https://{{site.domain}}{% url 'map_thumbnail' route.uid %}" />{% endif %}
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
 {% endblock head %}
