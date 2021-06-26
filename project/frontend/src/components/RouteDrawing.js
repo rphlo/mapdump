@@ -176,7 +176,7 @@ const RouteDrawing = (props) => {
     )
     canvas.toBlob(function(blob) {
       saveAs(blob, name + '_' + (includeRoute ? '' : 'blank_') + printCornersCoords(newCorners, '_')+ '_.jpg');
-    }, 'image/jpeg', 0.4)
+    }, 'image/jpeg', 0.8)
   }
 
   const downloadKmz = (e) => {
@@ -184,7 +184,7 @@ const RouteDrawing = (props) => {
     const canvas = drawRoute(imgData, bounds, [], false, false)
     canvas.toBlob(function(blob) {
       saveKMZ(name + '_blank.kmz', name, newCorners, blob);
-    }, 'image/jpeg', 0.4)
+    }, 'image/jpeg', 0.8)
   }
 
   const toggleHeader = (ev) => {

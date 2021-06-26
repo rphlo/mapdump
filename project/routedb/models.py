@@ -330,6 +330,8 @@ class Route(models.Model):
 
         if data_uri:
             header, encoded = data_uri.decode('utf-8').split(",", 1)
+            if not header.startswith('data'):
+                return None
             data = base64.b64decode(encoded)
             return data
         return None

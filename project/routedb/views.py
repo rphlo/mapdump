@@ -15,14 +15,14 @@ from django.contrib.auth.decorators import login_required
 from knox.models import AuthToken
 
 from rest_framework.decorators import api_view
-from rest_framework import generics, parsers, renderers, status
+from rest_framework import generics, parsers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 
 from stravalib import Client as StravaClient
 
-from routedb.models import RasterMap, Route, UserSettings
+from routedb.models import RasterMap, Route
 from routedb.serializers import (
     RouteSerializer,
     UserMainSerializer,
@@ -32,7 +32,7 @@ from routedb.serializers import (
     UserInfoSerializer,
     MapListSerializer,
 )
-from utils.s3 import s3_object_url, s3_key_exists, upload_to_s3
+from utils.s3 import s3_object_url, upload_to_s3
 
 def x_accel_redirect(request, path, filename='',
                      mime='application/force-download'):

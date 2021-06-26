@@ -65,9 +65,25 @@ const extractBounds = function(img, corners_coords, route) {
   }
 };
 
+const scaleImage = (img, ratio) => {
+  const canvas =  createCanvas(Math.floor(img.width*ratio), Math.floor(img.height*ratio));
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, Math.floor(img.width*ratio), Math.floor(img.height*ratio));
+  return canvas;
+}
+
 const drawRoute = async (img, corners_coords, route, includeHeader=false, includeRoute=true, tz='Europe/Helsinki') => {
   const bounds = extractBounds(img, corners_coords, route);
 
+  if(bounds.maxX - bounds.minX > 32767){
+    const scaledImg = scaleImage(img, 32767 / (bounds.maxX - bounds.minX))
+    return drawRoute(scaledImg, corners_coords, route, includeHeader, includeRoute, tz)
+  }
+  
+  if(bounds.maxY - bounds.minY > 327679){
+    const scaledImg = scaleImage(img, 32767 / (bounds.maxY - bounds.minY))
+    return drawRoute(scaledImg, corners_coords, route, includeHeader, includeRoute, tz)
+  } 
   const resolution = getResolution(
     img.width,
     img.height,
