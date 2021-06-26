@@ -22,7 +22,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"
+      - "8080:8080"
       - "443:443"
     volumes:
       - ../:/app/
@@ -31,6 +31,8 @@ services:
       - minio
     depends_on:
       - django
+    expose:
+      - "8080"
   smtp:
     image: mailhog/mailhog:latest
     ports:
@@ -46,7 +48,7 @@ services:
       - ../:/app/:rw
     environment:
       DATABASE_URL: postgres://app_user:changeme@db/app_db
-      REACT_APP_API_URL: http://localhost/api
+      REACT_APP_API_URL: http://localhost:8080/api
     expose:
       - "8000"
     user: ${USERID}:${GROUPID}

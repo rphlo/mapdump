@@ -25,7 +25,7 @@ jobs:
           cd project/frontend/
           ~/.yarn/bin/yarn add react-scripts
     - run: ./da build_frontend
-    - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost)" != "200" ]]; do sleep 5; done' || false
+    - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do sleep 5; done' || false
     - run:
         name: Run cypress
         # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/

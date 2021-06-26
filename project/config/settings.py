@@ -181,7 +181,7 @@ REST_AUTH_SERIALIZERS = {
 
 ACCOUNT_ADAPTER = 'utils.adapters.CustomAccountAdapter'
 
-URL_FRONT = 'http://localhost'
+URL_FRONT = 'http://localhost:8080'
 
 
 SLUG_BLACKLIST = [

@@ -50,32 +50,25 @@ class RouteSerializer(serializers.ModelSerializer):
     def validate_map_bounds(self, value):
         if not value:
             return None
-        try:
-            assert isinstance(value, dict)
-            for x in 'top_left', 'top_right', 'bottom_right', 'bottom_left':
-                assert x in value
-                assert len(value[x]) == 2
-                for i in (0, 1):
-                    validate_latitude(value[x][0])
-                    validate_longitude(value[x][1])
-        except AssertionError:
+        if not isinstance(value, dict):
             raise ValidationError('Invalid bounds')
+        for x in 'top_left', 'top_right', 'bottom_right', 'bottom_left':
+            if not x in value or len(value[x]) != 2:
+                raise ValidationError('Invalid bounds')
+            validate_latitude(value[x][0])
+            validate_longitude(value[x][1])
         return value
     
     def validate_route_data(self, value):
-        try:
-            assert isinstance(value, list)
-            assert len(value) > 0
-            for x in value:
-                assert 'time' in x
-                assert isinstance(x['time'], (type(None), float, int))
-                assert 'latlon' in x
-                assert isinstance(x['latlon'], list)
-                assert len(x['latlon']) == 2
-                validate_latitude(x['latlon'][0])
-                validate_longitude(x['latlon'][1])
-        except AssertionError:
+        if not isinstance(value, list) or len(value) <= 0:
             raise ValidationError('Invalid route data')
+        for x in value:
+            if 'time' not in x or not isinstance(x['time'], (type(None), float, int)):
+                raise ValidationError('Invalid route data')
+            if 'latlon' not in x or not isinstance(x['latlon'], list) or len(x['latlon']) != 2:
+                raise ValidationError('Invalid route data')
+            validate_latitude(x['latlon'][0])
+            validate_longitude(x['latlon'][1])
         return value
 
     def validate(self, data):
