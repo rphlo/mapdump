@@ -215,6 +215,10 @@ def map_download(request, uid, *args, **kwargs):
     )
     suffix = '_header' if show_header else ''
     suffix += '_route' if show_route else ''
+    basename = '{}_{}_.'.format(
+        route.name,
+        route.raster_map.corners_coordinates.replace(',', '_'),
+    )
     if show_header or show_route:
         file_path = route.images_path + suffix
         mime_type = 'image/jpeg'
@@ -225,7 +229,12 @@ def map_download(request, uid, *args, **kwargs):
             upload_to_s3('drawmyroute-maps', file_path, up_buffer)
             route.__setattr__('has_image_w' + suffix, True)
             route.save()
-            return HttpResponse(img, content_type=mime_type)
+            filename = '{}{}'.format(basename, mime_type[6:])
+            r = HttpResponse(img, content_type=mime_type)
+            r.response['Content-Disposition'] = 'attachment; filename="{}"'.format(
+                filename.replace('\\', '_').replace('"', '\\"')
+            ).encode('utf-8')
+            return r
     elif out_bounds:
         file_path = route.images_path
         mime_type = 'image/jpeg'
@@ -236,7 +245,12 @@ def map_download(request, uid, *args, **kwargs):
             upload_to_s3('drawmyroute-maps', file_path, up_buffer)
             route.has_image_blank = True
             route.save()
-            return HttpResponse(img, content_type=mime_type)
+            filename = '{}{}'.format(basename, mime_type[6:])
+            r = HttpResponse(img, content_type=mime_type)
+            r.response['Content-Disposition'] = 'attachment; filename="{}"'.format(
+                filename.replace('\\', '_').replace('"', '\\"')
+            ).encode('utf-8')
+            return r
     else:
         file_path = route.raster_map.path
         mime_type = route.raster_map.mime_type
@@ -244,7 +258,7 @@ def map_download(request, uid, *args, **kwargs):
         'drawmyroute-maps',
         request,
         '/internal/' + file_path,
-        filename='{}{}.{}'.format(route.name, suffix, mime_type[6:]),
+        filename='{}{}'.format(basename, mime_type[6:]),
         mime=mime_type
     )
 
