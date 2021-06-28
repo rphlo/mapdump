@@ -54,7 +54,7 @@ const saveKMZ = (filename, name, bound, imgBlob) => {
   zip.file("doc.kml", getKml(name, bound));
   var img = zip.folder("files");
   img.file("doc.jpg", imgBlob);
-  zip.generateAsync({type:"blob"})
+  zip.generateAsync({type:"blob", mimeType: 'application/vnd.google-earth.kmz'})
     .then(function(content) {
         saveAs(content, filename);
     });
