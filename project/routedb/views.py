@@ -231,7 +231,7 @@ def map_download(request, uid, *args, **kwargs):
             route.save()
             filename = '{}{}'.format(basename, mime_type[6:])
             r = HttpResponse(img, content_type=mime_type)
-            r.response['Content-Disposition'] = 'attachment; filename="{}"'.format(
+            r['Content-Disposition'] = 'attachment; filename="{}"'.format(
                 filename.replace('\\', '_').replace('"', '\\"')
             ).encode('utf-8')
             return r
@@ -247,7 +247,7 @@ def map_download(request, uid, *args, **kwargs):
             route.save()
             filename = '{}{}'.format(basename, mime_type[6:])
             r = HttpResponse(img, content_type=mime_type)
-            r.response['Content-Disposition'] = 'attachment; filename="{}"'.format(
+            r['Content-Disposition'] = 'attachment; filename="{}"'.format(
                 filename.replace('\\', '_').replace('"', '\\"')
             ).encode('utf-8')
             return r
