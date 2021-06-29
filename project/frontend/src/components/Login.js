@@ -31,6 +31,12 @@ const Login = () => {
       })()
     }, [globalState, api_token, username])
   
+    React.useEffect(() => {
+      if (!wantLogin){
+        setErrors({});
+      }
+    }, [wantLogin])
+
     const onLogin = async (e) => {
       e.preventDefault()
       const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/login', {
