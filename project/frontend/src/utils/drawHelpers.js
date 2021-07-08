@@ -94,8 +94,32 @@ export const drawOriginalMap = function(img) {
   return canvas;
 };
 
+const scaleImage = (img, ratio) => {
+  const canvas =  document.createElement('canvas')
+  canvas.width = Math.floor(img.width*ratio)
+  canvas.height = Math.floor(img.height*ratio)
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(img, 0, 0, Math.floor(img.width*ratio), Math.floor(img.height*ratio))
+  return canvas
+}
+
 export const drawRoute = (img, corners_coords, route, includeHeader=false, includeRoute=true) => {
   const bounds = extractBounds(img, corners_coords, route);
+
+  let dir = 'x'
+  if (bounds.maxY - bounds.minY > bounds.maxX - bounds.minX) {
+    dir = 'y'
+  }
+  if(bounds.maxX - bounds.minX > 32767 && dir === 'x'){
+    const scaledImg = scaleImage(img, 32767 / (bounds.maxX - bounds.minX))
+    return drawRoute(scaledImg, corners_coords, route, includeHeader, includeRoute)
+  }
+  
+  if(bounds.maxY - bounds.minY > 327679 && dir === 'y'){
+    const scaledImg = scaleImage(img, 32767 / (bounds.maxY - bounds.minY))
+    return drawRoute(scaledImg, corners_coords, route, includeHeader, includeRoute)
+  }
+
   const resolution = getResolution(
     img.width,
     img.height,
