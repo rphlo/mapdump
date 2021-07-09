@@ -251,6 +251,7 @@ $(function(){
     L.TileLayer['finland-topo'] = L.TileLayer.Common.extend({url: 'https://tiles.kartat.kapsi.fi/peruskartta/{z}/{x}/{y}.jpg', options:{attribution: '\u0026copy\u003B National Land Survey of Finland'}});
     L.TileLayer['mapant-fi'] = L.TileLayer.Common.extend({url: 'https://wmts.mapant.fi/wmts_EPSG3857.php?z\u003D{z}\u0026x\u003D{x}\u0026y\u003D{y}', options:{attribution: 'MapAnt and National Land Survey of Finland'}});
     L.TileLayer['norway-topo'] = L.TileLayer.Common.extend({url: 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers\u003Dtopo4\u0026zoom\u003D{z}\u0026x\u003D{x}\u0026y\u003D{y}', options:{attribution: ''}});
+    L.TileLayer['mapant-no'] = L.TileLayer.Common.extend({url: 'https://mapant.no/osm-tiles/{z}/{x}/{y}.png', options:{attribution: 'MapAnt Norway'}});
     L.TileLayer['mapant-es'] = L.tileLayer.wms(
         'https://mapant.es/mapserv?map=/mapas/geotiff.map&SERVICE=WMS',
         {layers: 'geotiff', format: 'image/png', version: '1.3.0', transparent: true}
@@ -328,10 +329,11 @@ $(function(){
         baseLayers["Open Street Map"] = defaultLayer;
         baseLayers["Google Map Street"] = new L.TileLayer['gmap-street'];
         baseLayers["Google Map Satellite"] = new L.TileLayer['gmap-hybrid'];
-        baseLayers["Finland Topo"] = new L.TileLayer['finland-topo'];
         baseLayers["Mapant Finland"] = new L.TileLayer['mapant-fi'];
-        baseLayers["Norway Topo"] = new L.TileLayer['norway-topo'];
+        baseLayers["Mapant Norway"] = new L.TileLayer['mapant-no'];
         baseLayers["Mapant Spain"] = L.TileLayer['mapant-es'];
+        baseLayers["Topo Finland"] = new L.TileLayer['finland-topo'];
+        baseLayers["Topo Norway"] = new L.TileLayer['norway-topo'];
 
         map_b.addLayer(defaultLayer);
         map_b.addControl(new L.Control.Layers(baseLayers))
@@ -355,10 +357,11 @@ $(function(){
         baseLayers["Open Street Map"] = defaultLayer;
         baseLayers["Google Map Street"] = new L.TileLayer['gmap-street'];
         baseLayers["Google Map Satellite"] = new L.TileLayer['gmap-hybrid'];
-        baseLayers["Finland Topo"] = new L.TileLayer['finland-topo'];
         baseLayers["Mapant Finland"] = new L.TileLayer['mapant-fi'];
-        baseLayers["Norway Topo"] = new L.TileLayer['norway-topo'];
+        baseLayers["Mapant Norway"] = new L.TileLayer['mapant-no'];
         baseLayers["Mapant Spain"] = L.TileLayer['mapant-es'];
+        baseLayers["Topo Finland"] = new L.TileLayer['finland-topo'];
+        baseLayers["Topo Norway"] = new L.TileLayer['norway-topo'];
 
         map_c.addLayer(defaultLayer);
         map_c.addControl(new L.Control.Layers(baseLayers, {'Map': transformedImage}))
