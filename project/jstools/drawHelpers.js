@@ -75,17 +75,12 @@ const scaleImage = (img, ratio) => {
 const drawRoute = async (img, corners_coords, route, includeHeader=false, includeRoute=true, tz='Europe/Helsinki') => {
   const bounds = extractBounds(img, corners_coords, route);
 
-  let dir = 'x'
-  if (bounds.maxY - bounds.minY > bounds.maxX - bounds.minX) {
-    dir = 'y'
-  }
-  if(bounds.maxX - bounds.minX > 32767 && dir === 'x'){
-    const scaledImg = scaleImage(img, 32767 / (bounds.maxX - bounds.minX))
-    return drawRoute(scaledImg, corners_coords, route, includeHeader, includeRoute, tz)
-  }
+  const mWidth = bounds.maxX - bounds.minX
+  const mHeight = bounds.maxY - bounds.minY
+  const MAX = 32767
   
-  if(bounds.maxY - bounds.minY > 327679 && dir === 'y'){
-    const scaledImg = scaleImage(img, 32767 / (bounds.maxY - bounds.minY))
+  if (mHeight > MAX || mWidth > MAX) {
+    const scaledImg = scaleImage(img, MAX / Math.max(mHeight, mWidth))
     return drawRoute(scaledImg, corners_coords, route, includeHeader, includeRoute, tz)
   }
   
