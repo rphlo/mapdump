@@ -1,11 +1,11 @@
 import React from 'react';
 import strava from 'strava-v3';
 import { DateTime } from 'luxon';
+import Swal from 'sweetalert2'
 
 import { printTime } from '../utils/drawHelpers';
 import useGlobalState from '../utils/useGlobalState';
 import logo from '../strava.png';
-
 
 const Settings = (props) => {
     const globalState = useGlobalState()
@@ -85,28 +85,43 @@ const Settings = (props) => {
     }
 
     const downloadGPX = async (a) => {
-        const act = await client.activities.get({id: a.id})
-        const data = await client.streams.activity({id: a.id, types: ['time', 'latlng'], key_by_type: true});
-        let times = null;
-        let latlngs = null;
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].type === 'time') {
-             times = data[i].data
+        try {
+            let times = null;
+            let latlngs = null;
+            const act = await client.activities.get({id: a.id})
+            const data = await client.streams.activity({id: a.id, types: ['time', 'latlng'], key_by_type: true});
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].type === 'time') {
+                times = data[i].data
+                }
+                if (data[i].type === 'latlng') {
+                latlngs = data[i].data
+                }
             }
-            if (data[i].type === 'latlng') {
-             latlngs = data[i].data
+            if (latlngs.length === 0) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'This Strava activity does not seem contain any route!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
             }
-        }
-        if (latlngs.length === 0) {
-            window.alert('This Strava activity does not contain a route.');
+            const startTime = +(new Date(a.start_date));
+            const route = [];
+            latlngs.forEach((pos, i)=>{
+            route.push({time: startTime + ~~times[i]*1e3, latLon: pos})
+            });
+            props.onRouteDownloaded(a.name, route, {client, id: a.id, description: act.description});
+        } catch(e) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Could not import this activity!',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
             return;
         }
-        const startTime = +(new Date(a.start_date));
-        const route = [];
-        latlngs.forEach((pos, i)=>{
-          route.push({time: startTime + ~~times[i]*1e3, latLon: pos})
-        });
-        props.onRouteDownloaded(a.name, route, {client, id: a.id, description: act.description});
     }
 
 

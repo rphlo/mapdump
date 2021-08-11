@@ -1,8 +1,9 @@
 import React, { useEffect, useState, createRef } from 'react'
-import { drawRoute, drawOriginalMap, getCorners } from '../utils/drawHelpers'
+import Swal from 'sweetalert2'
 import { saveAs } from 'file-saver';
-import useGlobalState from '../utils/useGlobalState'
 import * as Panelbear from '@panelbear/panelbear-js'
+import { drawRoute, drawOriginalMap, getCorners } from '../utils/drawHelpers'
+import useGlobalState from '../utils/useGlobalState'
 import { saveKMZ } from '../utils/fileHelpers'
 
 const RouteDrawing = (props) => {
@@ -160,7 +161,12 @@ const RouteDrawing = (props) => {
         }
       } catch (e) {
         setSaving(false)
-        window.alert('Something went wrong')
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     }, 'image/jpeg', 0.4)
   }

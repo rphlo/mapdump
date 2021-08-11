@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {Helmet} from 'react-helmet'
 import { Link } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import { DateTime } from 'luxon';
 import useGlobalState from '../utils/useGlobalState'
 import {printTime, printPace} from '../utils/drawHelpers'
@@ -84,7 +85,12 @@ const RouteHeader = (props) => {
       });
       setSaving(false)
       if (response.status!==200) {
-        window.alert('Something went wrong')
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
       props.onNameChanged && props.onNameChanged(newName)
     } catch (e) {
@@ -109,7 +115,12 @@ const RouteHeader = (props) => {
       });
       setSaving(false)
       if (response.status!==200) {
-        window.alert('Something went wrong')
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     } catch (e) {
     }
@@ -121,8 +132,14 @@ const RouteHeader = (props) => {
 
   const deleteMap = async (e) => {
     e.preventDefault()
-    const conf = window.confirm('Are you sure?')
-    if (conf) {
+    const {isConfirmed} = await Swal.fire({
+      title: 'Confirm',
+      icon: 'warning',
+      text: 'Are you sure you want to delete this activity?',
+      showCancelButton: true,
+      confirmButtonText: 'Delete'
+    })
+    if (isConfirmed) {
       await fetch(process.env.REACT_APP_API_URL+'/v1/route/'+props.id, {
         method: 'DELETE',
         credentials: 'omit',

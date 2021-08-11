@@ -27,7 +27,10 @@ const PasswordChange = (props) => {
         const data = await res.json()
         setErrors(data)
       } else if (res.status === 200) {
-        setChanged(true)
+        setChanged(true);
+        document.getElementById('password').value = ''
+        document.getElementById('newPassword').value = ''
+        document.getElementById('newPasswordRepeat').value = ''
         setErrors({})
       }
     }
@@ -47,21 +50,21 @@ const PasswordChange = (props) => {
             <form onSubmit={onSubmit}>
             <div className="form-group">
                 <label htmlFor="oldPassword"><i className="fas fa-key"></i> Current Password</label>
-                <input onChange={(e)=>{setOldPass(e.target.value)}} type="password" className={"form-control" + (errors.old_password ? ' is-invalid' : '')} id="oldPassword" name="oldPassword" placeholder="Current Password"/>
+                <input onChange={(e)=>{setOldPass(e.target.value)}} type="password" className={"form-control" + (errors.old_password ? ' is-invalid' : '')} id="password" name="password" placeholder="Current Password"/>
                 {errors.old_password && (<div className="invalid-feedback">
                     {errors.old_password}
                 </div>)}
             </div>
             <div className="form-group">
                 <label htmlFor="password"><i className="fas fa-key"></i> New Password</label>
-                <input onChange={(e)=>{setPass(e.target.value)}} type="password" className={"form-control" + (errors.new_password1 ? ' is-invalid' : '')} id="password" name="password" placeholder="New Password"/>
+                <input onChange={(e)=>{setPass(e.target.value)}} type="password" className={"form-control" + (errors.new_password1 ? ' is-invalid' : '')} id="newPassword" name="newPassword" placeholder="New Password"/>
                 {errors.new_password1 && (<div className="invalid-feedback">
                     {errors.new_password1}
                 </div>)}
             </div>
             <div className="form-group">
                 <label htmlFor="passwordRepeat"><i className="fas fa-key"></i> New Password Confirmation</label>
-                <input onChange={(e)=>{setPass2(e.target.value)}} type="password" className={"form-control" + (errors.new_password2 ? ' is-invalid' : '')} id="passwordRepeat" name="passwordRepeat" placeholder="New Password Confirmation"/>
+                <input onChange={(e)=>{setPass2(e.target.value)}} type="password" className={"form-control" + (errors.new_password2 ? ' is-invalid' : '')} id="newPasswordRepeat" name="newPasswordRepeat" placeholder="New Password Confirmation"/>
                 {errors.new_password2 && (<div className="invalid-feedback">
                     {errors.new_password2}
                 </div>)}

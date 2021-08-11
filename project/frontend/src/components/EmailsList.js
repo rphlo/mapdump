@@ -1,6 +1,7 @@
 
 import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
+import Swal from 'sweetalert2'
 
 const EmailItem = (props) => {
   const [resent, setResent] = React.useState(false);
@@ -26,7 +27,14 @@ const EmailItem = (props) => {
   
   const onDelete = async (e) => {
     e.preventDefault();
-    if (!window.confirm('Are you sure you want to remove email address "' + email + '"')) {
+    const {isConfirmed} = await Swal.fire({
+      title: 'Confirm',
+      icon: 'warning',
+      text: 'Are you sure you want to remove email address "' + email + '"',
+      showCancelButton: true,
+      confirmButtonText: 'Remove',
+    })
+    if (!isConfirmed) {
       return
     }
     await fetch(process.env.REACT_APP_API_URL + '/v1/auth/emails/' + email, {

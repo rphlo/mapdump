@@ -1,5 +1,8 @@
 import React from 'react'
 import JSZip from 'jszip'
+import { pdfjs as pdfjsLib } from "react-pdf";
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import Swal from 'sweetalert2'
 import useGlobalState from '../utils/useGlobalState'
 import GPXDropzone from './GPXDrop'
 import ImageDropzone from './ImgDrop'
@@ -10,8 +13,6 @@ import CornerCoordsInput from './CornerCoordsInput'
 import { parseGpx, extractCornersCoordsFromFilename, validateCornersCoords } from '../utils/fileHelpers'
 import { LatLon } from '../utils/Utils'
 import { parseTCXString } from '../utils/tcxParser'
-import { pdfjs as pdfjsLib } from "react-pdf";
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -52,7 +53,12 @@ function NewMap() {
       try {
         parsedGpx = parseGpx(xml);
       } catch(e) {
-        window.alert('Error parsing your GPX file!');
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error parsing your GPX file!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
         return;
       }
       const newRoute = [];
@@ -69,7 +75,12 @@ function NewMap() {
 
     const onTCXParsed = (error, workout) => {
       if (error) {
-        window.alert('Error parsing your TCX file!');
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error parsing your TCX file!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
         return
       }
       const newRoute = [];
@@ -86,8 +97,12 @@ function NewMap() {
       try {
         parseTCXString(xml, onTCXParsed);
       } catch(e) {
-        console.log(e)
-        window.alert('Error parsing your TCX file!');
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error parsing your TCX file!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     }
   
@@ -197,12 +212,21 @@ function NewMap() {
             imageDataURI,
           };
         } catch (e) {
-          console.log(e);
-          window.alert('Could not parse this KMZ');
+          Swal.fire({
+            title: 'Error!',
+            text: 'Error parsing your KMZ file!',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
           return;
         }
       } else {
-        window.alert('Could not find maps in this KMZ');
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error parsing your KMZ file!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
         return;
       }
     }
@@ -217,7 +241,12 @@ function NewMap() {
           setMapCornersCoords(data.bounds)
         }
       } else {
-        window.alert('Invalid KMZ');
+        Swal.fire({
+          title: 'Error!',
+          text: 'Error parsing your KMZ file!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     }
 
@@ -277,7 +306,12 @@ function NewMap() {
         fr.onload = onPdfLoaded;
         fr.readAsArrayBuffer(file);
       } else {
-        window.alert("Invalid image format");
+        Swal.fire({
+          title: 'Error!',
+          text: 'Invalid image format',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       }
     }
     const onSetCornerCoords = (foundCornersCoords) =>{
