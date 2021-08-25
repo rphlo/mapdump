@@ -29,7 +29,7 @@ beforeEach(function () {
     cy.log('I run before every test in every spec file!!!!!!')
     cy.exec('docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py flush --noinput')
     cy.exec('docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py migrate --noinput')
-    cy.exec('docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_user(\'tester\', \'test@example.com\', \'abc123\')"')
+    cy.exec('docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py shell -c "from django.contrib.auth.models import User;user = User.objects.create_user(\'tester\', \'test@example.com\', \'abc123\');from allauth.account.models import EmailAddress;EmailAdress.objects.create(user=user,email=\'test@example.com\',primary=True,verified=True)"')
 })
 
 Cypress.Commands.add('login', () => {
