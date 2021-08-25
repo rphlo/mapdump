@@ -166,6 +166,7 @@ function NewMap() {
           const latLonQuadElNodes = go.getElementsByTagName('gx:LatLonQuad');
           const filePath = go.getElementsByTagName('href')[0].innerHTML;
           const fileU8 = await kmz.file(filePath).async('uint8array');
+          let buff = Buffer.from(fileU8);
           const filename = kmz.file(filePath).name;
           const extension = filename.toLowerCase().split('.').pop();
           let mime = ''
@@ -174,7 +175,7 @@ function NewMap() {
           } else if (['png, gif', 'jpeg'].includes(extension)) {
             mime = 'image/' + extension + ';';
           }
-          const imageDataURI = 'data:' + mime + 'base64,' + Buffer.from(fileU8).toString('base64');
+          const imageDataURI = 'data:' + mime + 'base64,' + buff.toString('base64');
           let bounds;
           if (latLonboxElNodes.length) {
             const latLonboxEl = latLonboxElNodes[0];
@@ -348,7 +349,7 @@ function NewMap() {
         (async () => {
           const resp = await fetch(kmzUrl);
           if (resp.ok) {
-            const kmz = await resp.blob();
+            const kmz = await resp.arrayBuffer();
             await onKmzLoaded(kmz);
           }
         })()

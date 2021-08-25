@@ -108,7 +108,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
 
   const mWidth = bounds.maxX - bounds.minX
   const mHeight = bounds.maxY - bounds.minY
-  const MAX = 32767
+  const MAX = 2000
   
   if (mHeight > MAX || mWidth > MAX) {
     const scaledImg = scaleImage(img, MAX / Math.max(mHeight, mWidth))

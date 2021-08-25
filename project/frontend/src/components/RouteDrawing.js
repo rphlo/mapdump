@@ -42,8 +42,7 @@ const RouteDrawing = (props) => {
         includeHeader,
         includeRoute
       );
-      const url = canvas.toDataURL()
-      setImgURL(url);
+      setImgURL(canvas.toDataURL());
       setTogglingRoute(false);
       setTogglingHeader(false);
       setRotating(false);
