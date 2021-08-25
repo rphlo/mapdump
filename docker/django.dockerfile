@@ -17,6 +17,9 @@ RUN mkdir /app/
 WORKDIR /app/
 ADD . /app/
 
+RUN mkdir /
+RUN chmod -R 777 /.npm/
+
 # uWSGI will listen on this port
 EXPOSE 8000
 
@@ -45,9 +48,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
 RUN apt-get -y  install nodejs
 RUN node --version
 RUN npm --version
-RUN cd /app/project/jstools/ && npm add yarn -g
-RUN cd /app/project/jstools/ && yarn install
-RUN cd /app/project/jstools/ && npm install canvas
+RUN cd /app/project/jstools/ && npm install
 RUN chmod a+x /app/project/jstools/generate_map.js
 
 

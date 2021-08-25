@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { LatLon, cornerCalTransform } from '../utils/Utils'
 import * as L from 'leaflet';
 import '../utils/Leaflet.SmoothWheelZoom';
@@ -18,6 +18,7 @@ const RouteReplay = (props) => {
   const [leafletTail, setLeafletTail] = useState(null)
   const [leafletMarker, setLeafletMarker] = useState(null)
   const [playInterval, setPlayInterval] = useState(null)
+  const mapDiv = useRef(null);
 
   const FPS = 15
   const tailLength = 60
@@ -47,21 +48,23 @@ const RouteReplay = (props) => {
     setRoute(arch);
   }, [props.route])
 
-  useEffect(() => {   
-    resetOrientation(props.mapDataURL, function(imgDataURI){
-      var img = new Image();
-      img.onload = function () {
-        setMapImage(this)
-        const map = L.map('raster_map', {crs: L.CRS.Simple, minZoom: -5, maxZoom:2, zoomSnap: 0, scrollWheelZoom: false, smoothWheelZoom: true});
-        setLeafletMap(map)
-        const bounds = [map.unproject([0,0]), map.unproject([this.width, this.height])];
-        new L.imageOverlay(this.src, bounds).addTo(map);
-        map.fitBounds(bounds);
-        map.invalidateSize()
-      }
-      img.src = imgDataURI
-    })
-  }, [props.mapDataURL])
+  useEffect(() => {
+    if (mapDiv.current) {
+      resetOrientation(props.mapDataURL, function(imgDataURI){
+        var img = new Image();
+        img.onload = function () {
+          setMapImage(this)
+          const map = L.map('raster_map', {crs: L.CRS.Simple, minZoom: -5, maxZoom:2, zoomSnap: 0, scrollWheelZoom: false, smoothWheelZoom: true});
+          setLeafletMap(map)
+          const bounds = [map.unproject([0,0]), map.unproject([this.width, this.height])];
+          new L.imageOverlay(this.src, bounds).addTo(map);
+          map.fitBounds(bounds);
+          map.invalidateSize()
+        }
+        img.src = imgDataURI
+      })
+    }
+  }, [props.mapDataURL, mapDiv])
 
   useEffect(() => {
     const getCurrentTime = () => {
@@ -223,7 +226,7 @@ const RouteReplay = (props) => {
       </div>
       { hasRouteTime() ? (
       <>
-        <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
+        <div id="raster_map" ref={mapDiv} style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
         <div style={{marginBottom:'5px'}}>
         { !playing ? (
           <button className="btn btn-light" onClick={onPlay}><i className="fa fa-play"></i></button>
