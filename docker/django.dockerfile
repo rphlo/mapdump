@@ -17,7 +17,7 @@ RUN mkdir /app/
 WORKDIR /app/
 ADD . /app/
 
-RUN mkdir /
+RUN mkdir /.npm/
 RUN chmod -R 777 /.npm/
 
 # uWSGI will listen on this port
