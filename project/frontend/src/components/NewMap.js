@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import JSZip from 'jszip'
 import { pdfjs as pdfjsLib } from "react-pdf";
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
@@ -47,7 +47,7 @@ function NewMap() {
       setRoute(newRoute)
     }
   
-    const onGPXLoaded = e => {
+    const onGPXLoaded = (e) => {
       const xml = e.target.result;
       let parsedGpx;
       try {
@@ -335,6 +335,35 @@ function NewMap() {
       setMapCornersCoords(null);
       setDrawRoute(false)
     }
+
+    useEffect(()=> {
+      const myUrl = new URL(window.location.href.replace(/#/g,"?"));
+      const kmzUrl = myUrl.searchParams.get("kmz");
+      const gpxUrl = myUrl.searchParams.get("gpx");
+      const title = myUrl.searchParams.get("title");
+      if (title) {
+        setName(title)
+      }
+      if (kmzUrl) {
+        (async () => {
+          const resp = await fetch(kmzUrl);
+          if (resp.ok) {
+            const kmz = await resp.blob();
+            await onKmzLoaded(kmz);
+          }
+        })()
+      }
+      if (gpxUrl) {
+        (async () => {
+          const resp = await fetch(gpxUrl);
+          if (resp.ok) {
+            const gpx = await resp.text();
+            onGPXLoaded({target: {result: gpx}});
+          }
+        })()
+      }
+    }, [])
+
     return (
       <>
       <div className="container main-container">
