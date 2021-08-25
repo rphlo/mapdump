@@ -1,12 +1,57 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.utils.safestring import mark_safe
+
 
 from allauth.account.models import EmailAddress
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from allauth.account.models import EmailAddress
 from routedb.models import RasterMap, Route, UserSettings
 from utils.validators import validate_latitude, validate_longitude, custom_username_validators
+
+class AuthTokenSerializer(serializers.Serializer):
+    username = serializers.CharField(
+        label=_("Username"),
+        write_only=True
+    )
+    password = serializers.CharField(
+        label=_("Password"),
+        style={'input_type': 'password'},
+        trim_whitespace=False,
+        write_only=True
+    )
+    token = serializers.CharField(
+        label=_("Token"),
+        read_only=True
+    )
+
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            user = authenticate(request=self.context.get('request'),
+                                username=username, password=password)
+
+            # The authenticate call simply returns None for is_active=False
+            # users. (Assuming the default ModelBackend authentication
+            # backend.)
+            if not user:
+                msg = _('Unable to log in with provided credentials.')
+                raise serializers.ValidationError(msg, code='authorization')
+            if not EmailAddress.objects.filter(user=user, verified=True).exists():
+                raise serializers.ValidationError(
+                    mark_safe(_('Please verify your email address or <a href="/verify-email">resend verification</a>')),
+                    code='authorization'
+                )
+        else:
+            msg = _('Must include "username" and "password".')
+            raise serializers.ValidationError(msg, code='authorization')
+
+        attrs['user'] = user
+        return attrs
 
 
 class RelativeURLField(serializers.ReadOnlyField):

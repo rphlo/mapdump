@@ -78,9 +78,7 @@ const Login = () => {
               </div>
               <div className="modal-body" style={{padding:'40px 50px'}}>
                 {errors.non_field_errors && errors.non_field_errors.map(e=>
-                    <div className="alert alert-danger" role="alert">
-                        {e}
-                    </div>
+                    <div className="alert alert-danger" role="alert" dangerouslySetInnerHTML={{__html: e}}></div>
                 )}
                 <form onSubmit={onLogin}>
                   <div className="form-group">

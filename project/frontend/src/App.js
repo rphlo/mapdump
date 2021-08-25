@@ -56,6 +56,7 @@ function App() {
             <Route exact path="/settings" component={Settings} />
             <Route exact path="/password-reset" component={PasswordReset} />
             <Route exact path="/password-reset-confirmation/:key" component={PasswordResetConfirmation} />
+            <Route exact path="/verify-email/" component={VerifyEmail} />
             <Route exact path="/verify-email/:key" component={VerifyEmail} />
             <Route exact path="/routes/:uid/" component={RasterMap} />
             <Route exact path="/routes/:uid/player" component={RasterMapRedirect} />

@@ -15,20 +15,22 @@ const VerifyEmail = ({match, history}) => {
 
     React.useEffect(()=>{
         (async () => {
-            const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/registration/verify-email/', {
-                method: 'POST',
-                credentials: 'omit',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({key: match.params.key})
-            })
-            if (res.status === 200) {
-                setVerified(true)
-            } else if (res.status === 400) {
-                setErrors(await res.json())
-            } else if (res.status === 404) {
-                setErrors({key: 'Could not find key.'})
+            if(match.params.key) {
+                const res = await fetch(process.env.REACT_APP_API_URL + '/v1/auth/registration/verify-email/', {
+                    method: 'POST',
+                    credentials: 'omit',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({key: match.params.key})
+                })
+                if (res.status === 200) {
+                    setVerified(true)
+                } else if (res.status === 400) {
+                    setErrors(await res.json())
+                } else if (res.status === 404) {
+                    setErrors({key: 'Could not find key.'})
+                }
             }
         })()
     }, [match, history])
@@ -48,11 +50,13 @@ const VerifyEmail = ({match, history}) => {
 
     return (
       <div className="container main-container">
-        {!sent && errors.key && (
+        {!sent && (
             <>
+            { errors.key && (
             <div className="alert alert-danger" role="alert">
                 {errors.key}
             </div>
+            )}
             <h3>Resend verification email</h3>
             <form onSubmit={onSubmitResend}>
             <div className={"form-group"}>

@@ -6,7 +6,6 @@ import json
 import math
 import re
 import os
-import time
 import subprocess
 import tempfile
 from datetime import datetime
@@ -14,20 +13,15 @@ from io import BytesIO
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile, File
-from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Value
 from django.urls import reverse
 from django.utils.timezone import now, utc
 
 from PIL import Image
-from utils.gps_data_encoder import GeoLocation, GeoLocationSeries
 from utils.helper import tz_at_coords, random_key, time_base64, country_at_coords
-from utils.storages import OverwriteImageStorage
 from utils.validators import (validate_corners_coordinates, validate_latitude,
-                              validate_longitude, validate_nice_slug)
+                              validate_longitude)
 
 from django_s3_storage.storage import S3Storage
 

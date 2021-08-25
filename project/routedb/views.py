@@ -17,13 +17,13 @@ from knox.models import AuthToken
 from rest_framework.decorators import api_view
 from rest_framework import generics, parsers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
-from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 
 from stravalib import Client as StravaClient
 
 from routedb.models import RasterMap, Route
 from routedb.serializers import (
+    AuthTokenSerializer,
     RouteSerializer,
     UserMainSerializer,
     LatestRouteListSerializer,
