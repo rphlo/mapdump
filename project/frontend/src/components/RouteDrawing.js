@@ -2,7 +2,7 @@ import React, { useEffect, useState, createRef } from 'react'
 import Swal from 'sweetalert2'
 import { saveAs } from 'file-saver';
 import * as Panelbear from '@panelbear/panelbear-js'
-import { drawRoute, drawOriginalMap, getCorners } from '../utils/drawHelpers'
+import { drawRoute, drawOriginalMap, getCorners, scaleImage } from '../utils/drawHelpers'
 import useGlobalState from '../utils/useGlobalState'
 import { saveKMZ } from '../utils/fileHelpers'
 
@@ -42,7 +42,8 @@ const RouteDrawing = (props) => {
         includeHeader,
         includeRoute
       );
-      setImgURL(canvas.toDataURL());
+      const imgURL = canvas.toDataURL()
+      setImgURL(imgURL);
       setTogglingRoute(false);
       setTogglingHeader(false);
       setRotating(false);
@@ -91,12 +92,21 @@ const RouteDrawing = (props) => {
       return
     }
     setRotating(true)
-    const canvas = document.createElement('canvas');
-    canvas.width  = imgData.height;
-    canvas.height = imgData.width;
+    let imgOrig = imgData;
+    const mWidth = imgOrig.width
+    const mHeight = imgOrig.height
+    const MAX = 3000
+    
+    if (mHeight > MAX || mWidth > MAX) {
+      imgOrig = scaleImage(imgOrig, MAX / Math.max(mHeight, mWidth))
+    }
+
+    let canvas = document.createElement('canvas');
+    canvas.width  = imgOrig.height;
+    canvas.height = imgOrig.width;
     const ctx = canvas.getContext('2d');
     ctx.rotate(90 * Math.PI / 180);
-    ctx.drawImage(imgData, 0, -imgData.height);
+    ctx.drawImage(imgOrig, 0, -imgOrig.height);
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.onload = function(){
@@ -104,7 +114,8 @@ const RouteDrawing = (props) => {
         setImgData(this);
         setRedraw(true);
     };
-    img.src = canvas.toDataURL()
+    const dataURL = canvas.toDataURL('image/png');
+    img.src = dataURL;
   }
 
   const onExport = async (e) => {
@@ -113,9 +124,16 @@ const RouteDrawing = (props) => {
     }
     const tkn = api_token
     setSaving(true)
-    const canvas = drawOriginalMap(
-      imgData
-    )
+
+    const mWidth = imgData.width
+    const mHeight = imgData.height
+    const MAX = 3000
+    let canvas = null;
+    if (mHeight > MAX || mWidth > MAX) {
+      canvas = scaleImage(imgData, MAX / Math.max(mHeight, mWidth))
+    } else {
+      canvas = drawOriginalMap(imgData)
+    }
     const comment = `${
       props.stravaDetails.description || ''
     }${
@@ -123,8 +141,11 @@ const RouteDrawing = (props) => {
     }${
       props.stravaDetails.id ? `https://www.strava.com/activities/${props.stravaDetails.id}` : ''
     }`
-    canvas.toBlob(async (blob) => {
-      var fd = new FormData();
+    
+    fetch(canvas.toDataURL('image/jpeg', 0.8))
+    .then(res => res.blob())
+    .then(async blob => {
+      const fd = new FormData();
       fd.append('map_image', blob, name + '.jpg') 
       fd.append('map_bounds', formatMapBounds(bounds));
       fd.append('route_data', formatRoute(props.route));
@@ -167,7 +188,7 @@ const RouteDrawing = (props) => {
           confirmButtonText: 'OK'
         });
       }
-    }, 'image/jpeg', 0.4)
+    })
   }
 
   const downloadMapWithRoute = (e) => {

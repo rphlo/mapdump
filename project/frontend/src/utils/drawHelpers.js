@@ -94,7 +94,7 @@ export const drawOriginalMap = function(img) {
   return canvas;
 };
 
-const scaleImage = (img, ratio) => {
+export const scaleImage = (img, ratio) => {
   const canvas =  document.createElement('canvas')
   canvas.width = Math.floor(img.width*ratio)
   canvas.height = Math.floor(img.height*ratio)
@@ -108,7 +108,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
 
   const mWidth = bounds.maxX - bounds.minX
   const mHeight = bounds.maxY - bounds.minY
-  const MAX = 2000
+  const MAX = 3000
   
   if (mHeight > MAX || mWidth > MAX) {
     const scaledImg = scaleImage(img, MAX / Math.max(mHeight, mWidth))

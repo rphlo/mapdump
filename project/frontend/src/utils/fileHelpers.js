@@ -126,5 +126,5 @@ module.exports = {
   parseGpx,
   extractCornersCoordsFromFilename,
   validateCornersCoords,
-  saveKMZ
+  saveKMZ,
 }
