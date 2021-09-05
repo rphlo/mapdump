@@ -363,6 +363,7 @@ function NewMap() {
           }
         })()
       }
+    // eslint-disable-next-line
     }, [])
 
     return (

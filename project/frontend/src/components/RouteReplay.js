@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { LatLon, cornerCalTransform } from '../utils/Utils'
-import * as L from 'leaflet';
-import '../utils/Leaflet.SmoothWheelZoom';
-import Slider from 'react-input-slider';
-import { Position, PositionArchive } from '../utils/positions'
-import RouteHeader from './RouteHeader';
+import * as L from 'leaflet'
+import Slider from 'react-input-slider'
+import '../utils/Leaflet.SmoothWheelZoom'
+import RouteHeader from './RouteHeader'
 import ShareModal from './ShareModal'
+import { Position, PositionArchive } from '../utils/positions'
+import { scaleImage } from '../utils/drawHelpers'
 
 const RouteReplay = (props) => {
   const [playing, setPlaying] = useState(false)
@@ -29,13 +30,18 @@ const RouteReplay = (props) => {
     img.crossOrigin = "anonymous";
     img.onload = function() {
         var width = img.width,
-            height = img.height,
-            canvas = document.createElement('canvas'),
-            ctx = canvas.getContext("2d");
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0);
-
+            height = img.height;
+        const MAX = 3000
+        let canvas = null;
+        if (height > MAX || width > MAX) {
+          canvas = scaleImage(img, MAX / Math.max(height, width))
+        } else {
+          canvas = document.createElement('canvas')
+          const ctx = canvas.getContext("2d");
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0);
+        }
         // export base64
         callback(canvas.toDataURL('image/jpeg', 0.8));
     }
