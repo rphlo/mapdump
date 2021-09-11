@@ -244,8 +244,8 @@ const RouteDrawing = (props) => {
     <div className="container main-container">
       <h2><input type="text" data-testid="nameInput" maxLength={52} defaultValue={name} onChange={(e)=>setName(e.target.value)}/></h2>
       <div>
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> JPEG</button>&nbsp;
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadKmz}><i className="fas fa-download"></i> KMZ</button>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMapWithRoute}><i className="fas fa-download"></i> JPEG {`(Map${includeRoute ? ' w/ Route': ''})`}</button>&nbsp;
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadKmz}><i className="fas fa-download"></i> KMZ (Map)</button>
       </div>
       <button className="btn btn-sm btn-default" onClick={zoomIn}><i className={"fa fa-plus"}></i></button>&nbsp;
       <button className="btn btn-sm btn-default" onClick={zoomOut}><i className={"fa fa-minus"}></i></button>&nbsp;

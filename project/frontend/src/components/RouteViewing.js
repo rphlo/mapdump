@@ -146,9 +146,9 @@ const RouteViewing = (props) => {
       <RouteHeader {...props} onNameChanged={setName} />
       <div>
         <button style={{marginBottom: '5px'}} className="btn btn-sm btn-warning" onClick={share}><i className="fas fa-share"></i> Share</button><br/>
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMap}><i className="fas fa-download"></i> JPEG</button>&nbsp;
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadKmz}><i className="fas fa-download"></i> KMZ</button>&nbsp;
-        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> GPX</button>
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadMap}><i className="fas fa-download"></i> JPEG {`(Map${includeRoute ? ' w/ Route': ''})`}</button>&nbsp;
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadKmz}><i className="fas fa-download"></i> KMZ (Map)</button>&nbsp;
+        <button style={{marginBottom: '5px'}} className="btn btn-sm btn-success" onClick={downloadGPX}><i className="fas fa-download"></i> GPX (Route)</button>
         { hasRouteTime() && <button style={{marginBottom: '5px'}} className="btn btn-sm btn-primary float-right" onClick={props.togglePlayer}><i className="fas fa-play"></i> View animation</button> }
       </div>
       <button className="btn btn-sm btn-default" onClick={zoomIn} aria-label="Zoom in"><i className={"fa fa-plus"}></i></button>&nbsp;
