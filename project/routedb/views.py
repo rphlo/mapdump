@@ -4,6 +4,7 @@ from io import BytesIO
 import re
 import json
 import time
+import arrow
 
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
@@ -153,6 +154,7 @@ class MapsList(generics.ListAPIView):
     queryset = RasterMap.objects.all().prefetch_related('route_set', 'route_set__athlete')
     serializer_class = MapListSerializer
 
+
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserMainSerializer
     lookup_field = 'username'
@@ -160,6 +162,7 @@ class UserDetail(generics.RetrieveAPIView):
     def get_queryset(self):
         username = self.kwargs['username']
         return User.objects.filter(username=username).prefetch_related('routes')
+
 
 class UserEditView(generics.RetrieveUpdateAPIView):
     serializer_class = UserInfoSerializer
@@ -368,11 +371,20 @@ def strava_deauthorize(request):
 def index_view(request):
     return render(request, 'frontend/index.html')
 
+
 def route_view(request, route_id):
     route = get_object_or_404(Route.objects.select_related('athlete'), uid=route_id)
     return render(request, 'frontend/route.html', {'route': route, 'athlete': route.athlete})
 
+
 def athlete_view(request, athlete_username):
     athlete = get_object_or_404(User, username__iexact=athlete_username)
     return render(request, 'frontend/athlete.html', {'athlete': athlete})
+
+
+def athlete_day_view(request, athlete_username, date):
+    athlete = get_object_or_404(User, username__iexact=athlete_username)
+    date_raw = date
+    date = arrow.get(date_raw).format('dddd, MMMM D, YYYY')
+    return render(request, 'frontend/athlete_day.html', {'athlete': athlete, 'date': date, 'date_raw': date_raw})
 

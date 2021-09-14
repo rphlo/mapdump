@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>{{ athlete.first_name|title }} {{athlete.last_name|title }} Map Collection | {{ site.name }}</title>
+    <meta name="description" content="Maps of {{ athlete.first_name|title }} {{ athlete.last_name|title }} on {{ date }} on {{ site.name }}"/>
+    <meta property="og:title" content="Maps of {{ athlete.first_name|title }} {{ athlete.last_name|title }} on {{ date }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="{{ site.name }}" />
+    <meta property="og:description" content="Maps of {{ athlete.first_name|title }} {{athlete.last_name|title }} on {{date }} on {{ site.name }}" />
+    <meta property="og:url" content="http{% if request.is_secure %}s{% endif %}://{{site.domain}}{% url 'athlete_day_page' athlete.username date_raw %}" />
+{% endblock head %}

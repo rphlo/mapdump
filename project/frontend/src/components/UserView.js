@@ -12,9 +12,10 @@ import NotFound from './NotFound'
 
 const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
 
-const UserView = ({match}) => {
+const UserView = ({match, history}) => {
     const [found, setFound] = React.useState(null)
     const [data, setData] = React.useState(null)
+    const [routes, setRoutes] = React.useState([])
 
     React.useEffect(()=> {
         if (urls.includes(match.params.username)) {
@@ -36,6 +37,17 @@ const UserView = ({match}) => {
         })()
     }, [match])
 
+
+    React.useEffect(()=> {
+        if(data?.routes) {
+            if (match.params.date) {
+                setRoutes(data.routes.filter((r) => DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('yyyy-MM-dd') === match.params.date))
+            } else {
+                setRoutes(data.routes)
+            }
+        }
+    }, [match.params.date, data?.routes])
+
     function shiftDate(date, numDays) {
         const newDate = new Date(date);
         newDate.setDate(newDate.getDate() + numDays);
@@ -56,7 +68,7 @@ const UserView = ({match}) => {
 
     const getCountryStats = () => {
         const val = {}
-        data.routes.forEach(r=>{
+        routes.forEach(r=>{
         if(val[r.country]) {
             val[r.country] += 1 
         } else {
@@ -78,10 +90,12 @@ const UserView = ({match}) => {
         { found && data &&
         <div className="container main-container">
             <Helmet>
-                <title>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name) +  " Map Collection | Karttamuovi.com"}</title>
+                <title>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name) +  " Maps on "+ DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD') +" | Karttamuovi.com"}</title>
             </Helmet>
-            <h2>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)} <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
+            <h2><Link to={`/athletes/${data.username}`} >{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)}</Link> <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
             <h5>@{data.username}</h5>
+            { match.params.date && <h3>Routes on {DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD')}</h3>}
+            { !match.params.date &&<>
             <CalendarHeatmap
                 startDate={shiftDate(new Date(), -365)}
                 endDate={new Date()}
@@ -98,8 +112,10 @@ const UserView = ({match}) => {
                 };
                 }}
                 showWeekdayLabels={true}
+                onClick={(v)=>{if (v.count) {history.push(`/athletes/${data.username}/${v.date.substring(0, 10)}`)}}}
             />
-            <ReactTooltip />
+            <ReactTooltip /></>
+            }
             {
                 getCountryStats().map(c => 
                 <span key={c.country}><span className={("flag-icon flag-icon-"+c.country.toLowerCase())}></span> {c.count}</span>
@@ -108,10 +124,10 @@ const UserView = ({match}) => {
                 }, null)
             }
             <hr/>
-            <h3 data-testid="routeCount">{data.routes.length} Route{data.routes.length===1 ? '' : 's'}</h3>
+            <h3 data-testid="routeCount">{routes.length} Route{routes.length===1 ? '' : 's'}</h3>
             <div className="container">
                 <div className="row">
-                {data.routes.map(r=>(
+                {routes.map(r=>(
                 <div key={r.id} className="col-12 col-md-4"><div className="card">
                     <Link to={'/routes/'+r.id}><img className="card-img-top lazyload" src="/static/placeholder-image.png" data-src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
                     <div className="card-body">

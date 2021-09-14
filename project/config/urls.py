@@ -27,5 +27,6 @@ urlpatterns = [
     path('', views.index_view, name='index'),
     re_path(r'routes/(?P<route_id>[a-zA-Z0-9_-]{11})/?$', views.route_view, name='route_page'),
     re_path(r'athletes/(?P<athlete_username>[a-zA-Z0-9_-]{2,})/?$', views.athlete_view, name='athlete_page'),
+    re_path(r'athletes/(?P<athlete_username>[a-zA-Z0-9_-]{2,})/(?P<date>\d{4}-\d{2}-\d{2})/?$', views.athlete_day_view, name='athlete_day_page'),
     re_path(r'.+', TemplateView.as_view(template_name='base.html'), name='catch_all')
 ]
