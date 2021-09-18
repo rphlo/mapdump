@@ -4,11 +4,16 @@ import { Link } from 'react-router-dom'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import ReactTooltip from 'react-tooltip'
 import { DateTime } from 'luxon';
+import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
 import 'react-calendar-heatmap/dist/styles.css'
 import LazyLoad from 'vanilla-lazyload'
+import NotFound from './NotFound'
 import {printTime, printPace} from '../utils/drawHelpers'
 import {capitalizeFirstLetter} from '../utils/Utils'
-import NotFound from './NotFound'
+import useGlobalState from '../utils/useGlobalState'
+import { getCorners } from '../utils/drawHelpers'
+import { getKMZ } from '../utils/fileHelpers'
 
 const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
 
@@ -16,6 +21,10 @@ const UserView = ({match, history}) => {
     const [found, setFound] = React.useState(null)
     const [data, setData] = React.useState(null)
     const [routes, setRoutes] = React.useState([])
+    const [dl, setDl] = React.useState(null)
+
+    const globalState = useGlobalState()
+    const { username } = globalState.user
 
     React.useEffect(()=> {
         if (urls.includes(match.params.username)) {
@@ -81,10 +90,47 @@ const UserView = ({match, history}) => {
         }
         return res.sort((a,b) => a.count < b.count ? 1 : -1)
     }
+    const transformMapBounds = (v) => {
+        return {
+            top_left: {lat: parseFloat(v.top_left[0]), lon: parseFloat(v.top_left[1])},
+            top_right: {lat: parseFloat(v.top_right[0]), lon: parseFloat(v.top_right[1])},
+            bottom_right: {lat: parseFloat(v.bottom_right[0]), lon: parseFloat(v.bottom_right[1])},
+            bottom_left: {lat: parseFloat(v.bottom_left[0]), lon: parseFloat(v.bottom_left[1])}
+        }
+    }
+    const downloadOwnData = async () => {
+        const z = new JSZip()
+        setDl(0)
+        await Promise.all(routes.map(async (r)=>{
+            const jsonData = await fetch(r.url).then(r => r.json())
+            
+            const gpx = await fetch(jsonData.gpx_url).then(r => r.blob())
+            setDl(prevCount => prevCount + 1/3)
+            const kmz = await fetch(jsonData.map_url).then(r => r.blob()).then(blob => {
+                const newCorners = getCorners(jsonData.map_size, transformMapBounds(jsonData.map_bounds), [], false, false);
+                const kmz_raw = getKMZ(jsonData.name, newCorners, blob);
+                return kmz_raw.generateAsync({type:"blob", mimeType: 'application/vnd.google-earth.kmz'})
+            });
+            setDl(prevCount => prevCount + 1/3)
+            const img = await fetch(jsonData.map_url + '?show_route=1&show_header=1').then(r => r.blob())
+            setDl(prevCount => prevCount + 1/3)
+            z.folder(r.name + ' ' + r.id)
+            z.file(r.name + ' ' + r.id + '/route.gpx', gpx)
+            z.file(r.name + ' ' + r.id + '/map.kmz', kmz)
+            z.file(r.name + ' ' + r.id + '/map+route.jpg', img)
+            
+        }))
+        z.generateAsync({type:"blob"})
+        .then(function (blob) {
+            saveAs(blob, `karttamuovi_${username}.zip`);
+        });
+        setDl(null)
+    }
 
     if (urls.includes(match.params.username)) {
         return null
     }
+
     return (
         <>
         { found && data &&
@@ -94,6 +140,11 @@ const UserView = ({match, history}) => {
             </Helmet>
             <h2><Link to={`/athletes/${data.username}`} >{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)}</Link> <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
             <h5>@{data.username}</h5>
+            { username === data.username && (<div>
+                { dl === null && <button class="btn btn-primary" onClick={downloadOwnData}><i class="fa fa-download"></i> Download All My Routes</button>}
+                { dl !== null &&  <span class="badge bg-info text-light">Preparing archive {Math.min(100, Math.round(dl/routes.length * 100))}%</span>}
+            </div>)}
+
             { match.params.date && <h3>Routes on {DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD')}</h3>}
             { !match.params.date &&<>
             <CalendarHeatmap

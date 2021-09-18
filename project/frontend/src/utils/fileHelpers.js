@@ -49,11 +49,16 @@ const getKml = (name, corners_coords) => {
 </kml>`;
 }
 
-const saveKMZ = (filename, name, bound, imgBlob) => {
+const getKMZ = (name, bound, imgBlob) => {
   var zip = new JSZip();
   zip.file("doc.kml", getKml(name, bound));
   var img = zip.folder("files");
   img.file("doc.jpg", imgBlob);
+  return zip
+}
+
+const saveKMZ = (filename, name, bound, imgBlob) => {
+  var zip = getKMZ(name, bound, imgBlob)
   zip.generateAsync({type:"blob", mimeType: 'application/vnd.google-earth.kmz'})
     .then(function(content) {
         saveAs(content, filename);
@@ -127,4 +132,5 @@ module.exports = {
   extractCornersCoordsFromFilename,
   validateCornersCoords,
   saveKMZ,
+  getKMZ,
 }
