@@ -103,7 +103,6 @@ const UserView = ({match, history}) => {
         setDl(0)
         await Promise.all(routes.map(async (r)=>{
             const jsonData = await fetch(r.url).then(r => r.json())
-            
             const gpx = await fetch(jsonData.gpx_url).then(r => r.blob())
             setDl(prevCount => prevCount + 1/3)
             const kmz = await fetch(jsonData.map_url).then(r => r.blob()).then(blob => {
@@ -114,10 +113,12 @@ const UserView = ({match, history}) => {
             setDl(prevCount => prevCount + 1/3)
             const img = await fetch(jsonData.map_url + '?show_route=1&show_header=1').then(r => r.blob())
             setDl(prevCount => prevCount + 1/3)
-            z.folder(r.name + ' ' + r.id)
-            z.file(r.name + ' ' + r.id + '/route.gpx', gpx)
-            z.file(r.name + ' ' + r.id + '/map.kmz', kmz)
-            z.file(r.name + ' ' + r.id + '/map+route.jpg', img)
+            const folderName = r.name + ' ' + r.id
+            z.folder(folderName)
+            z.file(folderName + '/route.gpx', gpx)
+            z.file(folderName + '/map.kmz', kmz)
+            z.file(folderName + '/map+route.jpg', img)
+            z.file(folderName + '/data.json', JSON.stringify(jsonData, null, '    '))
             
         }))
         z.generateAsync({type:"blob"})
@@ -141,7 +142,7 @@ const UserView = ({match, history}) => {
             <h2><Link to={`/athletes/${data.username}`} >{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)}</Link> <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
             <h5>@{data.username}</h5>
             { username === data.username && (<div>
-                { dl === null && <button class="btn btn-primary" onClick={downloadOwnData}><i class="fa fa-download"></i> Download All My Routes</button>}
+                { dl === null && <button class="btn btn-primary" onClick={downloadOwnData}><i class="fa fa-download"></i> Download All Routes</button>}
                 { dl !== null &&  <span class="badge bg-info text-light">Preparing archive {Math.min(100, Math.round(dl/routes.length * 100))}%</span>}
             </div>)}
 
