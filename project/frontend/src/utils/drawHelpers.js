@@ -302,7 +302,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     ctx4.fillStyle = '#222';
     ctx4.fillRect(0, 0, canvas4.width, headerHeight);
     
-    ctx4.font = '10px Arial';
+    ctx4.font = '15px Arial';
     ctx4.fillStyle = 'white';
     if (includeRoute && route.length && route[0].time) {
       const gradient = ctx4.createLinearGradient(paletteX, 0, paletteWidth + paletteX, 0);
@@ -330,18 +330,20 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
       const maxSpeedTxt = getSpeedText(maxSpeed);
       
       ctx4.textAlign = 'center';
-      ctx4.fillText(minSpeedTxt, paletteX, paletteY + lineWidth / 2 + 12);
-      ctx4.fillText(medSpeedTxt, paletteX + paletteWidth/2, paletteY + lineWidth / 2 + 12);
-      ctx4.fillText(maxSpeedTxt, paletteX + paletteWidth, paletteY + lineWidth / 2 + 12);
+      ctx4.fillText(minSpeedTxt, paletteX, paletteY + lineWidth / 2 + 15);
+      ctx4.fillText(medSpeedTxt, paletteX + paletteWidth/2, paletteY + lineWidth / 2 + 15);
+      ctx4.fillText(maxSpeedTxt, paletteX + paletteWidth, paletteY + lineWidth / 2 + 15);
     }
     ctx4.textAlign = 'left';
     if (includeRoute && route.length && route[0].time) {
       const dist = extractDistance(route);
-      ctx4.fillText(`${(dist/1e3).toFixed(3)}km`, paletteX + paletteWidth + 30, paletteY - 5);
-      ctx4.fillText(printTime(route[route.length-1].time-route[0].time), paletteX + paletteWidth + 100, paletteY - 5);
-      ctx4.fillText(`${(new Date(route[0].time)).toLocaleString(undefined, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZoneName: 'long', hour12: false, hour: 'numeric', minute:'numeric', second:'numeric'})}`, paletteX + paletteWidth + 30, paletteY + 15);
+      ctx4.fillText(`${(dist/1e3).toFixed(3)}km`, paletteX + paletteWidth + 35, paletteY);
+      ctx4.fillText(printTime(route[route.length-1].time-route[0].time), paletteX + paletteWidth + 115, paletteY);
+      ctx4.fillText(`${(new Date(route[0].time)).toLocaleString(undefined, {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZoneName: 'long', hour12: false, hour: 'numeric', minute:'numeric', second:'numeric'})}`, paletteX + paletteWidth + 35, paletteY + 20);
     }
-    ctx4.fillText('https://karttamuovi.com', canvas.width - 120, headerHeight - 5);
+
+    ctx4.font = '60px Arial';
+    ctx4.fillText('karttamuovi.com', canvas.width - 450, headerHeight - 10);
     return canvas4;
   }
   return canvas;
