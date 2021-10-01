@@ -297,7 +297,7 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
     }
 
     ctx4.font = '60px Arial';
-    ctx4.fillText('https://karttamuovi.com', canvas.width - 450, headerHeight - 10);
+    ctx4.fillText('karttamuovi.com', canvas.width - 450, headerHeight - 10);
     return canvas4;
   }
   return canvas;
