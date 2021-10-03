@@ -172,7 +172,7 @@ function NewMap() {
           let mime = ''
           if(extension === 'jpg') {
             mime = 'image/jpeg;';
-          } else if (['png, gif', 'jpeg'].includes(extension)) {
+          } else if (['png', 'gif', 'jpeg'].includes(extension)) {
             mime = 'image/' + extension + ';';
           }
           const imageDataURI = 'data:' + mime + 'base64,' + buff.toString('base64');
