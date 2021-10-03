@@ -174,8 +174,6 @@ function NewMap() {
             mime = 'image/jpeg'
           } else if (['png', 'gif', 'jpeg'].includes(extension)) {
             mime = 'image/' + extension
-          } else {
-            mime = 'image/xyz'
           }
           const imageDataURI = 'data:' + mime + ';base64,' + buff.toString('base64');
           let bounds;
