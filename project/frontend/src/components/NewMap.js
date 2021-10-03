@@ -171,11 +171,13 @@ function NewMap() {
           const extension = filename.toLowerCase().split('.').pop();
           let mime = ''
           if(extension === 'jpg') {
-            mime = 'image/jpeg;';
+            mime = 'image/jpeg'
           } else if (['png', 'gif', 'jpeg'].includes(extension)) {
-            mime = 'image/' + extension + ';';
+            mime = 'image/' + extension
+          } else {
+            mime = 'image/xyz'
           }
-          const imageDataURI = 'data:' + mime + 'base64,' + buff.toString('base64');
+          const imageDataURI = 'data:' + mime + ';base64,' + buff.toString('base64');
           let bounds;
           if (latLonboxElNodes.length) {
             const latLonboxEl = latLonboxElNodes[0];
