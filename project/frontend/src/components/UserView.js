@@ -145,9 +145,7 @@ const UserView = ({match, history}) => {
                 { dl === null && <button class="btn btn-primary" onClick={downloadOwnData}><i class="fa fa-download"></i> Download All Routes</button>}
                 { dl !== null &&  <span class="badge bg-info text-light">Preparing archive {Math.min(100, Math.round(dl/routes.length * 100))}%</span>}
             </div>)}
-
-            { match.params.date && <h3>Routes on {DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD')}</h3>}
-            { !match.params.date &&<>
+            {<>
             <CalendarHeatmap
                 startDate={shiftDate(new Date(), -365)}
                 endDate={new Date()}
@@ -168,6 +166,7 @@ const UserView = ({match, history}) => {
             />
             <ReactTooltip /></>
             }
+            { match.params.date ? <h3>Routes on {DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD')}</h3> : <h3>All Routes</h3>}
             {
                 getCountryStats().map(c => 
                 <span key={c.country}><span className={("flag-icon flag-icon-"+c.country.toLowerCase())}></span> {c.count}</span>

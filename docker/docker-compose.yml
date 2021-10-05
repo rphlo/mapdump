@@ -10,7 +10,7 @@ services:
     expose:
       - "5432"
   minio:
-    image: minio/minio:latest
+    image: minio/minio:edge
     volumes:
       - ../media:/data
     expose:
