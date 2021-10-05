@@ -50,7 +50,7 @@ const VerifyEmail = ({match, history}) => {
 
     return (
       <div className="container main-container">
-        {!sent && (
+        {!verified && !sent && (
             <>
             { errors.key && (
             <div className="alert alert-danger" role="alert">

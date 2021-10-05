@@ -179,8 +179,6 @@ REST_AUTH_SERIALIZERS = {
     'PASSWORD_RESET_SERIALIZER': 'utils.serializers.CustomPasswordResetSerializer',
 }
 
-ACCOUNT_ADAPTER = 'utils.adapters.CustomAccountAdapter'
-
 URL_FRONT = 'http://localhost:8080'
 
 

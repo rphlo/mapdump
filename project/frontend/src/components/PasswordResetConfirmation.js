@@ -4,7 +4,7 @@ import useGlobalState from '../utils/useGlobalState'
 const Register = (props) => {
     const globalState = useGlobalState()
     const { username } = globalState.user
-    const [sent, setSent] = React.useState()
+    const [sent, setSent] = React.useState(false)
     const [pass, setPass] = React.useState()
     const [pass2, setPass2] = React.useState()
     const [errors, setErrors] = React.useState({})
@@ -29,13 +29,14 @@ const Register = (props) => {
       if(res.status === 400) {
         const data = await res.json()
         setErrors(data)
-      } else if (res.status === 201) {
+      } else if (res.status === 200) {
         setSent(true)
       }
     }
     return (
       <div className="container main-container">
-        { !sent && <><h1><i className="fas fa-key"></i> Reset Password</h1><hr/>
+        { !sent && <>
+          <h1><i className="fas fa-key"></i> Reset Password</h1><hr/>
             {errors.token && (
                 <div className="alert alert-danger" role="alert">
                     Invalid token.
@@ -57,10 +58,11 @@ const Register = (props) => {
                 </div>)}
             </div>
             <button type="submit" className="btn btn-primary"><i className="fas fa-paper-plane"></i> Reset password</button>
-        </form></>}
+        </form>
+        </>}
         {sent && (
             <div className="alert alert-success" role="alert">
-            Success! We send you a confirmation email!
+            Success! Password Reset Done!
             </div>)
         }
       </div>

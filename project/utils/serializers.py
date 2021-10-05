@@ -1,25 +1,20 @@
-from django.http import HttpRequest
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import PasswordResetForm
-from django.template import RequestContext, loader
-from django.core.mail import EmailMultiAlternatives
-
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 try:
     from allauth.account import app_settings as allauth_settings
     from allauth.utils import (email_address_exists,
                                get_username_max_length)
     from allauth.account.adapter import get_adapter
-    from allauth.account.utils import setup_user_email
-    from allauth.socialaccount.helpers import complete_social_login
-    from allauth.socialaccount.models import SocialAccount
-    from allauth.socialaccount.providers.base import AuthProcess
+    from allauth.account.forms import default_token_generator
+    from allauth.account.utils import (setup_user_email,
+                                       user_pk_to_url_str, user_username)
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
 
 from dj_rest_auth.serializers import PasswordResetSerializer
+from dj_rest_auth.forms import AllAuthPasswordResetForm as OrigResetForm
 from rest_framework import serializers
-from requests.exceptions import HTTPError
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -76,24 +71,29 @@ class RegisterSerializer(serializers.Serializer):
         return user
 
 
-class CustomPasswordResetForm(PasswordResetForm):
+class CustomPasswordResetForm(OrigResetForm):
+    def save(self, request, **kwargs):
+        current_site = get_current_site(request)
+        email = self.cleaned_data['email']
+        token_generator = default_token_generator
 
-    def send_mail(self, subject_template_name, email_template_name,
-                  context, from_email, to_email, html_email_template_name=None, request=None):
-        """
-        Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
-        """
-        subject = loader.render_to_string(subject_template_name, context)
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-        body = loader.render_to_string(email_template_name, context, request=self.request)
+        for user in self.users:
+            temp_key = token_generator.make_token(user)
 
-        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
-        email_message.send()
+            url = f'{settings.URL_FRONT}/password-reset-confirmation/{user_pk_to_url_str(user)}:{temp_key}'
 
-    def save(self,*args, request=None, **kwargs):
-        self.request = request
-        super().save(*args, request=request, **kwargs)
+            context = {
+                'current_site': current_site,
+                'user': user,
+                'password_reset_url': url,
+                'request': request,
+            }
+            if allauth_settings.AUTHENTICATION_METHOD != allauth_settings.AuthenticationMethod.EMAIL:
+                context['username'] = user_username(user)
+            get_adapter(request).send_mail(
+                'account/email/password_reset_key', email, context
+            )
+        return self.cleaned_data['email']
 
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):

@@ -160,7 +160,6 @@ const RouteDrawing = (props) => {
           },
           body: fd
         });
-        setSaving(false)
         if (response.status===200 || response.status===201) {
           const res = await response.json(); // parses JSON response into native JavaScript objects
           
