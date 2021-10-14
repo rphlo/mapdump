@@ -36,8 +36,8 @@ function App() {
     <GlobalStateProvider>
       <Router basename='/'>
         <div className="jumbotron text-center">
-          <Link to='/' onClick={onClickHome} style={{textDecoration: 'none', color:'#f3f'}}><h1 style={{whiteSpace: 'nowrap'}}><img src="/static/logo.svg" alt="logo" height="60px"/> <small>Karttamuovi.com</small></h1>
-          <p style={{padding: '0 0 20px 0', margin: '-20px 0 0 -15px'}}>KEEPS YOUR MAPS SAFE...</p></Link>
+          <Link to='/' onClick={onClickHome} style={{textDecoration: 'none', color:'#f3f'}}><h1 style={{whiteSpace: 'nowrap'}}><img src="/static/logo.svg" alt="logo" height="60px"/> <small>Mapdump.com</small></h1>
+          <p style={{padding: '0 0 20px 0', margin: '-20px -150px 0 0'}}>WHERE YOUR MAPS ENDS THEIRS LIFE...</p></Link>
         </div>
         <Login />
         <Route
@@ -65,7 +65,7 @@ function App() {
             <Route exact path="*" component={NotFound} />
         </Switch>
         <footer className="container-fluid text-center">
-          <span>&copy;2019-{new Date().getFullYear()}&nbsp;Karttamuovi.com - <a href="mailto:info@karttamuovi.com">Contact</a> - <Link to="/privacy-policy">Privacy Policy</Link> - <Link to="/tos">Terms of Service</Link></span>
+          <span>&copy;2019-{new Date().getFullYear()}&nbsp;Mapdump.com - <a href="mailto:info@mapdump.com">Contact</a> - <Link to="/privacy-policy">Privacy Policy</Link> - <Link to="/tos">Terms of Service</Link></span>
         </footer>
       </Router>
     </GlobalStateProvider>

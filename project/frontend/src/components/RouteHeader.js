@@ -155,7 +155,7 @@ const RouteHeader = (props) => {
   return (
     <div>
       <Helmet>
-          <title>{ props.name  + " by " + capitalizeFirstLetter(props.athlete.first_name) + " " + capitalizeFirstLetter(props.athlete.last_name)+ " | Karttamuovi.com" } </title>
+          <title>{ props.name  + " by " + capitalizeFirstLetter(props.athlete.first_name) + " " + capitalizeFirstLetter(props.athlete.last_name)+ " | Mapdump.com" } </title>
       </Helmet>
       <h2><span className={("flag-icon flag-icon-"+props.country.toLowerCase())}></span>&nbsp;
       { (!canEdit() || !nameEditing) && <>{name}</>}

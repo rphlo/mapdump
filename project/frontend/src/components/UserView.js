@@ -123,7 +123,7 @@ const UserView = ({match, history}) => {
         }))
         z.generateAsync({type:"blob"})
         .then(function (blob) {
-            saveAs(blob, `karttamuovi_${username}.zip`);
+            saveAs(blob, `mapdump_${username}.zip`);
         });
         setDl(null)
     }
@@ -137,7 +137,7 @@ const UserView = ({match, history}) => {
         { found && data &&
         <div className="container main-container">
             <Helmet>
-                <title>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name) +  " Maps on "+ DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD') +" | Karttamuovi.com"}</title>
+                <title>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name) +  " Maps on "+ DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD') +" | Mapdump.com"}</title>
             </Helmet>
             <h2><Link to={`/athletes/${data.username}`} >{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)}</Link> <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
             <h5>@{data.username}</h5>

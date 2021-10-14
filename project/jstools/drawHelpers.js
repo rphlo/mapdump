@@ -296,8 +296,8 @@ const drawRoute = async (img, corners_coords, route, includeHeader=false, includ
       ctx4.fillText(`${(new Date(route[0].time)).toLocaleString(undefined, {timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZoneName: 'long', hour12: false, hour: 'numeric', minute:'numeric', second:'numeric'})}`, paletteX + paletteWidth + 35, paletteY + 20);
     }
 
-    ctx4.font = '60px Arial';
-    ctx4.fillText('karttamuovi.com', canvas.width - 450, headerHeight - 10);
+    ctx4.font = '60px Arial'
+    ctx4.fillText('mapdump.com', canvas.width - 400, headerHeight - 17)
     return canvas4;
   }
   return canvas;

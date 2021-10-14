@@ -343,7 +343,7 @@ export const drawRoute = (img, corners_coords, route, includeHeader=false, inclu
     }
 
     ctx4.font = '60px Arial';
-    ctx4.fillText('karttamuovi.com', canvas.width - 450, headerHeight - 10);
+    ctx4.fillText('mapdump.com', canvas.width - 400, headerHeight - 17);
     return canvas4;
   }
   return canvas;

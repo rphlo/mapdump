@@ -8,10 +8,10 @@ from routedb.models import Route
 
 class LatestRoutesFeed(Feed):
     def title(self):
-        return "Latest routes on Karttamuovi"
+        return "Latest routes on Mapdump.com"
 
     def description(self):
-        return "Routes on Karttamuovi sorted by latest first"
+        return "Routes on Mapdump sorted by latest first"
 
     def link(self):
         return '{}/'.format(settings.URL_FRONT)
@@ -41,13 +41,13 @@ class AtheleteRoutesFeed(Feed):
         return User.objects.all().prefetch_related('routes').get(username=username)
 
     def title(self, obj):
-        return "Routes by {} {} on Karttamuovi".format(
+        return "Routes by {} {} on Mapdump.com".format(
             obj.first_name,
             obj.last_name,
         )
 
     def description(self, obj):
-        return "Routes by {} {} on Karttamuovi".format(
+        return "Routes by {} {} on Mapdump.com".format(
             obj.first_name,
             obj.last_name,
         )

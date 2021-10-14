@@ -169,7 +169,7 @@ const RouteDrawing = (props) => {
             }${
               props.stravaDetails.description && res.id ? '\r\n\r\n' : ''
             }${
-              res.id ? `https://karttamuovi.com/routes/${res.id}` : ''
+              res.id ? `https://mapdump.com/routes/${res.id}` : ''
             }`
             await props.stravaDetails.client.activities.update({id: props.stravaDetails.id, description})
           }

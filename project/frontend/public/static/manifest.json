@@ -1,6 +1,6 @@
 {
-  "name": "Karttamuovi",
-  "short_name": "Karttamuovi",
+  "name": "Mapdump",
+  "short_name": "Mapdump",
   "icons": [
       {
           "src": "/static/android-chrome-192x192.png",
@@ -15,6 +15,6 @@
   ],
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "start_url": "https://karttamuovi.com/",
+  "start_url": "https://mapdump.com/",
   "display": "standalone"
 }
