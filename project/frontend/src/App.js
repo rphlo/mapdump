@@ -37,7 +37,7 @@ function App() {
       <Router basename='/'>
         <div className="jumbotron text-center">
           <Link to='/' onClick={onClickHome} style={{textDecoration: 'none', color:'#f3f'}}><h1 style={{whiteSpace: 'nowrap'}}><img src="/static/logo.svg" alt="logo" height="60px"/> <small>Mapdump.com</small></h1>
-          <p style={{padding: '0 0 20px 0', margin: '-20px -150px 0 0'}}>WHERE YOUR MAPS END THEIRS LIFE...</p></Link>
+          <p style={{padding: '0 0 20px 0', margin: '-20px -60px 0 0'}}>WHERE YOUR MAPS END THEIR LIFE...</p></Link>
         </div>
         <Login />
         <Route
