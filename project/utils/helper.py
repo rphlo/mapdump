@@ -10,6 +10,7 @@ from django.utils.timezone import is_aware, make_aware
 from utils.globalmaptiles import GlobalMercator
 from utils.random_strings import generate_random_string
 from timezonefinder import TimezoneFinder
+from utils.validators import validate_nice_slug
 import reverse_geocoder
 
 def tz_at_coords(lat, lng):
@@ -39,6 +40,10 @@ def random_key():
     b64 = b64[:11]
     b64 = b64.replace('+', '-')
     b64 = b64.replace('/', '_')
+    try:
+        validate_nice_slug(b64)
+    except Exception:
+        return random_key()
     return b64
 
 
