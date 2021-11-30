@@ -1,5 +1,5 @@
 arrow
-django
+django<4
 pillow
 django-cors-headers
 requests
