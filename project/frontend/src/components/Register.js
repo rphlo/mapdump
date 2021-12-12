@@ -32,7 +32,7 @@ const Register = (props) => {
       if(res.status === 400) {
         const data = await res.json()
         setErrors(data)
-      } else if (res.status === 201) {
+      } else if ([200, 201].includes(res.status)) {
         setRegistered(true)
       }
     }

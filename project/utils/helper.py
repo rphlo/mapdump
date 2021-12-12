@@ -199,17 +199,13 @@ def project(m, x, y):
 
 def initial_of_name(name):
     """Converts a name to initials and surname.
-
     Ensures all initials are capitalised, even if the
     first names aren't.
-
     Examples:
-
       >>> initial_of_name('Ram Chandra Giri')
       'R.C.Giri'
       >>> initial_of_name('Ram chandra Giri')
       'R.C.Giri'
-
     """
     parts = name.split()
     initials = [part[0].upper() for part in parts[:-1]]

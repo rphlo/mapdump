@@ -19,6 +19,7 @@ urlpatterns = [
     path('auth/emails/', view=views.EmailsView.as_view(), name='auth_emails'),
     re_path(r'^auth/emails/(?P<email>[^/]+)/?$', views.EmailDetailView.as_view(), name="auth_email_detail"),
     path('auth/registration/resend-verification/', views.ResendVerificationView.as_view(), name="auth_resend_verification"),
+    path('auth/confirm-email/', views.email_sent, name="account_email_verification_sent"),
     path('auth/login', view=views.LoginView.as_view(), name='knox_login'),
     path('strava/token', view=views.strava_access_token, name='strava_token'),
     path('strava/authorization', view=views.strava_authorize, name='strava_authorize'),

@@ -208,6 +208,11 @@ def raster_map_download(request, uid, *args, **kwargs):
     )
 
 
+@api_view(['GET'])
+def email_sent(resquest):
+    return Response({'status': 'ok', 'message': 'verification email sent to your email address'})
+
+
 def map_download(request, uid, *args, **kwargs):
     show_header = request.GET.get('show_header', False)
     show_route = request.GET.get('show_route', False)
