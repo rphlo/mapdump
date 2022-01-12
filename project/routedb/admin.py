@@ -1,5 +1,6 @@
 from django.contrib import admin
-
+from django.contrib import messages
+from django.utils.translation import ngettext
 from routedb.models import RasterMap, Route, UserSettings
 
 class RasterMapAdmin(admin.ModelAdmin):
@@ -28,6 +29,22 @@ class RouteAdmin(admin.ModelAdmin):
         'raster_map'
     )
     list_filter = ('athlete', )
+    actions = ['clear_images']
+
+    @admin.action(description='Clear images')
+    def clear_images(self, request, qs):
+        updated = qs.update(
+            has_image_w_header=False,
+            has_image_w_route=False,
+            has_image_w_header_route=False,
+            has_image_thumbnail=False,
+            has_image_blank=False,
+        )
+        self.message_user(request, ngettext(
+            '%d route images was cleared.',
+            '%d routes images were cleared.',
+            updated,
+        ) % updated, messages.SUCCESS)
 
 
 class UserSettingsAdmin(admin.ModelAdmin):
