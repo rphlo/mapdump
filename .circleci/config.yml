@@ -23,7 +23,7 @@ jobs:
           node -v
           curl -o- -L https://yarnpkg.com/install.sh | bash
           cd project/frontend/
-          ~/.yarn/bin/yarn add react-scripts
+          ~/.yarn/bin/yarn add react-scripts@4.0.3
     - run: ./da build_frontend
     - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do sleep 5; done' || false
     - run:
