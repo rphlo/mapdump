@@ -1,7 +1,9 @@
 import os
 import subprocess
-from bs4 import BeautifulSoup
 import time
+
+from bs4 import BeautifulSoup
+
 from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
@@ -23,7 +25,10 @@ class Command(BaseCommand):
 
         self.stdout.write('Building client app ...')
         subprocess.check_output(['yarn', 'install'], cwd=client_dir)
-        subprocess.check_output(['yarn', 'build'], cwd=client_dir)
+        subprocess.check_output(
+            ['yarn', 'build', '--production'],
+            cwd=client_dir
+        )
 
         self.stdout.write('Collecting static files ...')
         call_command(
