@@ -16,6 +16,7 @@ import PasswordReset from './components/PasswordReset'
 import Settings from './components/Settings'
 import BrowseMap from './components/BrowseMap'
 import PasswordResetConfirmation from './components/PasswordResetConfirmation'
+import UserDeletionConfirmation from './components/UserDeletionConfirmation'
 import { GlobalStateProvider} from './utils/useGlobalState'
 
 window.drawmyroute = {};
@@ -56,6 +57,7 @@ function App() {
             <Route exact path="/settings" component={Settings} />
             <Route exact path="/password-reset" component={PasswordReset} />
             <Route exact path="/password-reset-confirmation/:key" component={PasswordResetConfirmation} />
+            <Route exact path="/account-deletion-confirmation/:key" component={UserDeletionConfirmation} />
             <Route exact path="/verify-email/" component={VerifyEmail} />
             <Route exact path="/verify-email/:key" component={VerifyEmail} />
             <Route exact path="/routes/:uid/" component={RasterMap} />

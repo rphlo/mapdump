@@ -6,6 +6,8 @@ import json
 import time
 import arrow
 
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.shortcuts import get_object_or_404, render
@@ -13,8 +15,14 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
-from knox.models import AuthToken
+from allauth.account.adapter import get_adapter
+from allauth.account import app_settings as allauth_settings
+from allauth.account.forms import default_token_generator, UserTokenForm
+from allauth.account.utils import user_pk_to_url_str, user_username
 
+
+from knox.models import AuthToken
+from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import api_view
 from rest_framework import generics, parsers, status
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
@@ -164,7 +172,7 @@ class UserDetail(generics.RetrieveAPIView):
         return User.objects.filter(username=username).prefetch_related('routes')
 
 
-class UserEditView(generics.RetrieveUpdateAPIView):
+class UserEditView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserInfoSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -173,6 +181,34 @@ class UserEditView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return User.objects.none()
+
+    def delete(self, request, *args, **kwargs):
+        token_generator = default_token_generator
+        user = request.user
+        conf_key = kwargs.get('confirmation_key')
+        if conf_key:
+            token_form = UserTokenForm(data={"uidb36": user_pk_to_url_str(user), "key": conf_key})
+            if token_form.is_valid():
+                request.user.delete()
+                return Response({'status': 'ok', 'message': 'account deleted'})
+            return Response({'status': 'error', 'token': 'invalid token'}, status=400)
+        
+        temp_key = token_generator.make_token(request.user)
+        current_site = get_current_site(request)
+        url = f'{settings.URL_FRONT}/account-deletion-confirmation/{temp_key}'
+        context = {
+            'current_site': current_site,
+            'user': user,
+            'account_deletion_url': url,
+            'request': request,
+        }
+        if allauth_settings.AUTHENTICATION_METHOD != allauth_settings.AuthenticationMethod.EMAIL:
+            context['username'] = user_username(user)
+        get_adapter(request).send_mail(
+            'account/email/account_delete', request.user.email, context
+        )
+        return Response({'status': 'ok', 'message': 'message sent'})
+
 
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RouteSerializer
@@ -209,7 +245,7 @@ def raster_map_download(request, uid, *args, **kwargs):
 
 
 @api_view(['GET'])
-def email_sent(resquest):
+def email_sent(request):
     return Response({'status': 'ok', 'message': 'verification email sent to your email address'})
 
 

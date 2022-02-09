@@ -15,7 +15,7 @@ import useGlobalState from '../utils/useGlobalState'
 import { getCorners } from '../utils/drawHelpers'
 import { getKMZ } from '../utils/fileHelpers'
 
-const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings']
+const urls = ['new', 'map', 'sign-up', 'password-reset', 'verify-email', 'password-reset-confirmation', 'settings', 'account-deletion-confirmation']
 
 const UserView = ({match, history}) => {
     const [found, setFound] = React.useState(null)
