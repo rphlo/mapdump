@@ -1,4 +1,5 @@
 import React from 'react'
+import Swal from 'sweetalert2'
 
 const VerifyEmail = ({match, history}) => {
     const [verified, setVerified] = React.useState(false)
@@ -6,12 +7,6 @@ const VerifyEmail = ({match, history}) => {
 
     const [email, setEmail] = React.useState()
     const [sent, setSent] = React.useState()
-
-    React.useEffect(() => {
-        if (verified) {
-          setTimeout(() => history.push('/'), 10e3);
-        }
-    }, [verified, history])
 
     React.useEffect(()=>{
         (async () => {
@@ -26,6 +21,13 @@ const VerifyEmail = ({match, history}) => {
                 })
                 if (res.status === 200) {
                     setVerified(true)
+                    await Swal.fire({
+                      title: 'Success!',
+                      text: 'Email Verified!',
+                      icon: 'success',
+                      confirmButtonText: 'OK'
+                    });
+                    history.push('/')
                 } else if (res.status === 400) {
                     setErrors(await res.json())
                 } else if (res.status === 404) {
@@ -66,10 +68,6 @@ const VerifyEmail = ({match, history}) => {
             <button type="submit" className="btn btn-primary"><i className="fas fa-paper-plane"></i> Re-send</button>
         </form>
             </>)}
-            {verified && (
-        <div className="alert alert-success" role="alert">
-            Success! You can now login!
-        </div>)}
         {sent && (
         <div className="alert alert-success" role="alert">
             Success! We sent you a new verification email!

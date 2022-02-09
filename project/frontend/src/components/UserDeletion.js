@@ -4,7 +4,6 @@ import useGlobalState from '../utils/useGlobalState'
 import Swal from 'sweetalert2'
 
 const UserDeletion = () => {
-  const [resent, setResent] = React.useState(false);
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
   

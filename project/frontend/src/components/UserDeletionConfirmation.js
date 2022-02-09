@@ -1,5 +1,6 @@
 import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
+import Swal from 'sweetalert2'
 
 const Register = (props) => {
     const globalState = useGlobalState()
@@ -9,7 +10,15 @@ const Register = (props) => {
   
     React.useEffect(()=>{
         if (!username) {
+          (async ()=>{
+            await Swal.fire({
+              title: 'Please login!',
+              text: 'You need to be login to perform this action!',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
             props.history.push('/')
+          })()
         }
     }, [username, props])
   
@@ -30,6 +39,12 @@ const Register = (props) => {
         setErrors(data)
       } else if (res.status === 200) {
         setSent(true)
+        await Swal.fire({
+          title: 'Account deleted!',
+          text: 'Your account has been deleted!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
         globalState.setUser({})
       }
     }

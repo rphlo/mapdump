@@ -1,10 +1,10 @@
 import React from 'react'
 import useGlobalState from '../utils/useGlobalState'
+import Swal from 'sweetalert2'
 
 const Register = (props) => {
     const globalState = useGlobalState()
     const { username } = globalState.user
-    const [sent, setSent] = React.useState(false)
     const [pass, setPass] = React.useState()
     const [pass2, setPass2] = React.useState()
     const [errors, setErrors] = React.useState({})
@@ -30,12 +30,17 @@ const Register = (props) => {
         const data = await res.json()
         setErrors(data)
       } else if (res.status === 200) {
-        setSent(true)
+        await Swal.fire({
+          title: 'Success!',
+          text: 'Password Reset Done!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+        props.history.push('/')
       }
     }
     return (
       <div className="container main-container">
-        { !sent && <>
           <h1><i className="fas fa-key"></i> Reset Password</h1><hr/>
             {errors.token && (
                 <div className="alert alert-danger" role="alert">
@@ -59,12 +64,6 @@ const Register = (props) => {
             </div>
             <button type="submit" className="btn btn-primary"><i className="fas fa-paper-plane"></i> Reset password</button>
         </form>
-        </>}
-        {sent && (
-            <div className="alert alert-success" role="alert">
-            Success! Password Reset Done!
-            </div>)
-        }
       </div>
     )
   }
