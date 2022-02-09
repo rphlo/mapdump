@@ -187,9 +187,7 @@ class UserEditView(generics.RetrieveUpdateDestroyAPIView):
         user = request.user
         conf_key = request.data.get('confirmation_key')
         if conf_key:
-            raise Exception(user_pk_to_url_str(user))
-            token_form = UserTokenForm(data={"uidb36": user_pk_to_url_str(user), "key": conf_key})
-            if token_form.is_valid():
+            if token_generator.check_token(user, conf_key):
                 request.user.delete()
                 return Response({'status': 'ok', 'message': 'account deleted'})
             return Response({'status': 'error', 'token': 'invalid token'}, status=400)
