@@ -185,7 +185,7 @@ class UserEditView(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         token_generator = default_token_generator
         user = request.user
-        conf_key = kwargs.get('confirmation_key')
+        conf_key = request.data.get('confirmation_key')
         if conf_key:
             token_form = UserTokenForm(data={"uidb36": user_pk_to_url_str(user), "key": conf_key})
             if token_form.is_valid():
@@ -195,6 +195,7 @@ class UserEditView(generics.RetrieveUpdateDestroyAPIView):
         
         temp_key = token_generator.make_token(request.user)
         current_site = get_current_site(request)
+        raise Exception(current_site.name)
         url = f'{settings.URL_FRONT}/account-deletion-confirmation/{temp_key}'
         context = {
             'current_site': current_site,
