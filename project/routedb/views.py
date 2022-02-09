@@ -189,7 +189,6 @@ class UserEditView(generics.RetrieveUpdateDestroyAPIView):
         user = request.user
         conf_key = request.data.get('confirmation_key')
         if conf_key:
-            raise Exception(conf_key)
             if token_generator.check_token(user, conf_key):
                 request.user.delete()
                 return Response({'status': 'ok', 'message': 'account deleted'})
