@@ -195,7 +195,6 @@ class UserEditView(generics.RetrieveUpdateDestroyAPIView):
         
         temp_key = token_generator.make_token(request.user)
         current_site = get_current_site(request)
-        raise Exception(current_site.name)
         url = f'{settings.URL_FRONT}/account-deletion-confirmation/{temp_key}'
         context = {
             'current_site': current_site,
