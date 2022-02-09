@@ -1,3 +1,4 @@
+from lib2to3.pgen2 import token
 import os
 import urllib
 from io import BytesIO
@@ -17,8 +18,8 @@ from django.contrib.auth.decorators import login_required
 
 from allauth.account.adapter import get_adapter
 from allauth.account import app_settings as allauth_settings
-from allauth.account.forms import default_token_generator, UserTokenForm
-from allauth.account.utils import user_pk_to_url_str, user_username
+from allauth.account.forms import default_token_generator
+from allauth.account.utils import user_username
 
 
 from knox.models import AuthToken
@@ -184,15 +185,17 @@ class UserEditView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         token_generator = default_token_generator
+        token_generator.key_salt = 'AccountDeletionTokenGenerator'
         user = request.user
         conf_key = request.data.get('confirmation_key')
         if conf_key:
+            raise Exception(conf_key)
             if token_generator.check_token(user, conf_key):
                 request.user.delete()
                 return Response({'status': 'ok', 'message': 'account deleted'})
             return Response({'status': 'error', 'token': 'invalid token'}, status=400)
         
-        temp_key = token_generator.make_token(request.user)
+        temp_key = token_generator.make_token(user)
         current_site = get_current_site(request)
         url = f'{settings.URL_FRONT}/account-deletion-confirmation/{temp_key}'
         context = {
