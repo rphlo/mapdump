@@ -1,0 +1,13 @@
+{% load i18n %}{% autoescape off %}
+{% blocktrans %}You're receiving this email because you requested your user account at {{ current_site.name }} to be deleted.{% endblocktrans %}
+
+{% trans "Please go to the following page to confirm your wish:" %}
+{% block reset_link %}
+{{ account_deletion_url }}
+{% endblock %}
+
+{% trans "Sad to see you go!" %}
+
+{% blocktrans %}The {{ current_site.name }} team{% endblocktrans %}
+
+{% endautoescape %}
