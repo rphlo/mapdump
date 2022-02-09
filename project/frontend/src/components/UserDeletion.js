@@ -37,7 +37,7 @@ const UserDeletion = () => {
   }
 
   return (
-  <><h3><i className="fa fa-at"></i> Account Deletion</h3>
+  <><h3><i className="fa fa-trash"></i> Account Deletion</h3>
   <hr/>
   <div className="row" style={{marginBottom: '1em'}}>
     <div className="col-sm">

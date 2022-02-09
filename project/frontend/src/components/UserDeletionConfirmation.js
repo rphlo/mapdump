@@ -3,7 +3,7 @@ import useGlobalState from '../utils/useGlobalState'
 
 const Register = (props) => {
     const globalState = useGlobalState()
-    const { username } = globalState.user
+    const { username, api_token} = globalState.user
     const [sent, setSent] = React.useState(false)
     const [errors, setErrors] = React.useState({})
   
@@ -20,7 +20,8 @@ const Register = (props) => {
         method: 'DELETE',
         credentials: 'omit',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Token ' + api_token,
         },
         body: JSON.stringify({confirmation_key: confirmationKey})
       })
@@ -35,14 +36,14 @@ const Register = (props) => {
     return (
       <div className="container main-container">
         { !sent && <>
-          <h1><i className="fas fa-key"></i> Delete Account</h1><hr/>
+          <h1><i className="fas fa-trash"></i> Delete Account</h1><hr/>
             {errors.token && (
                 <div className="alert alert-danger" role="alert">
                     Invalid token.
                 </div>
             )}
             <form onSubmit={onSubmit}>
-            <button type="submit" className="btn btn-primary"><i className="fas fa-paper-plane"></i> Delete Account</button>
+            <button type="submit" className="btn btn-danger"><i className="fas fa-trash"></i> Delete Account</button>
         </form>
         </>}
         {sent && (
