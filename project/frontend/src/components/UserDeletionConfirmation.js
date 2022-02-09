@@ -9,7 +9,7 @@ const Register = (props) => {
     const [errors, setErrors] = React.useState({})
   
     React.useEffect(()=>{
-        if (!username) {
+        if (!username && !sent) {
           (async ()=>{
             await Swal.fire({
               title: 'Please login!',
@@ -20,7 +20,7 @@ const Register = (props) => {
             props.history.push('/')
           })()
         }
-    }, [username, props])
+    }, [username, props, sent])
   
     const onSubmit = async (e) => {
       e.preventDefault()
@@ -46,6 +46,7 @@ const Register = (props) => {
           confirmButtonText: 'OK'
         });
         globalState.setUser({})
+        props.history.push('/')
       }
     }
     return (
