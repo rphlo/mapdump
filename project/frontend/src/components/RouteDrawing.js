@@ -5,6 +5,7 @@ import * as Panelbear from '@panelbear/panelbear-js'
 import { drawRoute, drawOriginalMap, getCorners, scaleImage } from '../utils/drawHelpers'
 import useGlobalState from '../utils/useGlobalState'
 import { saveKMZ } from '../utils/fileHelpers'
+import ReactTooltip from 'react-tooltip'
 
 const RouteDrawing = (props) => {
   const [name, setName] = useState();
@@ -253,11 +254,13 @@ const RouteDrawing = (props) => {
       <button className="btn btn-sm btn-default" onClick={rotate}><i className={rotating ? "fa fa-spinner fa-spin":"fa fa-sync"}></i> Rotate</button>&nbsp;
 
       {!saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
+      {!saved && !username && <span style={{float:'right'}} data-tip={"Login/Signup to Save"}><button data-testid="saveBtn" className="btn btn-sm btn-primary" disabled><i className="fas fa-save"></i> Save</button>&nbsp;</span>}
     </div>
     <div className="container-fluid">
       {imgURL && <center><img ref={finalImage} className="final-image" src={imgURL} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
       {!imgURL && <h3><i className="fa fa-spin fa-spinner"></i> Loading</h3>}
     </div>
+    <ReactTooltip place="top" />
     </>
   )
 }
