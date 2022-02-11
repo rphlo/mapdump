@@ -254,7 +254,7 @@ const RouteDrawing = (props) => {
       <button className="btn btn-sm btn-default" onClick={rotate}><i className={rotating ? "fa fa-spinner fa-spin":"fa fa-sync"}></i> Rotate</button>&nbsp;
 
       {!saved && username && <><button data-testid="saveBtn" style={{float:'right'}} className="btn btn-sm btn-primary" onClick={onExport}><i className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}></i> Save</button>&nbsp;</>}
-      {!saved && !username && <span style={{float:'right'}} data-tip={"Login/Signup to Save"}><button data-testid="saveBtn" className="btn btn-sm btn-primary" disabled><i className="fas fa-save"></i> Save</button>&nbsp;</span>}
+      {!saved && !username && <span style={{float:'right'}} data-tip={"Login/Signup to Save"}><button data-testid="saveBtnDisabled" className="btn btn-sm btn-primary" disabled><i className="fas fa-save"></i> Save</button>&nbsp;</span>}
     </div>
     <div className="container-fluid">
       {imgURL && <center><img ref={finalImage} className="final-image" src={imgURL} alt="route" onClick={toggleRoute} style={{marginTop:'5px', width: zoom + '%'}}/></center>}
