@@ -20,7 +20,7 @@ describe('Create a new map', function() {
                 cy.contains('JPEG')
                 cy.wait(3000)
                 cy.get('.final-image')
-                cy.get('[data-testid="saveBtn"]').should('not.exist');
+                cy.get('[data-testid="saveBtn"]').should('be.disabled');
                 cy.login()
                 cy.get('[data-testid="saveBtn"]').contains('Save').click()
                 cy.wait(10000)
