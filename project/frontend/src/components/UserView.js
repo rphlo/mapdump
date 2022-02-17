@@ -163,12 +163,13 @@ const UserView = ({match, history}) => {
             <Helmet>
                 <title>{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name) +  " Maps on "+ DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD') +" | Mapdump.com"}</title>
             </Helmet>
-            <h2><Link to={`/athletes/${data.username}`} >{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)}</Link> <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
-            <h5>@{data.username}</h5>
-            { username === data.username && (<div>
+            { username === data.username && (<div style={{float: "right"}}>
                 { dl === null && <button class="btn btn-primary" onClick={downloadOwnData}><i class="fa fa-download"></i> Download All Routes</button>}
                 { dl !== null &&  <span class="badge bg-info text-light">Preparing archive {Math.min(100, Math.round(dl/routes.length * 100))}%</span>}
             </div>)}
+            <h2><Link to={`/athletes/${data.username}`} >{capitalizeFirstLetter(data.first_name) + " " + capitalizeFirstLetter(data.last_name)}</Link> <a href={process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username + '/feed/'}><i className="fa fa-rss" title="RSS"></i></a></h2>
+            <h5>@{data.username}</h5>
+            
             <div>{years.map((y) => <><span>{selectedYear !== y ? <Link to={`/athletes/${data.username}/${y}`}>{y}</Link> : <b>{y}</b>}</span> </>)}</div>
             {<>
             <CalendarHeatmap
