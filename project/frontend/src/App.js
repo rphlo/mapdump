@@ -37,8 +37,10 @@ function App() {
     <GlobalStateProvider>
       <Router basename='/'>
         <div className="jumbotron text-center">
+          <div style={{width: "100%", height: "100%", "backgroundColor": "#ffffff88", position: "absolute", top: "0", left: "0", zIndex: -1}}></div>
           <Link to='/' onClick={onClickHome} style={{textDecoration: 'none', color:'#f3f'}}><h1 style={{whiteSpace: 'nowrap'}}><img src="/static/logo.svg" alt="logo" height="60px"/> <small>Mapdump.com</small></h1>
           <p style={{padding: '0 0 20px 0', margin: '-20px -60px 0 0'}}>WHERE YOUR MAPS END THEIR LIFE...</p></Link>
+          
         </div>
         <Login />
         <Route
