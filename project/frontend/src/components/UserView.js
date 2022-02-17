@@ -22,13 +22,22 @@ const UserView = ({match, history}) => {
     const [data, setData] = React.useState(null)
     const [routes, setRoutes] = React.useState([])
     const [dl, setDl] = React.useState(null)
-
+    const [years, setYears] = React.useState([])
+    const [selectedYear, setSelectedYear] = React.useState(false)
     const globalState = useGlobalState()
     const { username } = globalState.user
 
     React.useEffect(()=> {
         if (urls.includes(match.params.username)) {
             return 
+        }
+        if (match.params.date) {
+            console.log(match.params.date)
+            setSelectedYear(match.params.date.slice(0, 4))
+        } else if (match.params.year) {
+            setSelectedYear(match.params.year)
+        } else {
+            setSelectedYear(false)
         }
         (async ()=> {
             const res = await fetch(process.env.REACT_APP_API_URL + '/v1/user/' + match.params.username)
@@ -51,11 +60,26 @@ const UserView = ({match, history}) => {
         if(data?.routes) {
             if (match.params.date) {
                 setRoutes(data.routes.filter((r) => DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('yyyy-MM-dd') === match.params.date))
+            } else if (match.params.year) {
+                setRoutes(data.routes.filter((r) => DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('yyyy') === match.params.year))
             } else {
                 setRoutes(data.routes)
             }
         }
-    }, [match.params.date, data?.routes])
+    }, [match.params.date, match.params.year, data?.routes])
+
+    React.useEffect(()=> {
+        const y = []
+        if(data?.routes) {
+            data.routes.forEach((r) => {
+                const year = DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('yyyy')
+                if (!y.includes(year)){
+                    y.push(year)
+                }
+            })
+            setYears(y)
+        }
+    }, [data?.routes])
 
     function shiftDate(date, numDays) {
         const newDate = new Date(date);
@@ -65,7 +89,7 @@ const UserView = ({match, history}) => {
 
     const getCalValues = () => {
         const val = [];
-        let yesterday = new Date();
+        let yesterday = selectedYear ? new Date(selectedYear + '-12-01T12:00:00Z') : new Date();
         for(let i=0; i < 365; i++) {
             // eslint-disable-next-line
             const count = data.routes.filter(r => DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('yyyyMMdd') === DateTime.fromMillis(+yesterday).toFormat('yyyyMMdd')).length
@@ -145,10 +169,11 @@ const UserView = ({match, history}) => {
                 { dl === null && <button class="btn btn-primary" onClick={downloadOwnData}><i class="fa fa-download"></i> Download All Routes</button>}
                 { dl !== null &&  <span class="badge bg-info text-light">Preparing archive {Math.min(100, Math.round(dl/routes.length * 100))}%</span>}
             </div>)}
+            <div>{years.map((y) => <><span><Link to={`/athletes/${data.username}/${y}`}>{y}</Link></span> </>)}</div>
             {<>
             <CalendarHeatmap
-                startDate={shiftDate(new Date(), -365)}
-                endDate={new Date()}
+                startDate={selectedYear ? new Date(selectedYear + '-01-01T12:00:00Z') : shiftDate(new Date(), -365)}
+                endDate={selectedYear ? new Date(selectedYear + '-12-01T12:00:00Z') : new Date()}
                 values={getCalValues()}
                 classForValue={value => {
                 if (!value) {
@@ -166,7 +191,7 @@ const UserView = ({match, history}) => {
             />
             <ReactTooltip /></>
             }
-            { match.params.date ? <h3>Routes on {DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD')}</h3> : <h3>All Routes</h3>}
+            { match.params.date ? <h3>Routes on {DateTime.fromISO(match.params.date, { setZone: false }).toFormat('DDDD')}</h3> : match.params.year ? <h3>Routes in {match.params.year}</h3> : <h3>All Routes</h3>}
             {
                 getCountryStats().map(c => 
                 <span key={c.country}><span className={("flag-icon flag-icon-"+c.country.toLowerCase())}></span> {c.count}</span>
@@ -179,10 +204,10 @@ const UserView = ({match, history}) => {
             <div className="container">
                 <div className="row">
                 {routes.map(r=>(
-                <div key={r.id} className="col-12 col-md-4"><div className="card">
+                <div key={r.id} className="col-12 col-md-4" style={{marginBottom: "15px"}}><div className="card">
                     <Link to={'/routes/'+r.id}><img className="card-img-top lazyload" src="/static/placeholder-image.png" data-src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
                     <div className="card-body">
-                    <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
+                    <h5 className="card-title" style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> <span>{r.name}</span></h5>
                     <p className="card-text">{DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('DDDD, T')}<br/>{(r.distance/1000).toFixed(1) + 'km'}{r.duration? ' - ' + printTime(r.duration*1000) : ''}{r.duration? ' - ' + printPace(r.duration/r.distance*1000) : ''}</p>                    </div>
                 </div>
                 </div>))}

@@ -64,6 +64,7 @@ function App() {
             <Route exact path="/routes/:uid/player" component={RasterMapRedirect} />
             <Route exact path="/athletes/:username" component={UserView} />
             <Route exact path="/athletes/:username/:date(\d{4}-\d{2}-\d{2})" component={UserView} />
+            <Route exact path="/athletes/:username/:year(\d{4})" component={UserView} />
             <Route exact path="*" component={NotFound} />
         </Switch>
         <footer className="container-fluid text-center">

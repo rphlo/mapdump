@@ -31,11 +31,11 @@ const LatestRoute = () => {
                 ) : (
                   <div className="row">
                     {routes.map(r=>(
-                    <div key={r.id} className="col-12 col-md-4">
+                    <div key={r.id} className="col-12 col-md-4" style={{marginBottom: "15px"}}>
                       <div className="card">
                         <Link to={'/routes/'+r.id}><img className="card-img-top lazyload" src="/static/placeholder-image.png" data-src={r.map_thumbnail_url} alt="map thumbnail" width="500" height="auto"></img></Link>
                         <div className="card-body">
-                          <h5 className="card-title"><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
+                          <h5 className="card-title" style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> {r.name}</h5>
                           <p className="card-text">{DateTime.fromISO(r.start_time, {zone: r.tz}).toFormat('DDDD, T')}<br/>{(r.distance/1000).toFixed(1) + 'km'}{r.duration? ' - ' + printTime(r.duration*1000) : ''}{r.duration? ' - ' + printPace(r.duration/r.distance*1000) : ''}</p>
                           <p className="card-text">By <Link to={'/athletes/'+r.athlete.username}>{capitalizeFirstLetter(r.athlete.first_name)} {capitalizeFirstLetter(r.athlete.last_name)}</Link></p>
                         </div>
