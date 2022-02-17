@@ -1,6 +1,6 @@
 {
-  "name": "Mapdump",
-  "short_name": "Mapdump",
+  "name": "MapDump",
+  "short_name": "MapDump",
   "icons": [
       {
           "src": "/static/android-chrome-192x192.png",
