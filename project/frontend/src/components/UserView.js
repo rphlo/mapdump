@@ -169,7 +169,7 @@ const UserView = ({match, history}) => {
                 { dl === null && <button class="btn btn-primary" onClick={downloadOwnData}><i class="fa fa-download"></i> Download All Routes</button>}
                 { dl !== null &&  <span class="badge bg-info text-light">Preparing archive {Math.min(100, Math.round(dl/routes.length * 100))}%</span>}
             </div>)}
-            <div>{years.map((y) => <><span><Link to={`/athletes/${data.username}/${y}`}>{y}</Link></span> </>)}</div>
+            <div>{years.map((y) => <><span>{selectedYear !== y ? <Link to={`/athletes/${data.username}/${y}`}>{y}</Link> : <b>{y}</b>}</span> </>)}</div>
             {<>
             <CalendarHeatmap
                 startDate={selectedYear ? new Date(selectedYear + '-01-01T12:00:00Z') : shiftDate(new Date(), -365)}
