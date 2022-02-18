@@ -1,7 +1,11 @@
-[![rphlo](https://circleci.com/gh/rphlo/karttamuovi.svg?style=shield)](https://circleci.com/gh/rphlo/karttamuovi)
+[![rphlo](https://circleci.com/gh/rphlo/mapdump.svg?style=shield)](https://circleci.com/gh/rphlo/mapdump)
 
-# Karttamuovi
+# MapDump.com
 
-A Modern Orienteering Map Online Archive writen with React and Django Framework.
+![screenshot](https://cdn.rphlo.com/mapdump-screenshot.png)
+
+A Modern Digital Orienteering Map Archive.
+
+The project uses ReactJS for its frontend and the Python Django Framework for its backend.
 
 Hosted at https://mapdump.com
