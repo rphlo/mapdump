@@ -51,3 +51,7 @@ footer {
 .final-image {
   width: 100%;
 }
+
+.route-card, body {
+  background-color: #f6f8fa;
+}

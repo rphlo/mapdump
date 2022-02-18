@@ -72,7 +72,7 @@ const Login = () => {
       {!username && wantLogin && (<div>
         <div className="modal" role="dialog" style={{display: 'block'}}>
           <div className="modal-dialog">
-            <div className="modal-content">
+            <div className="modal-content" style={{backgroundColor: '#f6f8fa'}}>
               <div className="modal-header" style={{padding:'35px 50px'}}>
                 <h4><i className="fas fa-sign-in-alt"></i>  Login</h4>
               </div>

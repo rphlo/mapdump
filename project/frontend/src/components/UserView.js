@@ -205,7 +205,7 @@ const UserView = ({match, history}) => {
             <div className="container">
                 <div className="row">
                 {routes.map(r=>(
-                <div key={r.id} className="col-12 col-md-4" style={{marginBottom: "15px"}}><div className="card">
+                <div key={r.id} className="col-12 col-md-4" style={{marginBottom: "15px"}}><div className="card route-card">
                     <Link to={'/routes/'+r.id}><img className="card-img-top lazyload" src="/static/placeholder-image.png" data-src={r.map_thumbnail_url} alt="map thumbnail"></img></Link>
                     <div className="card-body">
                     <h5 className="card-title" style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}><span className={("flag-icon flag-icon-"+r.country.toLowerCase())}></span> <span>{r.name}</span></h5>
