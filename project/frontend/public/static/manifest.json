@@ -1,20 +1,20 @@
 {
-  "name": "MapDump",
-  "short_name": "MapDump",
-  "icons": [
-      {
-          "src": "/static/android-chrome-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-      },
-      {
-          "src": "/static/android-chrome-512x512.png",
-          "sizes": "512x512",
-          "type": "image/png"
-      }
-  ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "start_url": "https://mapdump.com/",
-  "display": "standalone"
+    "name": "Mapdump",
+    "short_name": "Mapdump",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#bcc1c6",
+    "background_color": "#bcc1c6",
+    "start_url": "https://mapdump.com",
+    "display": "standalone"
 }
