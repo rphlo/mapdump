@@ -6,12 +6,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0016_auto_20201127_1655'),
+        ("routedb", "0016_auto_20201127_1655"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='usersettings',
-            options={'verbose_name': 'user settings', 'verbose_name_plural': 'user settings'},
+            name="usersettings",
+            options={
+                "verbose_name": "user settings",
+                "verbose_name_plural": "user settings",
+            },
         ),
     ]

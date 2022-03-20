@@ -6,28 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0011_rastermap_mime_type'),
+        ("routedb", "0011_rastermap_mime_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='route',
-            name='has_image_thumbnail',
+            model_name="route",
+            name="has_image_thumbnail",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='route',
-            name='has_image_w_header',
+            model_name="route",
+            name="has_image_w_header",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='route',
-            name='has_image_w_header_route',
+            model_name="route",
+            name="has_image_w_header_route",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='route',
-            name='has_image_w_route',
+            model_name="route",
+            name="has_image_w_route",
             field=models.BooleanField(default=False),
         ),
     ]

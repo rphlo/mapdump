@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Calibrate Map</title>
     <link rel="stylesheet" href="/static/vendor/bootstrap-4.4.1/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/static/vendor/leaflet-1.7.1/leaflet.css" />    
+    <link rel="stylesheet" href="/static/vendor/leaflet-1.7.1/leaflet.css" />
     <style>
     html {
       height: 100%;
@@ -323,7 +323,7 @@ $(function(){
         } else {
           map_b.setView([0, 0], 2)
         }
-        
+
         var defaultLayer = new L.TileLayer['osm'];
         var baseLayers = {};
         baseLayers["Open Street Map"] = defaultLayer;
@@ -348,10 +348,10 @@ $(function(){
         var route = route_data;
         var latlngs = route.map(pt=>[pt.latLon[0], pt.latLon[1]]);
         var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map_c);
-        
+
         var transformedImage = L.imageTransform(raster_map_image.src, bounds , {opacity: 0.7});
         transformedImage.addTo(map_c);
-        
+
         var defaultLayer = new L.TileLayer['osm'];
         var baseLayers = {};
         baseLayers["Open Street Map"] = defaultLayer;

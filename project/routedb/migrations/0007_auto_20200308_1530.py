@@ -6,19 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0006_auto_20200224_1707'),
+        ("routedb", "0006_auto_20200224_1707"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='route',
-            name='distance',
+            model_name="route",
+            name="distance",
             field=models.IntegerField(default=0),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='route',
-            name='duration',
+            model_name="route",
+            name="duration",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

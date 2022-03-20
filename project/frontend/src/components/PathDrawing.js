@@ -1,71 +1,78 @@
-import React, { useEffect, useState } from 'react'
-import { Point, cornerBackTransform } from '../utils/Utils'
-import * as L from 'leaflet';
+import React, { useEffect, useState } from "react";
+import { Point, cornerBackTransform } from "../utils/Utils";
+import * as L from "leaflet";
 
 const PathDrawing = (props) => {
-  const [mapImage, setMapImage] = useState(false)
-  const [leafletMap, setLeafletMap] = useState(null)
+  const [mapImage, setMapImage] = useState(false);
+  const [leafletMap, setLeafletMap] = useState(null);
   const [route, setRoute] = React.useState([]);
-  const [pl, ] = React.useState(L.polyline([], {color: 'red'}))
+  const [pl] = React.useState(L.polyline([], { color: "red" }));
 
   function resetOrientation(src, callback) {
     var img = new Image();
     img.crossOrigin = "anonymous";
-    img.onload = function() {
-        var width = img.width,
-            height = img.height,
-            canvas = document.createElement('canvas'),
-            ctx = canvas.getContext("2d");
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0);
+    img.onload = function () {
+      var width = img.width,
+        height = img.height,
+        canvas = document.createElement("canvas"),
+        ctx = canvas.getContext("2d");
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0);
 
-        // export base64
-        callback(canvas.toDataURL('image/jpeg', 0.8));
-    }
+      // export base64
+      callback(canvas.toDataURL("image/jpeg", 0.8));
+    };
     img.src = src;
   }
 
-  useEffect(() => {   
-    resetOrientation(props.mapDataURL, function(imgDataURI){
+  useEffect(() => {
+    resetOrientation(props.mapDataURL, function (imgDataURI) {
       var img = new Image();
       img.onload = function () {
-        setMapImage(this)
-        const map = L.map('raster_map', {crs: L.CRS.Simple, minZoom: -5, maxZoom:2});
-        setLeafletMap(map)
-        const bounds = [map.unproject([0,0]), map.unproject([this.width, this.height])];
+        setMapImage(this);
+        const map = L.map("raster_map", {
+          crs: L.CRS.Simple,
+          minZoom: -5,
+          maxZoom: 2,
+        });
+        setLeafletMap(map);
+        const bounds = [
+          map.unproject([0, 0]),
+          map.unproject([this.width, this.height]),
+        ];
         new L.imageOverlay(this.src, bounds).addTo(map);
         map.fitBounds(bounds);
-        map.invalidateSize()
-      }
-      img.src = imgDataURI
-    })
-  }, [props.mapDataURL])
+        map.invalidateSize();
+      };
+      img.src = imgDataURI;
+    });
+  }, [props.mapDataURL]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (leafletMap) {
-      leafletMap.on('click', e => setRoute(r=>addPoint(e, r)))
+      leafletMap.on("click", (e) => setRoute((r) => addPoint(e, r)));
     }
-  }, [leafletMap])
+  }, [leafletMap]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (leafletMap && route.length >= 2) {
-      pl.removeFrom(leafletMap)
-      pl.setLatLngs(route)
-      pl.addTo(leafletMap)
-      console.log('b')
-    } else if (route.length < 2){
-      pl.remove()
+      pl.removeFrom(leafletMap);
+      pl.setLatLngs(route);
+      pl.addTo(leafletMap);
+      console.log("b");
+    } else if (route.length < 2) {
+      pl.remove();
     }
-  }, [leafletMap, route, pl])
+  }, [leafletMap, route, pl]);
 
   const addPoint = (e, prevRoute) => {
-    return [...prevRoute, e.latlng]
-  }
+    return [...prevRoute, e.latlng];
+  };
 
-  const removeLastPoint = (e, prevRoute) => { 
-    return prevRoute.slice(0, -1)
-  }
+  const removeLastPoint = (e, prevRoute) => {
+    return prevRoute.slice(0, -1);
+  };
 
   const onSubmit = (e) => {
     const transform = cornerBackTransform(
@@ -75,22 +82,41 @@ const PathDrawing = (props) => {
       props.mapCornersCoords.top_right,
       props.mapCornersCoords.bottom_right,
       props.mapCornersCoords.bottom_left
-    )
-    const out = route.map(ll => {const p = transform(new Point(ll.lng, -ll.lat));return {latLon: [p.lat, p.lon]}})
-    props.onRoute(out)
-  }
+    );
+    const out = route.map((ll) => {
+      const p = transform(new Point(ll.lng, -ll.lat));
+      return { latLon: [p.lat, p.lon] };
+    });
+    props.onRoute(out);
+  };
 
   return (
     <>
-    <div className="alert alert-primary">
-      Click on map to add points to your route
-    </div>
-      <div id="raster_map" style={{marginBottom:'5px', height: '500px', width: '100%'}}></div>
-      { route.length > 0 && <><button className="btn btn-danger" onClick={(e) => setRoute(r => removeLastPoint(e, r))}><i className="fas fa-undo"></i> Remove last point</button>&nbsp;</>}
-      { route.length > 1 && <button className="btn btn-primary" onClick={onSubmit}><i className="fa fa-save"></i> Save route</button>}
-
+      <div className="alert alert-primary">
+        Click on map to add points to your route
+      </div>
+      <div
+        id="raster_map"
+        style={{ marginBottom: "5px", height: "500px", width: "100%" }}
+      ></div>
+      {route.length > 0 && (
+        <>
+          <button
+            className="btn btn-danger"
+            onClick={(e) => setRoute((r) => removeLastPoint(e, r))}
+          >
+            <i className="fas fa-undo"></i> Remove last point
+          </button>
+          &nbsp;
+        </>
+      )}
+      {route.length > 1 && (
+        <button className="btn btn-primary" onClick={onSubmit}>
+          <i className="fa fa-save"></i> Save route
+        </button>
+      )}
     </>
-  )
-}
+  );
+};
 
 export default PathDrawing;

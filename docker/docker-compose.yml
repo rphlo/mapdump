@@ -1,4 +1,4 @@
-version: '2'  
+version: '2'
 services:
   db:
     image: postgres:latest
@@ -55,4 +55,3 @@ services:
       - minio
       - db
       - smtp
-

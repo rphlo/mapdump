@@ -1,28 +1,31 @@
-const JSZip = require('jszip');
-const { saveAs } = require('file-saver');
-
+const JSZip = require("jszip");
+const { saveAs } = require("file-saver");
 
 const parseGpx = (xmlstr) => {
-  if(typeof(DOMParser) == 'undefined') {
-    function DOMParser() {};
-    DOMParser.prototype.parseFromString = function(str, contentType) {
-      if(typeof(XMLHttpRequest) != 'undefined') {
+  if (typeof DOMParser == "undefined") {
+    function DOMParser() {}
+    DOMParser.prototype.parseFromString = function (str, contentType) {
+      if (typeof XMLHttpRequest != "undefined") {
         var xmldata = new XMLHttpRequest();
-        if(!contentType) {
-          contentType = 'application/xml';
+        if (!contentType) {
+          contentType = "application/xml";
         }
-        xmldata.open('GET', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(str), false);
-        if(xmldata.overrideMimeType) {
+        xmldata.open(
+          "GET",
+          "data:" + contentType + ";charset=utf-8," + encodeURIComponent(str),
+          false
+        );
+        if (xmldata.overrideMimeType) {
           xmldata.overrideMimeType(contentType);
         }
         xmldata.send(null);
         return xmldata.responseXML;
       }
-    }
+    };
   }
   var doc = new DOMParser().parseFromString(xmlstr, "text/xml");
   return getGpxData(doc.documentElement);
-}
+};
 
 const getKml = (name, corners_coords) => {
   return `<?xml version="1.0" encoding="utf-8"?>
@@ -47,85 +50,94 @@ const getKml = (name, corners_coords) => {
     </Folder>
   </Document>
 </kml>`;
-}
+};
 
 const getKMZ = (name, bound, imgBlob) => {
   var zip = new JSZip();
   zip.file("doc.kml", getKml(name, bound));
   var img = zip.folder("files");
   img.file("doc.jpg", imgBlob);
-  return zip
-}
+  return zip;
+};
 
 const saveKMZ = (filename, name, bound, imgBlob) => {
-  var zip = getKMZ(name, bound, imgBlob)
-  zip.generateAsync({type:"blob", mimeType: 'application/vnd.google-earth.kmz'})
-    .then(function(content) {
-        saveAs(content, filename);
+  var zip = getKMZ(name, bound, imgBlob);
+  zip
+    .generateAsync({
+      type: "blob",
+      mimeType: "application/vnd.google-earth.kmz",
+    })
+    .then(function (content) {
+      saveAs(content, filename);
     });
-}
+};
 
 const getGpxData = (node, result) => {
-  if(!result) {
+  if (!result) {
     result = { segments: [] };
   }
-  switch(node.nodeName) {
-    case 'name':
+  switch (node.nodeName) {
+    case "name":
       result.name = node.textContent;
       break;
-    case 'trkseg':
+    case "trkseg":
       var segment = [];
-      result.segments.push(segment)
-      for(let i = 0; i < node.childNodes.length; i++) {
+      result.segments.push(segment);
+      for (let i = 0; i < node.childNodes.length; i++) {
         var snode = node.childNodes[i];
-        if(snode.nodeName === 'trkpt') {
-          var trkpt = { loc: [ parseFloat(snode.attributes['lat'].value), parseFloat(snode.attributes['lon'].value) ] };
-          for(var j=0; j < snode.childNodes.length; j++) {
+        if (snode.nodeName === "trkpt") {
+          var trkpt = {
+            loc: [
+              parseFloat(snode.attributes["lat"].value),
+              parseFloat(snode.attributes["lon"].value),
+            ],
+          };
+          for (var j = 0; j < snode.childNodes.length; j++) {
             var ssnode = snode.childNodes[j];
-            switch(ssnode.nodeName) {
-              case 'time':
+            switch (ssnode.nodeName) {
+              case "time":
                 trkpt.time = new Date(ssnode.childNodes[0].data);
                 break;
-              case 'ele':
+              case "ele":
                 trkpt.ele = parseFloat(ssnode.childNodes[0].data);
                 break;
               default:
                 break;
             }
           }
-          segment.push(trkpt)
+          segment.push(trkpt);
         }
       }
       break;
     default:
       break;
   }
-  for(let i = 0; i < node.childNodes.length; i++) {
+  for (let i = 0; i < node.childNodes.length; i++) {
     getGpxData(node.childNodes[i], result);
   }
   return result;
-}
+};
 
 const extractCornersCoordsFromFilename = (filename) => {
-  const re = /(_-?\d+\.\d+){8}_\.(gif|png|jpg|jpeg)$/ig;
+  const re = /(_-?\d+\.\d+){8}_\.(gif|png|jpg|jpeg)$/gi;
   const found = filename.match(re);
-  if(!found) {
-      return false
+  if (!found) {
+    return false;
   } else {
-    const coords = found[0].split('_');
+    const coords = found[0].split("_");
     coords.pop();
     coords.shift();
-    return coords.join(',');
+    return coords.join(",");
   }
-}
+};
 
 const validateCornersCoords = (coords) => {
-  const parts = coords.split(',');
+  const parts = coords.split(",");
   if (parts.length !== 8) {
-      return false;
+    return false;
   }
-  return parts.findIndex(part => isNaN(parseFloat(part))) === -1;
-}
+  return parts.findIndex((part) => isNaN(parseFloat(part))) === -1;
+};
 
 module.exports = {
   parseGpx,
@@ -133,4 +145,4 @@ module.exports = {
   validateCornersCoords,
   saveKMZ,
   getKMZ,
-}
+};

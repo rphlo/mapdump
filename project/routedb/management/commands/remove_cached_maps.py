@@ -3,14 +3,14 @@ from routedb.models import Route
 
 
 class Command(BaseCommand):
-    help = 'Remove image cache'
+    help = "Remove image cache"
 
     def handle(self, *args, **options):
-        qs = Route.objects.all().update(
+        Route.objects.all().update(
             has_image_w_header=False,
             has_image_w_route=False,
             has_image_w_header_route=False,
             has_image_thumbnail=False,
             has_image_blank=False,
         )
-        self.stdout.write(self.style.SUCCESS('Done'))
+        self.stdout.write(self.style.SUCCESS("Done"))

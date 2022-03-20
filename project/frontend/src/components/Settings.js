@@ -1,33 +1,35 @@
-import React from 'react'
-import PasswordChange from './PasswordChange'
-import UserSettings from './UserSettings'
-import EmailsList from './EmailsList'
-import UserDeletion from './UserDeletion'
-import useGlobalState from '../utils/useGlobalState'
+import React from "react";
+import PasswordChange from "./PasswordChange";
+import UserSettings from "./UserSettings";
+import EmailsList from "./EmailsList";
+import UserDeletion from "./UserDeletion";
+import useGlobalState from "../utils/useGlobalState";
 
-const Settings = ({history}) => {
-    const globalState = useGlobalState()
-    const { username } = globalState.user
-    
-    React.useEffect(()=>{
-        if (!username) {
-            history.push('/')
-        }
-    }, [username, history])
+const Settings = ({ history }) => {
+  const globalState = useGlobalState();
+  const { username } = globalState.user;
 
-    return (
-        <div className="container main-container">
-         <h1><i className="fas fa-user-cog"></i> Settings</h1>
-         <hr/>
-         <UserSettings/>
-         <hr/>
-         <PasswordChange/>
-         <hr/>
-         <EmailsList/>
-         <hr/>
-         <UserDeletion/>
-        </div>
-    )
-}
+  React.useEffect(() => {
+    if (!username) {
+      history.push("/");
+    }
+  }, [username, history]);
 
-export default Settings
+  return (
+    <div className="container main-container">
+      <h1>
+        <i className="fas fa-user-cog"></i> Settings
+      </h1>
+      <hr />
+      <UserSettings />
+      <hr />
+      <PasswordChange />
+      <hr />
+      <EmailsList />
+      <hr />
+      <UserDeletion />
+    </div>
+  );
+};
+
+export default Settings;

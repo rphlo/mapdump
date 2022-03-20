@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0009_usersettings'),
+        ("routedb", "0009_usersettings"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='usersettings',
-            name='strava_access_token',
+            model_name="usersettings",
+            name="strava_access_token",
             field=models.TextField(),
         ),
     ]

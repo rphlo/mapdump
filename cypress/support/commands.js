@@ -23,18 +23,24 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-import 'cypress-file-upload';
+import "cypress-file-upload";
 
 beforeEach(function () {
-    cy.log('I run before every test in every spec file!!!!!!')
-    cy.exec('docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py flush --noinput')
-    cy.exec('docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py migrate --noinput')
-    cy.exec('docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py shell -c "from django.contrib.auth.models import User;user = User.objects.create_user(\'tester\', \'test@example.com\', \'abc123\');from allauth.account.models import EmailAddress;EmailAddress.objects.create(user=user,email=\'test@example.com\',primary=True,verified=True)"')
-})
+  cy.log("I run before every test in every spec file!!!!!!");
+  cy.exec(
+    "docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py flush --noinput"
+  );
+  cy.exec(
+    "docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py migrate --noinput"
+  );
+  cy.exec(
+    "docker exec drawmyroute_django_1 /venv/bin/python /app/project/manage.py shell -c \"from django.contrib.auth.models import User;user = User.objects.create_user('tester', 'test@example.com', 'abc123');from allauth.account.models import EmailAddress;EmailAddress.objects.create(user=user,email='test@example.com',primary=True,verified=True)\""
+  );
+});
 
-Cypress.Commands.add('login', () => {
-    cy.get('[data-testid="loginBtn"]').click()
-    cy.get('#username').type('tester')
-    cy.get('#password').type('abc123')
-    cy.get('[data-testid="submitLoginBtn"]').click()
-})
+Cypress.Commands.add("login", () => {
+  cy.get('[data-testid="loginBtn"]').click();
+  cy.get("#username").type("tester");
+  cy.get("#password").type("abc123");
+  cy.get('[data-testid="submitLoginBtn"]').click();
+});

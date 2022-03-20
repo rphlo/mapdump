@@ -1,92 +1,85 @@
-from lib2to3.pgen2 import token
-import os
+import json
+import re
+import time
 import urllib
 from io import BytesIO
-import re
-import json
-import time
+
 import arrow
-
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
-from django.contrib.auth.models import User
-from django.contrib.auth.signals import user_logged_in
-from django.shortcuts import get_object_or_404, render
-from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
-
-from allauth.account.adapter import get_adapter
 from allauth.account import app_settings as allauth_settings
+from allauth.account.adapter import get_adapter
 from allauth.account.forms import default_token_generator
 from allauth.account.utils import user_username
-
-
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from knox.models import AuthToken
-from rest_framework.exceptions import ValidationError
-from rest_framework.decorators import api_view
 from rest_framework import generics, parsers, status
-from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
+from rest_framework.decorators import api_view
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
-
-from stravalib import Client as StravaClient
-
 from routedb.models import RasterMap, Route
 from routedb.serializers import (
     AuthTokenSerializer,
-    RouteSerializer,
-    UserMainSerializer,
-    LatestRouteListSerializer,
     EmailSerializer,
-    ResendVerificationSerializer,
-    UserInfoSerializer,
+    LatestRouteListSerializer,
     MapListSerializer,
+    ResendVerificationSerializer,
+    RouteSerializer,
+    UserInfoSerializer,
+    UserMainSerializer,
 )
+from stravalib import Client as StravaClient
 from utils.s3 import s3_object_url, upload_to_s3
 
-def x_accel_redirect(request, path, filename='',
-                     mime='application/force-download'):
+
+def x_accel_redirect(request, path, filename="", mime="application/force-download"):
     if settings.DEBUG:
-        from wsgiref.util import FileWrapper
         import os.path
-        path = re.sub(r'^/internal', settings.MEDIA_ROOT, path)
+        from wsgiref.util import FileWrapper
+
+        path = re.sub(r"^/internal", settings.MEDIA_ROOT, path)
         if not os.path.exists(path):
             return HttpResponse(status=status.HTTP_404_NOT_FOUND)
-        wrapper = FileWrapper(open(path, 'rb'))
+        wrapper = FileWrapper(open(path, "rb"))
         response = HttpResponse(wrapper)
-        response['Content-Length'] = os.path.getsize(path)
+        response["Content-Length"] = os.path.getsize(path)
     else:
-        response = HttpResponse('', status=status.HTTP_206_PARTIAL_CONTENT)
-        response['X-Accel-Redirect'] = urllib.parse.quote(path.encode('utf-8'))
-        response['X-Accel-Buffering'] = 'no'
-        response['Accept-Ranges'] = 'bytes'
-    response['Content-Type'] = mime
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(
-        filename.replace('\\', '_').replace('"', '\\"')
-    ).encode('utf-8')
+        response = HttpResponse("", status=status.HTTP_206_PARTIAL_CONTENT)
+        response["X-Accel-Redirect"] = urllib.parse.quote(path.encode("utf-8"))
+        response["X-Accel-Buffering"] = "no"
+        response["Accept-Ranges"] = "bytes"
+    response["Content-Type"] = mime
+    response["Content-Disposition"] = 'attachment; filename="{}"'.format(
+        filename.replace("\\", "_").replace('"', '\\"')
+    ).encode("utf-8")
     return response
 
 
-def serve_from_s3(bucket, request, path, filename='',
-                  mime='application/force-download'):
-    path = re.sub(r'^/internal/', '', path)
+def serve_from_s3(
+    bucket, request, path, filename="", mime="application/force-download"
+):
+    path = re.sub(r"^/internal/", "", path)
     url = s3_object_url(path, bucket)
-    url = '/s3{}'.format(url[len(settings.AWS_S3_ENDPOINT_URL):])
-    
+    url = "/s3{}".format(url[len(settings.AWS_S3_ENDPOINT_URL) :])
+
     response_status = status.HTTP_200_OK
-    if request.method == 'GET':
+    if request.method == "GET":
         response_status = status.HTTP_206_PARTIAL_CONTENT
-    
-    response = HttpResponse('', status=response_status)
-    
-    if request.method == 'GET':
-        response['X-Accel-Redirect'] = urllib.parse.quote(url.encode('utf-8'))
-        response['X-Accel-Buffering'] = 'no'
-    response['Accept-Ranges'] = 'bytes'
-    response['Content-Type'] = mime
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(
-        filename.replace('\\', '_').replace('"', '\\"')
-    ).encode('utf-8')
+
+    response = HttpResponse("", status=response_status)
+
+    if request.method == "GET":
+        response["X-Accel-Redirect"] = urllib.parse.quote(url.encode("utf-8"))
+        response["X-Accel-Buffering"] = "no"
+    response["Accept-Ranges"] = "bytes"
+    response["Content-Type"] = mime
+    response["Content-Disposition"] = 'attachment; filename="{}"'.format(
+        filename.replace("\\", "_").replace('"', '\\"')
+    ).encode("utf-8")
     return response
 
 
@@ -94,29 +87,25 @@ class LoginView(generics.CreateAPIView):
     """
     Login View: mix of knox login view and drf obtain auth token view
     """
+
     throttle_classes = ()
     permission_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser,
-                      parsers.JSONParser,)
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.JSONParser,
+    )
     serializer_class = AuthTokenSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(
-            data=request.data,
-            context={'request': request}
+            data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        authToken, token = AuthToken.objects.create(user)
-        user_logged_in.send(
-            sender=user.__class__,
-            request=request,
-            user=user
-        )
-        return Response({
-            'username': user.username,
-            'token': token
-        })
+        user = serializer.validated_data["user"]
+        _, token = AuthToken.objects.create(user)
+        user_logged_in.send(sender=user.__class__, request=request, user=user)
+        return Response({"username": user.username, "token": token})
 
 
 class EmailsView(generics.ListCreateAPIView):
@@ -124,18 +113,22 @@ class EmailsView(generics.ListCreateAPIView):
     serializer_class = EmailSerializer
 
     def get_queryset(self):
-        return self.request.user.emailaddress_set.all().order_by('-primary', '-verified', 'email')
+        return self.request.user.emailaddress_set.all().order_by(
+            "-primary", "-verified", "email"
+        )
 
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)
 
+
 class EmailDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = EmailSerializer
-    lookup_field = 'email'
+    lookup_field = "email"
 
     def get_queryset(self):
         return self.request.user.emailaddress_set.all()
+
 
 class ResendVerificationView(generics.GenericAPIView):
     serializer_class = ResendVerificationSerializer
@@ -155,22 +148,24 @@ class RouteCreate(generics.CreateAPIView):
 
 
 class LatestRoutesList(generics.ListAPIView):
-    queryset = Route.objects.all().select_related('athlete')[:24]
+    queryset = Route.objects.all().select_related("athlete")[:24]
     serializer_class = LatestRouteListSerializer
 
 
 class MapsList(generics.ListAPIView):
-    queryset = RasterMap.objects.all().prefetch_related('route_set', 'route_set__athlete')
+    queryset = RasterMap.objects.all().prefetch_related(
+        "route_set", "route_set__athlete"
+    )
     serializer_class = MapListSerializer
 
 
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserMainSerializer
-    lookup_field = 'username'
+    lookup_field = "username"
 
     def get_queryset(self):
-        username = self.kwargs['username']
-        return User.objects.filter(username=username).prefetch_related('routes')
+        username = self.kwargs["username"]
+        return User.objects.filter(username=username).prefetch_related("routes")
 
 
 class UserEditView(generics.RetrieveUpdateDestroyAPIView):
@@ -185,36 +180,39 @@ class UserEditView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         token_generator = default_token_generator
-        token_generator.key_salt = 'AccountDeletionTokenGenerator'
+        token_generator.key_salt = "AccountDeletionTokenGenerator"
         user = request.user
-        conf_key = request.data.get('confirmation_key')
+        conf_key = request.data.get("confirmation_key")
         if conf_key:
             if token_generator.check_token(user, conf_key):
                 request.user.delete()
-                return Response({'status': 'ok', 'message': 'account deleted'})
-            return Response({'status': 'error', 'token': 'invalid token'}, status=400)
-        
+                return Response({"status": "ok", "message": "account deleted"})
+            return Response({"status": "error", "token": "invalid token"}, status=400)
+
         temp_key = token_generator.make_token(user)
         current_site = get_current_site(request)
-        url = f'{settings.URL_FRONT}/account-deletion-confirmation/{temp_key}'
+        url = f"{settings.URL_FRONT}/account-deletion-confirmation/{temp_key}"
         context = {
-            'current_site': current_site,
-            'user': user,
-            'account_deletion_url': url,
-            'request': request,
+            "current_site": current_site,
+            "user": user,
+            "account_deletion_url": url,
+            "request": request,
         }
-        if allauth_settings.AUTHENTICATION_METHOD != allauth_settings.AuthenticationMethod.EMAIL:
-            context['username'] = user_username(user)
+        if (
+            allauth_settings.AUTHENTICATION_METHOD
+            != allauth_settings.AuthenticationMethod.EMAIL
+        ):
+            context["username"] = user_username(user)
         get_adapter(request).send_mail(
-            'account/email/account_delete', request.user.email, context
+            "account/email/account_delete", request.user.email, context
         )
-        return Response({'status': 'ok', 'message': 'message sent'})
+        return Response({"status": "ok", "message": "message sent"})
 
 
 class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RouteSerializer
-    lookup_field = 'uid'
-    queryset = Route.objects.all().select_related('athlete', 'raster_map')
+    lookup_field = "uid"
+    queryset = Route.objects.all().select_related("athlete", "raster_map")
 
     def get_queryset(self):
         if self.request.method not in SAFE_METHODS:
@@ -237,100 +235,95 @@ def raster_map_download(request, uid, *args, **kwargs):
     file_path = rmap.path
     mime_type = rmap.mime_type
     return serve_from_s3(
-        'drawmyroute-maps',
+        "drawmyroute-maps",
         request,
-        '/internal/' + file_path,
-        filename='{}.{}'.format(rmap.uid, mime_type[6:]),
-        mime=mime_type
+        "/internal/" + file_path,
+        filename="{}.{}".format(rmap.uid, mime_type[6:]),
+        mime=mime_type,
     )
-
-
-@api_view(['GET'])
-def email_sent(request):
-    return Response({'status': 'ok', 'message': 'verification email sent to your email address'})
 
 
 def map_download(request, uid, *args, **kwargs):
-    show_header = request.GET.get('show_header', False)
-    show_route = request.GET.get('show_route', False)
-    out_bounds = request.GET.get('out_bounds', False)
+    show_header = request.GET.get("show_header", False)
+    show_route = request.GET.get("show_route", False)
+    out_bounds = request.GET.get("out_bounds", False)
     route = get_object_or_404(
-        Route.objects.select_related('raster_map'),
+        Route.objects.select_related("raster_map"),
         uid=uid,
     )
-    suffix = '_header' if show_header else ''
-    suffix += '_route' if show_route else ''
-    basename = '{}_{}_.'.format(
+    suffix = "_header" if show_header else ""
+    suffix += "_route" if show_route else ""
+    basename = "{}_{}_.".format(
         route.name,
-        route.raster_map.corners_coordinates.replace(',', '_'),
+        route.raster_map.corners_coordinates.replace(",", "_"),
     )
     if show_header or show_route:
         file_path = route.images_path + suffix
-        mime_type = 'image/jpeg'
-        if not getattr(route, 'has_image_w' + suffix, False):
+        mime_type = "image/jpeg"
+        if not getattr(route, "has_image_w" + suffix, False):
             img = route.route_image(show_header, show_route)
             up_buffer = BytesIO(img)
             up_buffer.seek(0)
-            upload_to_s3('drawmyroute-maps', file_path, up_buffer)
-            route.__setattr__('has_image_w' + suffix, True)
+            upload_to_s3("drawmyroute-maps", file_path, up_buffer)
+            route.__setattr__("has_image_w" + suffix, True)
             route.save()
-            filename = '{}{}'.format(basename, mime_type[6:])
+            filename = "{}{}".format(basename, mime_type[6:])
             r = HttpResponse(img, content_type=mime_type)
-            r['Content-Disposition'] = 'attachment; filename="{}"'.format(
-                filename.replace('\\', '_').replace('"', '\\"')
-            ).encode('utf-8')
+            r["Content-Disposition"] = 'attachment; filename="{}"'.format(
+                filename.replace("\\", "_").replace('"', '\\"')
+            ).encode("utf-8")
             return r
     elif out_bounds:
         file_path = route.images_path
-        mime_type = 'image/jpeg'
+        mime_type = "image/jpeg"
         if not route.has_image_blank:
             img = route.route_image(False, False)
             up_buffer = BytesIO(img)
             up_buffer.seek(0)
-            upload_to_s3('drawmyroute-maps', file_path, up_buffer)
+            upload_to_s3("drawmyroute-maps", file_path, up_buffer)
             route.has_image_blank = True
             route.save()
-            filename = '{}{}'.format(basename, mime_type[6:])
+            filename = "{}{}".format(basename, mime_type[6:])
             r = HttpResponse(img, content_type=mime_type)
-            r['Content-Disposition'] = 'attachment; filename="{}"'.format(
-                filename.replace('\\', '_').replace('"', '\\"')
-            ).encode('utf-8')
+            r["Content-Disposition"] = 'attachment; filename="{}"'.format(
+                filename.replace("\\", "_").replace('"', '\\"')
+            ).encode("utf-8")
             return r
     else:
         file_path = route.raster_map.path
         mime_type = route.raster_map.mime_type
     return serve_from_s3(
-        'drawmyroute-maps',
+        "drawmyroute-maps",
         request,
-        '/internal/' + file_path,
-        filename='{}{}'.format(basename, mime_type[6:]),
-        mime=mime_type
+        "/internal/" + file_path,
+        filename="{}{}".format(basename, mime_type[6:]),
+        mime=mime_type,
     )
 
 
 def map_thumbnail(request, uid, *args, **kwargs):
     route = get_object_or_404(
-        Route.objects.select_related('raster_map'),
+        Route.objects.select_related("raster_map"),
         uid=uid,
     )
-    file_path = route.raster_map.path + '_thumb'
+    file_path = route.raster_map.path + "_thumb"
     if not route.has_image_thumbnail:
         image = route.raster_map.thumbnail
         up_buffer = BytesIO()
-        image.save(up_buffer, 'JPEG', quality=80)
+        image.save(up_buffer, "JPEG", quality=80)
         up_buffer.seek(0)
-        upload_to_s3('drawmyroute-maps', file_path, up_buffer)
+        upload_to_s3("drawmyroute-maps", file_path, up_buffer)
         route.has_image_thumbnail = True
         route.save()
-        response = HttpResponse(content_type='image/jpeg')
-        image.save(response, 'JPEG', quality=80)
+        response = HttpResponse(content_type="image/jpeg")
+        image.save(response, "JPEG", quality=80)
         return response
     return serve_from_s3(
-        'drawmyroute-maps',
+        "drawmyroute-maps",
         request,
-        '/internal/' + file_path,
-        filename='{}_thumbnail.jpg'.format(route.name),
-        mime='image/jpeg'
+        "/internal/" + file_path,
+        filename="{}_thumbnail.jpg".format(route.name),
+        mime="image/jpeg",
     )
 
 
@@ -340,67 +333,74 @@ def gpx_download(request, uid, *args, **kwargs):
         uid=uid,
     )
     gpx_data = route.gpx
-    response = HttpResponse(
-        gpx_data,
-        content_type='application/gpx+xml'
-    )
-    response['Content-Disposition'] = 'attachment; filename="{}.gpx"'.format(
-        route.name.replace('\\', '_').replace('"', '\\"')
+    response = HttpResponse(gpx_data, content_type="application/gpx+xml")
+    response["Content-Disposition"] = 'attachment; filename="{}.gpx"'.format(
+        route.name.replace("\\", "_").replace('"', '\\"')
     )
     return response
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @login_required
 def strava_authorize(request):
-    code = request.GET.get('code')
-    scopes = request.GET.get('scope', '').split(',')
-    if not code or 'activity:read_all' not in scopes or 'activity:write' not in scopes:
-        return HttpResponseRedirect(settings.URL_FRONT+'/new')
+    code = request.GET.get("code")
+    scopes = request.GET.get("scope", "").split(",")
+    if not code or "activity:read_all" not in scopes or "activity:write" not in scopes:
+        return HttpResponseRedirect(settings.URL_FRONT + "/new")
     client = StravaClient()
     access_token = client.exchange_code_for_token(
         client_id=settings.MY_STRAVA_CLIENT_ID,
         client_secret=settings.MY_STRAVA_CLIENT_SECRET,
-        code=code
+        code=code,
     )
     user_settings = request.user.settings
-    user_settings.strava_access_token = json.dumps(access_token) 
+    user_settings.strava_access_token = json.dumps(access_token)
     user_settings.save()
-    return HttpResponseRedirect(settings.URL_FRONT + '/new')
+    return HttpResponseRedirect(settings.URL_FRONT + "/new")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @login_required
 def strava_access_token(request):
     user_settings = request.user.settings
     if user_settings.strava_access_token:
         token = json.loads(user_settings.strava_access_token)
-        if time.time() < token['expires_at']:
-            return Response({'strava_access_token': token['access_token'], 'expires_at': token['expires_at']})
+        if time.time() < token["expires_at"]:
+            return Response(
+                {
+                    "strava_access_token": token["access_token"],
+                    "expires_at": token["expires_at"],
+                }
+            )
         client = StravaClient()
         try:
             access_token = client.refresh_access_token(
                 client_id=settings.MY_STRAVA_CLIENT_ID,
                 client_secret=settings.MY_STRAVA_CLIENT_SECRET,
-                refresh_token=token['refresh_token']
+                refresh_token=token["refresh_token"],
             )
         except Exception:
-            user_settings.strava_access_token = ''
+            user_settings.strava_access_token = ""
             user_settings.save()
             return Response({})
         user_settings.strava_access_token = json.dumps(access_token)
         user_settings.save()
-        return Response({'strava_access_token': access_token['access_token'], 'expires_at': access_token['expires_at']})
+        return Response(
+            {
+                "strava_access_token": access_token["access_token"],
+                "expires_at": access_token["expires_at"],
+            }
+        )
     return Response({})
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @login_required
 def strava_deauthorize(request):
     user_settings = request.user.settings
     if user_settings.strava_access_token:
         token = json.loads(user_settings.strava_access_token)
-        client = StravaClient(token['access_token'])
+        client = StravaClient(token["access_token"])
         try:
             client.deauthorize()
         except Exception:
@@ -411,22 +411,27 @@ def strava_deauthorize(request):
 
 
 def index_view(request):
-    return render(request, 'frontend/index.html')
+    return render(request, "frontend/index.html")
 
 
 def route_view(request, route_id):
-    route = get_object_or_404(Route.objects.select_related('athlete'), uid=route_id)
-    return render(request, 'frontend/route.html', {'route': route, 'athlete': route.athlete})
+    route = get_object_or_404(Route.objects.select_related("athlete"), uid=route_id)
+    return render(
+        request, "frontend/route.html", {"route": route, "athlete": route.athlete}
+    )
 
 
 def athlete_view(request, athlete_username):
     athlete = get_object_or_404(User, username__iexact=athlete_username)
-    return render(request, 'frontend/athlete.html', {'athlete': athlete})
+    return render(request, "frontend/athlete.html", {"athlete": athlete})
 
 
 def athlete_day_view(request, athlete_username, date):
     athlete = get_object_or_404(User, username__iexact=athlete_username)
     date_raw = date
-    date = arrow.get(date_raw).format('dddd, MMMM D, YYYY')
-    return render(request, 'frontend/athlete_day.html', {'athlete': athlete, 'date': date, 'date_raw': date_raw})
-
+    date = arrow.get(date_raw).format("dddd, MMMM D, YYYY")
+    return render(
+        request,
+        "frontend/athlete_day.html",
+        {"athlete": athlete, "date": date, "date_raw": date_raw},
+    )

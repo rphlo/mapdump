@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0003_auto_20200123_0543'),
+        ("routedb", "0003_auto_20200123_0543"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='route',
-            name='country',
-            field=models.CharField(default='FI', max_length=2),
+            model_name="route",
+            name="country",
+            field=models.CharField(default="FI", max_length=2),
             preserve_default=False,
         ),
     ]

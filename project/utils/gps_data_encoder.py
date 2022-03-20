@@ -1,13 +1,12 @@
 from __future__ import unicode_literals
-from bisect import bisect_left, bisect_right
 
-import re
 import calendar
-from decimal import Decimal
+import re
+from bisect import bisect_left, bisect_right
 from datetime import datetime
+from decimal import Decimal
 
 from django.utils.timezone import utc
-
 
 YEAR2010 = 1262304000
 
@@ -15,7 +14,7 @@ YEAR2010 = 1262304000
 def encode_unsigned_number(num):
     encoded = ""
     while num >= 0x20:
-        encoded += chr((0x20 | (num & 0x1f)) + 63)
+        encoded += chr((0x20 | (num & 0x1F)) + 63)
         num >>= 5
     encoded += chr(num + 63)
     return encoded
@@ -37,7 +36,7 @@ def decode_unsigned_number(encoded):
     while b >= 0x20 and ii < enc_len:
         b = ord(encoded[ii]) - 63
         ii += 1
-        result |= (b & 0x1f) << shift
+        result |= (b & 0x1F) << shift
         shift += 5
     return result, encoded[ii:]
 
@@ -52,15 +51,14 @@ def decode_signed_number(encoded):
 
 class GeoCoordinates(object):
     repr_re = re.compile(
-        r'^(?P<latitude>^\-?\d{1,2}(\.\d+)?),'
-        r'(?P<longitude>\-?1?\d{1,2}(\.\d+)?$)'
+        r"^(?P<latitude>^\-?\d{1,2}(\.\d+)?)," r"(?P<longitude>\-?1?\d{1,2}(\.\d+)?$)"
     )
     _latitude = None
     _longitude = None
 
     def __init__(self, *args):
         if len(args) > 2:
-            raise TypeError('Too many arguments')
+            raise TypeError("Too many arguments")
         elif len(args) == 2:
             self.latitude = args[0]
             self.longitude = args[1]
@@ -70,13 +68,13 @@ class GeoCoordinates(object):
                 match = self.repr_re.match(value)
                 if match is None:
                     raise ValueError("Incorrect argument '{}'".format(value))
-                self.latitude = match.group('latitude')
-                self.longitude = match.group('longitude')
+                self.latitude = match.group("latitude")
+                self.longitude = match.group("longitude")
             if isinstance(value, (tuple, list)):
                 self.latitude = value[0]
                 self.longitude = value[1]
         else:
-            raise TypeError('')
+            raise TypeError("")
 
     @property
     def latitude(self):
@@ -113,9 +111,11 @@ class GeoCoordinates(object):
         return len(str(self))
 
     def __eq__(self, other):
-        return (isinstance(other, GeoCoordinates) and
-                self.latitude == other.latitude and
-                self.longitude == other.longitude)
+        return (
+            isinstance(other, GeoCoordinates)
+            and self.latitude == other.latitude
+            and self.longitude == other.longitude
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -130,9 +130,11 @@ class GeoLocation(object):
         elif isinstance(coordinates, (list, tuple)) and len(coordinates) == 2:
             self.coordinates = GeoCoordinates(coordinates[0], coordinates[1])
         else:
-            raise ValueError("Wrong parameter 'coordinates', "
-                             "expecting GeoCoordinates or a tuple of "
-                             "length 2.")
+            raise ValueError(
+                "Wrong parameter 'coordinates', "
+                "expecting GeoCoordinates or a tuple of "
+                "length 2."
+            )
 
     def get_datetime(self):
         return datetime.fromtimestamp(self._timestamp, utc)
@@ -161,17 +163,18 @@ class GeoLocation(object):
         return len(str(self))
 
     def __eq__(self, other):
-        return (isinstance(other, GeoLocation) and
-                self.coordinates == other.coordinates and
-                self.timestamp == other.timestamp)
+        return (
+            isinstance(other, GeoLocation)
+            and self.coordinates == other.coordinates
+            and self.timestamp == other.timestamp
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __lt__(self, other):
         if not isinstance(other, GeoLocation):
-            raise TypeError('Can only compare to other instances of '
-                            'GeoLocation')
+            raise TypeError("Can only compare to other instances of " "GeoLocation")
         return self.timestamp < other.timestamp
 
 
@@ -179,7 +182,7 @@ class GeoLocationSeries(object):
     @staticmethod
     def check_instance(item):
         if not isinstance(item, GeoLocation):
-            raise TypeError('item is not of type GeoLocation')
+            raise TypeError("item is not of type GeoLocation")
 
     def __init__(self, lst):
         if isinstance(lst, str):
@@ -209,10 +212,7 @@ class GeoLocationSeries(object):
         return reversed(self._items)
 
     def __repr__(self):
-        return '%s(%r)' % (
-            self.__class__.__name__,
-            self._items
-        )
+        return "%s(%r)" % (self.__class__.__name__, self._items)
 
     def __reduce__(self):
         return self.__class__, self._items
@@ -272,21 +272,21 @@ class GeoLocationSeries(object):
         i = bisect_left(self._keys, k)
         if i != len(self) and self._keys[i] == k:
             return self._items[i]
-        raise ValueError('No item found with key equal to: %r' % (k,))
+        raise ValueError("No item found with key equal to: %r" % (k,))
 
     def find_lte(self, k):
         """Return last item with a key <= k.  Raise ValueError if not found."""
         i = bisect_right(self._keys, k)
         if i:
-            return self._items[i-1]
-        raise ValueError('No item found with key at or below: %r' % (k,))
+            return self._items[i - 1]
+        raise ValueError("No item found with key at or below: %r" % (k,))
 
     def find_lt(self, k):
         """Return last item with a key < k.  Raise ValueError if not found."""
         i = bisect_left(self._keys, k)
         if i:
-            return self._items[i-1]
-        raise ValueError('No item found with key below: %r' % (k,))
+            return self._items[i - 1]
+        raise ValueError("No item found with key below: %r" % (k,))
 
     def find_gte(self, k):
         """Return first item with a key >= equal to k.
@@ -294,22 +294,22 @@ class GeoLocationSeries(object):
         i = bisect_left(self._keys, k)
         if i != len(self):
             return self._items[i]
-        raise ValueError('No item found with key at or above: %r' % (k,))
+        raise ValueError("No item found with key at or above: %r" % (k,))
 
     def find_gt(self, k):
         """Return first item with a key > k.  Raise ValueError if not found"""
         i = bisect_right(self._keys, k)
         if i != len(self):
             return self._items[i]
-        raise ValueError('No item found with key above: %r' % (k,))
+        raise ValueError("No item found with key above: %r" % (k,))
 
     def get_bounds(self):
         north = -90
         south = 90
         east = -180
         west = 180
-        start_t = float('inf')
-        end_t = -float('inf')
+        start_t = float("inf")
+        end_t = -float("inf")
         for pt in self:
             coords = pt.coordinates
             north = max(north, coords.latitude)
@@ -319,12 +319,12 @@ class GeoLocationSeries(object):
             start_t = min(start_t, pt.timestamp)
             end_t = max(end_t, pt.timestamp)
         return {
-            'start_timestamp': start_t,
-            'finish_timestamp': end_t,
-            'north': north,
-            'south': south,
-            'west': west,
-            'east': east,
+            "start_timestamp": start_t,
+            "finish_timestamp": end_t,
+            "north": north,
+            "south": south,
+            "west": west,
+            "east": east,
         }
 
     def __str__(self):
@@ -335,14 +335,16 @@ class GeoLocationSeries(object):
         for pt in self:
             coord = pt.coordinates
             tim_d = int(round(float(pt.timestamp) - prev_tim))
-            lat_d = int(round(1e5*(float(coord.latitude) - prev_lat)))
-            lng_d = int(round(1e5*(float(coord.longitude) - prev_lng)))
-            result += (encode_unsigned_number(tim_d) +
-                       encode_signed_number(lat_d) +
-                       encode_signed_number(lng_d))
+            lat_d = int(round(1e5 * (float(coord.latitude) - prev_lat)))
+            lng_d = int(round(1e5 * (float(coord.longitude) - prev_lng)))
+            result += (
+                encode_unsigned_number(tim_d)
+                + encode_signed_number(lat_d)
+                + encode_signed_number(lng_d)
+            )
             prev_tim += tim_d
-            prev_lat += lat_d/1e5
-            prev_lng += lng_d/1e5
+            prev_lat += lat_d / 1e5
+            prev_lng += lng_d / 1e5
         return result
 
     @staticmethod
@@ -358,12 +360,11 @@ class GeoLocationSeries(object):
             tim += tim_d
             lat += lat_d
             lon += lon_d
-            result.append(GeoLocation(tim, (lat/1e5, lon/1e5)))
+            result.append(GeoLocation(tim, (lat / 1e5, lon / 1e5)))
         return result
 
     def __eq__(self, other):
-        return isinstance(other, GeoLocationSeries)\
-            and self._items == other._items
+        return isinstance(other, GeoLocationSeries) and self._items == other._items
 
     def __ne__(self, other):
         return not self.__eq__(other)

@@ -4,7 +4,7 @@ from django.core.files.storage import FileSystemStorage
 
 
 class OverwriteImageStorage(FileSystemStorage):
-    """ Storage that delete a previous file with the same name
+    """Storage that delete a previous file with the same name
     and its copy at different resolution
     """
 
@@ -14,9 +14,7 @@ class OverwriteImageStorage(FileSystemStorage):
         # file system
         if self.exists(name):
             self.delete(name)
-        return super(OverwriteImageStorage,
-                     self).get_available_name(name,
-                                              max_length)
+        return super(OverwriteImageStorage, self).get_available_name(name, max_length)
 
     def isdir(self, name):
         return os.path.isdir(self.path(name))
@@ -25,4 +23,4 @@ class OverwriteImageStorage(FileSystemStorage):
         os.makedirs(self.path(name))
 
     def url(self, name):
-        return '/media/{}'.format(name)
+        return "/media/{}".format(name)

@@ -12,7 +12,7 @@ OUTPUT_FOLDER=$2
 if [ -z "$INPUT_FOLDER" ]; then usage "Input Folder missing!"; exit 1; fi
 if [ -z "$OUTPUT_FOLDER" ]; then usage "Output Folder missing!"; exit 1; fi
 
-command -v rsvg-convert >/dev/null 2>&1 || { 
+command -v rsvg-convert >/dev/null 2>&1 || {
   echo >&2 usage "RsvgConvert missing - Install using \"brew install librsvg\"."; exit 1;
 }
 

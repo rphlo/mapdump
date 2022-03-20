@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0010_auto_20200901_1644'),
+        ("routedb", "0010_auto_20200901_1644"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='rastermap',
-            name='mime_type',
-            field=models.CharField(default='image/jpeg', editable=False, max_length=256),
+            model_name="rastermap",
+            name="mime_type",
+            field=models.CharField(
+                default="image/jpeg", editable=False, max_length=256
+            ),
         ),
     ]

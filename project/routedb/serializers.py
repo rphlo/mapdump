@@ -1,56 +1,59 @@
+from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
-
-
-from allauth.account.models import EmailAddress
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from allauth.account.models import EmailAddress
-from routedb.models import RasterMap, Route, UserSettings
-from utils.validators import validate_latitude, validate_longitude, custom_username_validators
+from routedb.models import RasterMap, Route
+from utils.validators import (
+    custom_username_validators,
+    validate_latitude,
+    validate_longitude,
+)
+
 
 class AuthTokenSerializer(serializers.Serializer):
-    username = serializers.CharField(
-        label=_("Username"),
-        write_only=True
-    )
+    username = serializers.CharField(label=_("Username"), write_only=True)
     password = serializers.CharField(
         label=_("Password"),
-        style={'input_type': 'password'},
+        style={"input_type": "password"},
         trim_whitespace=False,
-        write_only=True
+        write_only=True,
     )
-    token = serializers.CharField(
-        label=_("Token"),
-        read_only=True
-    )
+    token = serializers.CharField(label=_("Token"), read_only=True)
 
     def validate(self, attrs):
-        username = attrs.get('username')
-        password = attrs.get('password')
+        username = attrs.get("username")
+        password = attrs.get("password")
 
         if username and password:
-            user = authenticate(request=self.context.get('request'),
-                                username=username, password=password)
+            user = authenticate(
+                request=self.context.get("request"),
+                username=username,
+                password=password,
+            )
 
             # The authenticate call simply returns None for is_active=False
             # users. (Assuming the default ModelBackend authentication
             # backend.)
             if not user:
-                msg = _('Unable to log in with provided credentials.')
-                raise serializers.ValidationError(msg, code='authorization')
+                msg = _("Unable to log in with provided credentials.")
+                raise serializers.ValidationError(msg, code="authorization")
             if not EmailAddress.objects.filter(user=user, verified=True).exists():
                 raise serializers.ValidationError(
-                    mark_safe(_('Please verify your email address or <a href="/verify-email">resend verification</a>')),
-                    code='authorization'
+                    mark_safe(
+                        _(
+                            'Please verify your email address or <a href="/verify-email">resend verification</a>'
+                        )
+                    ),
+                    code="authorization",
                 )
         else:
             msg = _('Must include "username" and "password".')
-            raise serializers.ValidationError(msg, code='authorization')
+            raise serializers.ValidationError(msg, code="authorization")
 
-        attrs['user'] = user
+        attrs["user"] = user
         return attrs
 
 
@@ -58,76 +61,101 @@ class RelativeURLField(serializers.ReadOnlyField):
     """
     Field that returns a link to the relative url.
     """
+
     def to_representation(self, value):
-        request = self.context.get('request')
-        url = request and request.build_absolute_uri(value) or ''
+        request = self.context.get("request")
+        url = request and request.build_absolute_uri(value) or ""
         return url
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
     username = serializers.CharField(validators=custom_username_validators)
+
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name')
+        fields = ("username", "first_name", "last_name")
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    map_image = serializers.ImageField(source='raster_map.image', write_only=True, required=False)
-    map_id = serializers.ChoiceField([], source='raster_map.uid', allow_blank=True, required=False)
+    map_image = serializers.ImageField(
+        source="raster_map.image", write_only=True, required=False
+    )
+    map_id = serializers.ChoiceField(
+        [], source="raster_map.uid", allow_blank=True, required=False
+    )
     gpx_url = RelativeURLField()
-    map_url = RelativeURLField(source='image_url')
-    map_thumbnail_url = RelativeURLField(source='thumbnail_url')
-    route_data = serializers.JSONField(source='route')
-    map_bounds = serializers.JSONField(source='raster_map.bounds', required=False)
-    id = serializers.ReadOnlyField(source='uid')
+    map_url = RelativeURLField(source="image_url")
+    map_thumbnail_url = RelativeURLField(source="thumbnail_url")
+    route_data = serializers.JSONField(source="route")
+    map_bounds = serializers.JSONField(source="raster_map.bounds", required=False)
+    id = serializers.ReadOnlyField(source="uid")
     athlete = UserInfoSerializer(read_only=True)
     country = serializers.ReadOnlyField()
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
-    map_size = serializers.ReadOnlyField(source='raster_map.size')
+    map_size = serializers.ReadOnlyField(source="raster_map.size")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['map_id'].choices = [None] + list(RasterMap.objects.all().values_list('uid', flat=True))
+        self.fields["map_id"].choices = [None] + list(
+            RasterMap.objects.all().values_list("uid", flat=True)
+        )
 
     def validate_map_bounds(self, value):
         if not value:
             return None
         if not isinstance(value, dict):
-            raise ValidationError('Invalid bounds')
-        for x in 'top_left', 'top_right', 'bottom_right', 'bottom_left':
-            if not x in value or len(value[x]) != 2:
-                raise ValidationError('Invalid bounds')
+            raise ValidationError("Invalid bounds")
+        for x in "top_left", "top_right", "bottom_right", "bottom_left":
+            if x not in value or len(value[x]) != 2:
+                raise ValidationError("Invalid bounds")
             validate_latitude(value[x][0])
             validate_longitude(value[x][1])
         return value
-    
+
     def validate_route_data(self, value):
         if not isinstance(value, list) or len(value) <= 0:
-            raise ValidationError('Invalid route data')
+            raise ValidationError("Invalid route data")
         for x in value:
-            if 'time' not in x or not isinstance(x['time'], (type(None), float, int)):
-                raise ValidationError('Invalid route data')
-            if 'latlon' not in x or not isinstance(x['latlon'], list) or len(x['latlon']) != 2:
-                raise ValidationError('Invalid route data')
-            validate_latitude(x['latlon'][0])
-            validate_longitude(x['latlon'][1])
+            if "time" not in x or not isinstance(x["time"], (type(None), float, int)):
+                raise ValidationError("Invalid route data")
+            if (
+                "latlon" not in x
+                or not isinstance(x["latlon"], list)
+                or len(x["latlon"]) != 2
+            ):
+                raise ValidationError("Invalid route data")
+            validate_latitude(x["latlon"][0])
+            validate_longitude(x["latlon"][1])
         return value
 
     def validate(self, data):
         request = self.context.get("request")
-        if request and request.method in ('PUT', 'PATCH'):
-            if data.get('raster_map'):
-                raise ValidationError('This method does not allow to update to map')
-        else:   # Method is POST
-            if not data.get('raster_map', {}).get('uid') and not data.get('raster_map', {}).get('image'):
-                raise ValidationError('Either set map_image or map_id %r %r'%(request.method,data.get('raster_map') ))
-            if data.get('raster_map', {}).get('uid') and data.get('raster_map', {}).get('image'):
-                raise ValidationError('Either set map_image or map_id, not both')
-            if not data.get('raster_map', {}).get('uid') and data.get('raster_map', {}).get('image') and not data.get('raster_map', {})['bounds']:
-                raise ValidationError('You must define map_bounds fields along with map_image')
+        if request and request.method in ("PUT", "PATCH"):
+            if data.get("raster_map"):
+                raise ValidationError("This method does not allow to update to map")
+        else:  # Method is POST
+            if not data.get("raster_map", {}).get("uid") and not data.get(
+                "raster_map", {}
+            ).get("image"):
+                raise ValidationError(
+                    "Either set map_image or map_id %r %r"
+                    % (request.method, data.get("raster_map"))
+                )
+            if data.get("raster_map", {}).get("uid") and data.get("raster_map", {}).get(
+                "image"
+            ):
+                raise ValidationError("Either set map_image or map_id, not both")
+            if (
+                not data.get("raster_map", {}).get("uid")
+                and data.get("raster_map", {}).get("image")
+                and not data.get("raster_map", {})["bounds"]
+            ):
+                raise ValidationError(
+                    "You must define map_bounds fields along with map_image"
+                )
         return data
 
     def create(self, validated_data):
@@ -135,39 +163,58 @@ class RouteSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request and hasattr(request, "user"):
             user = request.user
-        
-        if validated_data.get('raster_map', {}).get('uid'):
-            raster_map = RasterMap.objects.get(uid=validated_data['raster_map']['uid'])
+
+        if validated_data.get("raster_map", {}).get("uid"):
+            raster_map = RasterMap.objects.get(uid=validated_data["raster_map"]["uid"])
         else:
             raster_map = RasterMap(
                 uploader=user,
-                image=validated_data['raster_map']['image'],
-                mime_type=validated_data['raster_map']['image'].content_type
+                image=validated_data["raster_map"]["image"],
+                mime_type=validated_data["raster_map"]["image"].content_type,
             )
-            raster_map.bounds = validated_data['raster_map']['bounds']
+            raster_map.bounds = validated_data["raster_map"]["bounds"]
             raster_map.prefetch_map_extras()
             raster_map.save()
         route = Route(
             athlete=user,
             raster_map=raster_map,
-            name=validated_data['name'],
-            comment=validated_data['comment'],
+            name=validated_data["name"],
+            comment=validated_data["comment"],
         )
-        route.route = validated_data['route']
+        route.route = validated_data["route"]
         route.prefetch_route_extras()
         route.save()
         return route
 
     class Meta:
         model = Route
-        fields = ('id', 'athlete', 'name', 'start_time', 'tz', 'distance', 'duration', 'country', 'map_image', 'map_id', 'gpx_url', 'map_url', 'map_thumbnail_url', 'map_bounds', 'map_size', 'comment', 'route_data')
+        fields = (
+            "id",
+            "athlete",
+            "name",
+            "start_time",
+            "tz",
+            "distance",
+            "duration",
+            "country",
+            "map_image",
+            "map_id",
+            "gpx_url",
+            "map_url",
+            "map_thumbnail_url",
+            "map_bounds",
+            "map_size",
+            "comment",
+            "route_data",
+        )
+
 
 class UserRouteListSerializer(serializers.ModelSerializer):
-    url = RelativeURLField(source='api_url')
-    id = serializers.ReadOnlyField(source='uid')
+    url = RelativeURLField(source="api_url")
+    id = serializers.ReadOnlyField(source="uid")
     country = serializers.ReadOnlyField()
-    map_url = RelativeURLField(source='image_url')
-    map_thumbnail_url = RelativeURLField(source='thumbnail_url')
+    map_url = RelativeURLField(source="image_url")
+    map_thumbnail_url = RelativeURLField(source="thumbnail_url")
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
@@ -175,58 +222,79 @@ class UserRouteListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('id', 'url', 'map_url', 'map_thumbnail_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name')
+        fields = (
+            "id",
+            "url",
+            "map_url",
+            "map_thumbnail_url",
+            "start_time",
+            "tz",
+            "distance",
+            "duration",
+            "country",
+            "name",
+        )
+
 
 class LatestRouteListSerializer(serializers.ModelSerializer):
-    url = RelativeURLField(source='api_url')
-    id = serializers.ReadOnlyField(source='uid')
+    url = RelativeURLField(source="api_url")
+    id = serializers.ReadOnlyField(source="uid")
     country = serializers.ReadOnlyField()
-    map_url = RelativeURLField(source='image_url')
-    map_thumbnail_url = RelativeURLField(source='thumbnail_url')
+    map_url = RelativeURLField(source="image_url")
+    map_thumbnail_url = RelativeURLField(source="thumbnail_url")
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
     athlete = UserInfoSerializer(read_only=True)
-    
+
     class Meta:
         model = Route
-        fields = ('id', 'url', 'map_url', 'map_thumbnail_url', 'start_time', 'tz', 'distance', 'duration', 'country', 'name',  'athlete')
+        fields = (
+            "id",
+            "url",
+            "map_url",
+            "map_thumbnail_url",
+            "start_time",
+            "tz",
+            "distance",
+            "duration",
+            "country",
+            "name",
+            "athlete",
+        )
 
 
 class UserMainSerializer(serializers.ModelSerializer):
-    #latest_routes = serializers.SerializerMethodField()
+    # latest_routes = serializers.SerializerMethodField()
     routes = UserRouteListSerializer(many=True)
+
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'routes')
-    
-    #def get_latest_routes(self, obj):
+        fields = ("username", "first_name", "last_name", "routes")
+
+    # def get_latest_routes(self, obj):
     #    return UserRouteListSerializer(instance=obj.routes.all()[:5], many=True, context=self.context).data
 
 
 class EmailSerializer(serializers.ModelSerializer):
     class Meta(object):
-        fields = ('email', 'primary', 'verified')
+        fields = ("email", "primary", "verified")
         model = EmailAddress
-        read_only_fields = ('verified',)
+        read_only_fields = ("verified",)
 
     def create(self, validated_data):
         email = super(EmailSerializer, self).create(validated_data)
         email.send_confirmation()
-        user = validated_data.get('user')
-        query = EmailAddress.objects.filter(
-            primary=True, user=user
-        )
+        user = validated_data.get("user")
+        query = EmailAddress.objects.filter(primary=True, user=user)
         if not query.exists():
             email.set_as_primary()
         return email
 
     def update(self, instance, validated_data):
-        primary = validated_data.pop('primary', False)
-        instance = super(EmailSerializer, self).update(
-            instance, validated_data
-        )
+        primary = validated_data.pop("primary", False)
+        instance = super(EmailSerializer, self).update(instance, validated_data)
         if primary:
             instance.set_as_primary()
         return instance
@@ -237,10 +305,7 @@ class EmailSerializer(serializers.ModelSerializer):
 
         if self.instance and email and self.instance.email != email:
             raise serializers.ValidationError(
-                _(
-                    "Existing emails may not be edited. Create a new one "
-                    "instead."
-                )
+                _("Existing emails may not be edited. Create a new one " "instead.")
             )
 
         return email
@@ -257,13 +322,14 @@ class EmailSerializer(serializers.ModelSerializer):
             )
         return primary
 
+
 class ResendVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
     def save(self):
         try:
             email = EmailAddress.objects.get(
-                email__iexact=self.validated_data['email'],
-                verified=False
+                email__iexact=self.validated_data["email"], verified=False
             )
             email.send_confirmation()
         except EmailAddress.DoesNotExist:
@@ -271,12 +337,12 @@ class ResendVerificationSerializer(serializers.Serializer):
             pass
 
 
-
 class MapListSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='uid')
+    id = serializers.ReadOnlyField(source="uid")
     image_url = RelativeURLField()
     bounds = serializers.JSONField()
-    routes = LatestRouteListSerializer(source='route_set', many=True)
+    routes = LatestRouteListSerializer(source="route_set", many=True)
+
     class Meta:
         model = RasterMap
-        fields = ('id', 'image_url', 'country', 'bounds', 'routes')
+        fields = ("id", "image_url", "country", "bounds", "routes")

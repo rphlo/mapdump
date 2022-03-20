@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0007_auto_20200308_1530'),
+        ("routedb", "0007_auto_20200308_1530"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='route',
-            name='comment',
+            model_name="route",
+            name="comment",
             field=models.TextField(blank=True),
         ),
     ]
