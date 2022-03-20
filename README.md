@@ -1,4 +1,5 @@
-[![rphlo](https://circleci.com/gh/rphlo/mapdump.svg?style=shield)](https://circleci.com/gh/rphlo/mapdump)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/rphlo/mapdump/master.svg)](https://results.pre-commit.ci/latest/github/rphlo/mapdump/master)
+ [![rphlo](https://circleci.com/gh/rphlo/mapdump.svg?style=shield)](https://circleci.com/gh/rphlo/mapdump)
 
 # MapDump.com
 
