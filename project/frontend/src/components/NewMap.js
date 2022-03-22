@@ -45,6 +45,7 @@ function NewMap() {
     "image/jpeg": true,
     "image/gif": true,
     "image/png": true,
+    "image/webp": true,
   };
 
   const onRouteLoaded = (newRoute) => {
