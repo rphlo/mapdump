@@ -1,0 +1,17 @@
+arrow
+django<4
+pillow
+django-cors-headers
+requests
+djangorestframework
+uwsgi
+psycopg2-binary
+raven
+django-rest-knox
+timezonefinder
+reverse_geocoder
+dj-rest-auth[with_social]
+django-s3-storage
+gpxpy
+stravalib
+bs4

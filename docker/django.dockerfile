@@ -1,7 +1,7 @@
-FROM python:3.8-buster
+FROM python:3.10-buster
 
 # Copy in your requirements file
-ADD project/requirements.txt /requirements.txt
+ADD project/requirements.in /requirements.in
 
 # OR, if you’re using a directory for your requirements, copy everything (comment out the above and uncomment this if so):
 # ADD requirements /requirements
@@ -9,7 +9,8 @@ ADD project/requirements.txt /requirements.txt
 # Install build deps, then run `pip install`, then remove unneeded build deps all in a single step. Correct the path to your production requirements file, if needed.
 RUN set -ex \
     && python -m venv /venv \
-    && /venv/bin/pip install -U pip \
+    && /venv/bin/pip install -U pip pip-tools \
+    && /venv/bin/pip-compile /requirements.in \
     && /venv/bin/pip install -r /requirements.txt
 
 # Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)
@@ -50,6 +51,7 @@ RUN node --version
 RUN npm --version
 RUN npm add yarn -g
 RUN cd /app/project/jstools/ && npm install
+RUN cp /requirements.txt /app/project/requirements.txt
 RUN chmod a+x /app/project/jstools/generate_map.js
 
 
