@@ -93,6 +93,7 @@ class RouteSerializer(serializers.ModelSerializer):
     country = serializers.ReadOnlyField()
     tz = serializers.ReadOnlyField()
     start_time = serializers.ReadOnlyField()
+    modification_date = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
     map_size = serializers.ReadOnlyField(source="raster_map.size")
