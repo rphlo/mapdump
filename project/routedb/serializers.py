@@ -194,6 +194,7 @@ class RouteSerializer(serializers.ModelSerializer):
             "athlete",
             "name",
             "start_time",
+            "modification_date",
             "tz",
             "distance",
             "duration",
