@@ -33,39 +33,41 @@ const RasterMap = ({ match, history }) => {
       return { time: p.time * 1e3, latLon: p.latlon.slice() };
     });
   };
-  
-    React.useEffect(()=> {
-      (async ()=> {
-        const res = await fetch(process.env.REACT_APP_API_URL + '/v1/route/' + match.params.uid)
-        if(res.status === 200){
-          const rawData = await res.json()
-          setData({
-            id: rawData.id,
-            athlete: rawData.athlete,
-            tz: rawData.tz,
-            startTime: rawData.start_time,
-            modificationDate: +new Date(rawData.modification_date),
-            country: rawData.country,
-            mapCornersCoords: transformMapBounds(rawData.map_bounds),
-            mapDataURL: rawData.map_url,
-            gpx: rawData.gpx_url,
-            name: rawData.name,
-            route: transformRoute(rawData.route_data),
-            distance: rawData.distance,
-            duration: rawData.duration,
-            comment: rawData.comment,
-            mapSize: rawData.map_size,
-          })
-          setFound(true)
-        } else if(res.status === 404) {
-          setFound(false)
-        }
-      })()
-    }, [match.params.uid])
-  
-    const togglePlayer = () => {
-      setShowPlayer(!showPlayer);
-    }
+
+  React.useEffect(() => {
+    (async () => {
+      const res = await fetch(
+        process.env.REACT_APP_API_URL + "/v1/route/" + match.params.uid
+      );
+      if (res.status === 200) {
+        const rawData = await res.json();
+        setData({
+          id: rawData.id,
+          athlete: rawData.athlete,
+          tz: rawData.tz,
+          startTime: rawData.start_time,
+          modificationDate: +new Date(rawData.modification_date),
+          country: rawData.country,
+          mapCornersCoords: transformMapBounds(rawData.map_bounds),
+          mapDataURL: rawData.map_url,
+          gpx: rawData.gpx_url,
+          name: rawData.name,
+          route: transformRoute(rawData.route_data),
+          distance: rawData.distance,
+          duration: rawData.duration,
+          comment: rawData.comment,
+          mapSize: rawData.map_size,
+        });
+        setFound(true);
+      } else if (res.status === 404) {
+        setFound(false);
+      }
+    })();
+  }, [match.params.uid]);
+
+  const togglePlayer = () => {
+    setShowPlayer(!showPlayer);
+  };
 
   const getComponent = () => {
     const props = {

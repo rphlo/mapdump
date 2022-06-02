@@ -29,7 +29,7 @@ const RouteViewing = (props) => {
 
   useEffect(() => {
     const qp = new URLSearchParams();
-    qp.set('m', props.modificationDate)
+    qp.set("m", props.modificationDate);
     if (!includeHeader && !includeRoute) {
       qp.set("out_bounds", "1");
     }
@@ -147,7 +147,7 @@ const RouteViewing = (props) => {
     if (firstLoad) {
       setFirstLoad(false);
       const qp = new URLSearchParams();
-      qp.set('m', props.modificationDate)
+      qp.set("m", props.modificationDate);
       qp.set("show_header", "1");
       const url = props.mapDataURL + "?" + qp.toString();
       await loadCache(url);
