@@ -127,4 +127,3 @@ urllib3==1.26.9
     #   botocore
     #   requests
 uwsgi==2.0.20
-    # via -r requirements.in

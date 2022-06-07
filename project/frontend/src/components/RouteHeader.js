@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import useGlobalState from "../utils/useGlobalState";
 import { printTime, printPace } from "../utils/drawHelpers";
 import { capitalizeFirstLetter } from "../utils/Utils";
+import { LinkItUrl } from "react-linkify-it";
 
 const RouteHeader = (props) => {
   const [name, setName] = useState();
@@ -242,7 +243,9 @@ const RouteHeader = (props) => {
       <div style={{ marginBottom: "5px" }}>
         {(!canEdit() || !commentEditing) && (
           <blockquote style={{ whiteSpace: "pre-wrap" }}>
-            <p>{comment}</p>
+            <p>
+              <LinkItUrl>{comment}</LinkItUrl>
+            </p>
           </blockquote>
         )}
         {canEdit() && commentEditing && (
