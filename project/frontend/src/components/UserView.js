@@ -119,12 +119,13 @@ const UserView = ({ match, history }) => {
       ? new Date(selectedYear + "-12-01T12:00:00Z")
       : new Date();
     for (let i = 0; i < 365; i++) {
-      // eslint-disable-next-line
       const count = data.routes.filter(
-        (r) =>
-          DateTime.fromISO(r.start_time, { zone: r.tz }).toFormat(
-            "yyyyMMdd"
-          ) === DateTime.fromMillis(+yesterday).toFormat("yyyyMMdd")
+        ((date) => {
+          return (r) =>
+            DateTime.fromISO(r.start_time, { zone: r.tz }).toFormat(
+              "yyyyMMdd"
+            ) === DateTime.fromMillis(+date).toFormat("yyyyMMdd");
+        })(yesterday)
       ).length;
       val.push({ date: new Date(+yesterday).toISOString(), count });
       yesterday = shiftDate(yesterday, -1);
