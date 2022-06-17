@@ -41,7 +41,6 @@ const UserView = ({ match, history }) => {
       return;
     }
     if (match.params.date) {
-      console.log(match.params.date);
       setSelectedYear(match.params.date.slice(0, 4));
     } else if (match.params.year) {
       setSelectedYear(match.params.year);
@@ -123,10 +122,10 @@ const UserView = ({ match, history }) => {
       const count = data.routes.filter(
         ((date) => {
           return (r) =>
-            DateTime.fromISO(r.start_time, { zone: r.tz })
+            DateTime.fromISO(r.start_time, { zone: DateTime.local().zoneName })
               .setZone("UTC")
               .toFormat("yyyyMMdd") ===
-            DateTime.fromJSDate(date).setZone("UTC").toFormat("yyyyMMdd");
+            DateTime.fromJSDate(date).toFormat("yyyyMMdd");
         })(yesterday)
       ).length;
       val.push({ date: yesterday, count });
@@ -290,16 +289,17 @@ const UserView = ({ match, history }) => {
                 startDate={
                   selectedYear
                     ? DateTime.fromISO(selectedYear + "-01-01", {
-                        zone: "Europe/Paris",
-                      }).toJSDate()
+                        zone: DateTime.local().zoneName,
+                      })
+                        .plus({ days: -1 })
+                        .toJSDate()
                     : shiftDate(new Date(), -365)
                 }
                 endDate={
                   selectedYear
-                    ? DateTime.fromISO(
-                        parseInt(selectedYear, 10) + 1 + "-01-01",
-                        { zone: "Europe/Paris" }
-                      ).toJSDate()
+                    ? DateTime.fromISO(selectedYear + "-12-31", {
+                        zone: DateTime.local().zoneName,
+                      }).toJSDate()
                     : new Date()
                 }
                 values={getCalValues()}
