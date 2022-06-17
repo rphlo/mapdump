@@ -108,26 +108,28 @@ const UserView = ({ match, history }) => {
   }, [data?.routes]);
 
   function shiftDate(date, numDays) {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + numDays);
-    return newDate;
+    const newDate = DateTime.fromJSDate(date);
+    return newDate.plus({ days: numDays }).toJSDate();
   }
 
   const getCalValues = () => {
     const val = [];
     let yesterday = selectedYear
-      ? new Date(selectedYear + "-12-01T12:00:00Z")
+      ? DateTime.fromISO(parseInt(selectedYear, 10) + 1 + "01-01", {
+          zone: "Europe/Paris",
+        }).toJSDate()
       : new Date();
-    for (let i = 0; i < 365; i++) {
+    for (let i = 0; i < 368; i++) {
       const count = data.routes.filter(
         ((date) => {
           return (r) =>
-            DateTime.fromISO(r.start_time, { zone: r.tz }).toFormat(
-              "yyyyMMdd"
-            ) === DateTime.fromMillis(+date).toFormat("yyyyMMdd");
+            DateTime.fromISO(r.start_time, { zone: r.tz })
+              .setZone("UTC")
+              .toFormat("yyyyMMdd") ===
+            DateTime.fromJSDate(date).setZone("UTC").toFormat("yyyyMMdd");
         })(yesterday)
       ).length;
-      val.push({ date: new Date(+yesterday).toISOString(), count });
+      val.push({ date: yesterday, count });
       yesterday = shiftDate(yesterday, -1);
     }
     return val;
@@ -270,15 +272,16 @@ const UserView = ({ match, history }) => {
 
           <div>
             {years.map((y) => (
-              <>
-                <span>
-                  {selectedYear !== y ? (
+              <span key={y}>
+                {selectedYear !== y ? (
+                  <Link to={`/athletes/${data.username}/${y}`}>{y}</Link>
+                ) : (
+                  <b>
                     <Link to={`/athletes/${data.username}/${y}`}>{y}</Link>
-                  ) : (
-                    <b>{y}</b>
-                  )}
-                </span>{" "}
-              </>
+                  </b>
+                )}
+                <> </>
+              </span>
             ))}
           </div>
           {
@@ -286,12 +289,17 @@ const UserView = ({ match, history }) => {
               <CalendarHeatmap
                 startDate={
                   selectedYear
-                    ? new Date(selectedYear + "-01-01T12:00:00Z")
+                    ? DateTime.fromISO(selectedYear + "-01-01", {
+                        zone: "Europe/Paris",
+                      }).toJSDate()
                     : shiftDate(new Date(), -365)
                 }
                 endDate={
                   selectedYear
-                    ? new Date(selectedYear + "-12-01T12:00:00Z")
+                    ? DateTime.fromISO(
+                        parseInt(selectedYear, 10) + 1 + "-01-01",
+                        { zone: "Europe/Paris" }
+                      ).toJSDate()
                     : new Date()
                 }
                 values={getCalValues()}
@@ -304,15 +312,20 @@ const UserView = ({ match, history }) => {
                 tooltipDataAttrs={(value) => {
                   return {
                     "data-tip":
-                      `${value.date.slice(0, 10)} has ${value.count} route` +
-                      (value.count !== 1 ? "s" : ""),
+                      `${DateTime.fromJSDate(value.date)
+                        .setLocale("en-US")
+                        .toLocaleString(DateTime.DATE_HUGE)} has ${
+                        value.count
+                      } route` + (value.count !== 1 ? "s" : ""),
                   };
                 }}
                 showWeekdayLabels={true}
                 onClick={(v) => {
                   if (v.count) {
                     history.push(
-                      `/athletes/${data.username}/${v.date.substring(0, 10)}`
+                      `/athletes/${data.username}/${v.date
+                        .toISOString()
+                        .substring(0, 10)}`
                     );
                   }
                 }}
