@@ -87,7 +87,9 @@ const RouteViewing = (props) => {
       (includeRoute ? "" : "blank_") +
       printCornersCoords(newCorners, "_") +
       "_.jpg";
-    saveAs(finalImage.current.src, downloadName);
+    fetch(imgURL)
+      .then((r) => r.blob())
+      .then((b) => saveAs(b, downloadName));
   };
 
   const downloadKmz = (e) => {

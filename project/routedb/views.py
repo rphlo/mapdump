@@ -77,9 +77,10 @@ def serve_from_s3(
         response["X-Accel-Buffering"] = "no"
     response["Accept-Ranges"] = "bytes"
     response["Content-Type"] = mime
-    response["Content-Disposition"] = 'attachment; filename="{}"'.format(
-        filename.replace("\\", "_").replace('"', '\\"')
-    ).encode("utf-8")
+    if filename:
+        response["Content-Disposition"] = 'attachment; filename="{}"'.format(
+            filename.replace("\\", "_").replace('"', '\\"')
+        ).encode("utf-8")
     return response
 
 
@@ -253,10 +254,7 @@ def map_download(request, uid, *args, **kwargs):
     )
     suffix = "_header" if show_header else ""
     suffix += "_route" if show_route else ""
-    basename = "{}_{}_.".format(
-        route.name,
-        route.raster_map.corners_coordinates.replace(",", "_"),
-    )
+    basename = f"{route.name}."
     if show_header or show_route:
         file_path = route.images_path + suffix
         mime_type = "image/jpeg"
@@ -267,7 +265,7 @@ def map_download(request, uid, *args, **kwargs):
             upload_to_s3("drawmyroute-maps", file_path, up_buffer)
             route.__setattr__("has_image_w" + suffix, True)
             route.save()
-            filename = "{}{}".format(basename, mime_type[6:])
+            filename = f"{basename}{mime_type[6:]}"
             r = HttpResponse(img, content_type=mime_type)
             r["Content-Disposition"] = 'attachment; filename="{}"'.format(
                 filename.replace("\\", "_").replace('"', '\\"')
@@ -283,7 +281,7 @@ def map_download(request, uid, *args, **kwargs):
             upload_to_s3("drawmyroute-maps", file_path, up_buffer)
             route.has_image_blank = True
             route.save()
-            filename = "{}{}".format(basename, mime_type[6:])
+            filename = f"{basename}{mime_type[6:]}"
             r = HttpResponse(img, content_type=mime_type)
             r["Content-Disposition"] = 'attachment; filename="{}"'.format(
                 filename.replace("\\", "_").replace('"', '\\"')
