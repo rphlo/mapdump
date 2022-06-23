@@ -249,10 +249,13 @@ const UserView = ({ match, history }) => {
               showWeekdayLabels={true}
               onClick={(v) => {
                 if (v.count) {
+                  const zone = DateTime.local().zoneName;
+                  const dateStr = DateTime.fromISO(r.start_time, { zone })
+                    .setZone("UTC")
+                    .toFormat("yyyy-MM-dd");
+      );
                   history.push(
-                    `/athletes/${data.username}/${v.date
-                      .toISOString()
-                      .substring(0, 10)}`
+                    `/athletes/${data.username}/${dateStr}`
                   );
                 }
               }}
