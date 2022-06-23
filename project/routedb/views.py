@@ -443,7 +443,7 @@ def athlete_avatar(request, athlete_username):
     athlete = get_object_or_404(User, username__iexact=athlete_username)
 
     athlete_settings, _ = UserSettings.objects.get_or_create(user=athlete)
-    if not athlete_settings.avatar:
+    if athlete_settings.avatar:
         return HttpResponse(athlete_settings.avatar.read(), content_type="image/png")
     with open(
         os.path.join(settings.BASE_DIR, "routedb", "default-avatar.png"), "rb"
