@@ -106,7 +106,7 @@ const UserView = ({ match, history }) => {
       let yesterday = selectedYear
         ? DateTime.local(parseInt(selectedYear, 10), 12, 31).startOf("day").toJSDate()
         : DateTime.fromJSDate(new Date(), { zone }).startOf("day").toJSDate();
-      
+      let yesBad = yesterday
       const dates = data.routes.map((r) =>
         DateTime.fromISO(r.start_time, {zone: r.tz}).startOf("day").toISODate()
       );
@@ -116,8 +116,9 @@ const UserView = ({ match, history }) => {
             return (dayString) => dayString === yesterdayString;
           })(DateTime.fromJSDate(yesterday).toISODate())
         ).length;
-        val.push({ date: yesterday, count });
+        val.push({ date: yesBad, count, dateR: yesterday });
         yesterday = shiftDate(yesterday, -1);
+        yesBad = shiftDateBad(yesBad, -1);
       }
     }
     setCalendarVal(val);
@@ -126,6 +127,11 @@ const UserView = ({ match, history }) => {
   function shiftDate(date, numDays) {
     const newDate = DateTime.fromJSDate(date);
     return newDate.plus({ days: numDays }).toJSDate();
+  }
+
+  function shiftDateBad(date, numDays) {
+    const newDate = DateTime.fromJSDate(date);
+    return newDate.plus({ hours: 24*numDays }).toJSDate();
   }
 
   const getCountryStats = () => {
@@ -231,7 +237,7 @@ const UserView = ({ match, history }) => {
               tooltipDataAttrs={(value) => {
                 return {
                   "data-tip":
-                    `${DateTime.fromJSDate(value.date)
+                    `${DateTime.fromJSDate(value.dateR)
                       .setLocale("en-US")
                       .toLocaleString(DateTime.DATE_HUGE)} has ${
                       value.count
@@ -242,7 +248,7 @@ const UserView = ({ match, history }) => {
               onClick={(v) => {
                 if (v.count) {
                   const zone = DateTime.local().zoneName;
-                  const dateStr = DateTime.fromJSDate(v.date)
+                  const dateStr = DateTime.fromJSDate(v.dateR)
                     .toFormat("yyyy-MM-dd");
                   history.push(
                     `/athletes/${data.username}/${dateStr}`
