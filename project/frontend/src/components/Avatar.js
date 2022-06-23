@@ -120,14 +120,13 @@ const Avatar = () => {
             ))}
           <form onSubmit={onSubmit}>
             <div className={"form-group"}>
-              '
               <label>
                 <i className="fas fa-user"></i> Profile Picture
               </label>
               <AvatarUploader
                 onImageChange={onAvatar}
                 size={150}
-                defaultImg={`/${_username}.png`}
+                defaultImg={`/athletes/${_username}.png`}
                 currentImage={avatar}
                 fileType={"image/*"}
               ></AvatarUploader>

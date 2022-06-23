@@ -74,7 +74,6 @@ const UserSettings = () => {
             ))}
           <form onSubmit={onSubmit}>
             <div className={"form-group"}>
-              '
               <label htmlFor="username">
                 <i className="fas fa-user"></i> Username
               </label>
