@@ -253,7 +253,7 @@ const UserView = ({ match, history }) => {
           <div style={{ display: "flex", justifyContent: "flex-start" }}>
             <div style={{ marginRight: "15px" }}>
               <img
-                src={`http://localhost:8080/athletes/${data.username}.png`}
+                src={`/athletes/${data.username}.png`}
                 alt="avatar"
                 style={{ borderRadius: "50%" }}
                 height="75px"
