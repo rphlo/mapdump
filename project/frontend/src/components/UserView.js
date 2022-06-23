@@ -97,18 +97,18 @@ const UserView = ({ match, history }) => {
       setYears(y);
     }
   }, [data?.routes]);
-
+  const zone = DateTime.local().zoneName;
   React.useEffect(() => {
     const val = [];
     if (data?.routes) {
       let yesterday = selectedYear
         ? DateTime.fromISO(parseInt(selectedYear, 10) + 1 + "01-01", {
-            zone: "Europe/Paris",
+            zone
           }).toJSDate()
         : new Date();
-      const zone = DateTime.local().zoneName;
+      
       const dates = data.routes.map((r) =>
-        DateTime.fromISO(r.start_time.split("T")[0], { zone: "Europe/Paris"})
+        DateTime.fromISO(r.start_time.split("T")[0], { zone })
           .toFormat("yyyyMMdd")
       );
       for (let i = 0; i < 368; i++) {
@@ -250,7 +250,6 @@ const UserView = ({ match, history }) => {
                 if (v.count) {
                   const zone = DateTime.local().zoneName;
                   const dateStr = DateTime.fromJSDate(v.date)
-                    .setZone("Europe/Paris")
                     .toFormat("yyyy-MM-dd");
                   history.push(
                     `/athletes/${data.username}/${dateStr}`
