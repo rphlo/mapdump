@@ -102,7 +102,7 @@ const UserView = ({ match, history }) => {
     const val = [];
     if (data?.routes) {
       let yesterday = selectedYear
-        ? DateTime.fromISO(parseInt(selectedYear, 10) + 1 + "01-01", {
+        ? DateTime.fromISO(parseInt(selectedYear, 10) + "12-31", {
             zone
           }).toJSDate()
         : new Date();
