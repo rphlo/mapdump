@@ -218,7 +218,7 @@ const UserView = ({ match, history }) => {
               }
               endDate={
                 selectedYear
-                  ? DateTime.local(selectedYear, 12, 31).endOf("day").toJSDate()
+                  ? DateTime.local(selectedYear, 12, 31).startOf("day").toJSDate()
                   : new Date()
               }
               values={calendarVal}
