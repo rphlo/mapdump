@@ -5,7 +5,7 @@ import CalendarHeatmap from "react-calendar-heatmap";
 import ReactTooltip from "react-tooltip";
 import { DateTime } from "luxon";
 import "react-calendar-heatmap/dist/styles.css";
-import LazyLoad from "vanilla-lazyload";
+import LazyImage from "./LazyImage";
 import NotFound from "./NotFound";
 import { printTime, printPace } from "../utils/drawHelpers";
 import { capitalizeFirstLetter } from "../utils/Utils";
@@ -43,10 +43,6 @@ const UserView = ({ match, history }) => {
         const rawData = await res.json();
         setData(rawData);
         setFound(true);
-        if (!document.lazyLoadInstance) {
-          document.lazyLoadInstance = new LazyLoad();
-        }
-        document.lazyLoadInstance.update();
       } else if (res.status === 404) {
         setFound(false);
       }
@@ -84,7 +80,6 @@ const UserView = ({ match, history }) => {
       } else {
         setRoutes(data.routes);
       }
-      document.lazyLoadInstance.update();
     }
   }, [match.params.date, match.params.year, data?.routes]);
 
@@ -264,7 +259,6 @@ const UserView = ({ match, history }) => {
             />
             <ReactTooltip />
           </>
-          }
           {match.params.date ? (
             <h3>
               Routes on{" "}
@@ -305,12 +299,10 @@ const UserView = ({ match, history }) => {
                 >
                   <div className="card route-card">
                     <Link to={"/routes/" + r.id}>
-                      <img
-                        className="card-img-top lazyload"
-                        src="/static/placeholder-image.png"
-                        data-src={r.map_thumbnail_url}
+                      <LazyImage
+                        src={r.map_thumbnail_url}
                         alt="map thumbnail"
-                      ></img>
+                      ></LazyImage>
                     </Link>
                     <div className="card-body">
                       <h5
