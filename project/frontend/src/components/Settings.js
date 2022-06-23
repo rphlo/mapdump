@@ -6,6 +6,7 @@ import EmailsList from "./EmailsList";
 import UserDeletion from "./UserDeletion";
 import useGlobalState from "../utils/useGlobalState";
 import { Helmet } from "react-helmet";
+import DownloadOwnDataBtn from "./DownloadOwnDataBtn";
 
 const Settings = ({ history }) => {
   const globalState = useGlobalState();
@@ -33,6 +34,8 @@ const Settings = ({ history }) => {
       <PasswordChange />
       <hr />
       <EmailsList />
+      <hr />
+      <DownloadOwnDataBtn />
       <hr />
       <UserDeletion />
     </div>

@@ -4,16 +4,11 @@ import { Link } from "react-router-dom";
 import CalendarHeatmap from "react-calendar-heatmap";
 import ReactTooltip from "react-tooltip";
 import { DateTime } from "luxon";
-import { saveAs } from "file-saver";
-import JSZip from "jszip";
 import "react-calendar-heatmap/dist/styles.css";
 import LazyLoad from "vanilla-lazyload";
 import NotFound from "./NotFound";
 import { printTime, printPace } from "../utils/drawHelpers";
 import { capitalizeFirstLetter } from "../utils/Utils";
-import useGlobalState from "../utils/useGlobalState";
-import { getCorners } from "../utils/drawHelpers";
-import { getKMZ } from "../utils/fileHelpers";
 
 const urls = [
   "new",
@@ -28,26 +23,19 @@ const urls = [
 
 const UserView = ({ match, history }) => {
   const [found, setFound] = React.useState(null);
+  const [loading, setLoading] = React.useState(null);
   const [data, setData] = React.useState(null);
   const [routes, setRoutes] = React.useState([]);
-  const [dl, setDl] = React.useState(null);
+  const [calendarVal, setCalendarVal] = React.useState([]);
   const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState(false);
-  const globalState = useGlobalState();
-  const { username } = globalState.user;
 
   React.useEffect(() => {
     if (urls.includes(match.params.username)) {
       return;
     }
-    if (match.params.date) {
-      setSelectedYear(match.params.date.slice(0, 4));
-    } else if (match.params.year) {
-      setSelectedYear(match.params.year);
-    } else {
-      setSelectedYear(false);
-    }
     (async () => {
+      setLoading(true);
       const res = await fetch(
         process.env.REACT_APP_API_URL + "/v1/user/" + match.params.username
       );
@@ -62,10 +50,18 @@ const UserView = ({ match, history }) => {
       } else if (res.status === 404) {
         setFound(false);
       }
+      setLoading(false);
     })();
-  }, [match]);
+  }, [match.params.username]);
 
   React.useEffect(() => {
+    if (match.params.date) {
+      setSelectedYear(match.params.date.slice(0, 4));
+    } else if (match.params.year) {
+      setSelectedYear(match.params.year);
+    } else {
+      setSelectedYear(false);
+    }
     if (data?.routes) {
       if (match.params.date) {
         setRoutes(
@@ -88,6 +84,7 @@ const UserView = ({ match, history }) => {
       } else {
         setRoutes(data.routes);
       }
+      document.lazyLoadInstance.update();
     }
   }, [match.params.date, match.params.year, data?.routes]);
 
@@ -106,33 +103,37 @@ const UserView = ({ match, history }) => {
     }
   }, [data?.routes]);
 
+  React.useEffect(() => {
+    const val = [];
+    if (data?.routes) {
+      let yesterday = selectedYear
+        ? DateTime.fromISO(parseInt(selectedYear, 10) + 1 + "01-01", {
+            zone: "Europe/Paris",
+          }).toJSDate()
+        : new Date();
+      const zone = DateTime.local().zoneName;
+      const dates = data.routes.map((r) =>
+        DateTime.fromISO(r.start_time, { zone })
+          .setZone("UTC")
+          .toFormat("yyyyMMdd")
+      );
+      for (let i = 0; i < 368; i++) {
+        const count = dates.filter(
+          ((yesterdayString) => {
+            return (dayString) => dayString === yesterdayString;
+          })(DateTime.fromJSDate(yesterday).toFormat("yyyyMMdd"))
+        ).length;
+        val.push({ date: yesterday, count });
+        yesterday = shiftDate(yesterday, -1);
+      }
+    }
+    setCalendarVal(val);
+  }, [data?.routes, selectedYear]);
+
   function shiftDate(date, numDays) {
     const newDate = DateTime.fromJSDate(date);
     return newDate.plus({ days: numDays }).toJSDate();
   }
-
-  const getCalValues = () => {
-    const val = [];
-    let yesterday = selectedYear
-      ? DateTime.fromISO(parseInt(selectedYear, 10) + 1 + "01-01", {
-          zone: "Europe/Paris",
-        }).toJSDate()
-      : new Date();
-    for (let i = 0; i < 368; i++) {
-      const count = data.routes.filter(
-        ((date) => {
-          return (r) =>
-            DateTime.fromISO(r.start_time, { zone: DateTime.local().zoneName })
-              .setZone("UTC")
-              .toFormat("yyyyMMdd") ===
-            DateTime.fromJSDate(date).toFormat("yyyyMMdd");
-        })(yesterday)
-      ).length;
-      val.push({ date: yesterday, count });
-      yesterday = shiftDate(yesterday, -1);
-    }
-    return val;
-  };
 
   const getCountryStats = () => {
     const val = {};
@@ -148,71 +149,6 @@ const UserView = ({ match, history }) => {
       res.push({ country: key, count: value });
     }
     return res.sort((a, b) => (a.count < b.count ? 1 : -1));
-  };
-  const transformMapBounds = (v) => {
-    return {
-      top_left: {
-        lat: parseFloat(v.top_left[0]),
-        lon: parseFloat(v.top_left[1]),
-      },
-      top_right: {
-        lat: parseFloat(v.top_right[0]),
-        lon: parseFloat(v.top_right[1]),
-      },
-      bottom_right: {
-        lat: parseFloat(v.bottom_right[0]),
-        lon: parseFloat(v.bottom_right[1]),
-      },
-      bottom_left: {
-        lat: parseFloat(v.bottom_left[0]),
-        lon: parseFloat(v.bottom_left[1]),
-      },
-    };
-  };
-  const downloadOwnData = async () => {
-    const z = new JSZip();
-    setDl(0);
-    await Promise.all(
-      routes.map(async (r) => {
-        const jsonData = await fetch(r.url).then((r) => r.json());
-        const gpx = await fetch(jsonData.gpx_url).then((r) => r.blob());
-        setDl((prevCount) => prevCount + 1 / 3);
-        const kmz = await fetch(jsonData.map_url)
-          .then((r) => r.blob())
-          .then((blob) => {
-            const newCorners = getCorners(
-              jsonData.map_size,
-              transformMapBounds(jsonData.map_bounds),
-              [],
-              false,
-              false
-            );
-            const kmz_raw = getKMZ(jsonData.name, newCorners, blob);
-            return kmz_raw.generateAsync({
-              type: "blob",
-              mimeType: "application/vnd.google-earth.kmz",
-            });
-          });
-        setDl((prevCount) => prevCount + 1 / 3);
-        const img = await fetch(
-          jsonData.map_url + "?show_route=1&show_header=1"
-        ).then((r) => r.blob());
-        setDl((prevCount) => prevCount + 1 / 3);
-        const folderName = r.name + " " + r.id;
-        z.folder(folderName);
-        z.file(folderName + "/route.gpx", gpx);
-        z.file(folderName + "/map.kmz", kmz);
-        z.file(folderName + "/map+route.jpg", img);
-        z.file(
-          folderName + "/data.json",
-          JSON.stringify(jsonData, null, "    ")
-        );
-      })
-    );
-    z.generateAsync({ type: "blob" }).then(function (blob) {
-      saveAs(blob, `mapdump_${username}.zip`);
-    });
-    setDl(null);
   };
 
   if (urls.includes(match.params.username)) {
@@ -235,21 +171,6 @@ const UserView = ({ match, history }) => {
                 " | Mapdump.com"}
             </title>
           </Helmet>
-          {username === data.username && (
-            <div style={{ float: "right" }}>
-              {dl === null && (
-                <button class="btn btn-primary" onClick={downloadOwnData}>
-                  <i class="fa fa-download"></i> Download All Routes
-                </button>
-              )}
-              {dl !== null && (
-                <span class="badge bg-info text-light">
-                  Preparing archive{" "}
-                  {Math.min(100, Math.round((dl / routes.length) * 100))}%
-                </span>
-              )}
-            </div>
-          )}
           <div style={{ display: "flex", justifyContent: "flex-start" }}>
             <div style={{ marginRight: "15px" }}>
               <img
@@ -295,55 +216,54 @@ const UserView = ({ match, history }) => {
               </span>
             ))}
           </div>
-          {
-            <>
-              <CalendarHeatmap
-                startDate={
-                  selectedYear
-                    ? DateTime.fromISO(selectedYear + "-01-01", {
-                        zone: DateTime.local().zoneName,
-                      })
-                        .plus({ days: -1 })
-                        .toJSDate()
-                    : shiftDate(new Date(), -365)
+          <>
+            <CalendarHeatmap
+              startDate={
+                selectedYear
+                  ? DateTime.fromISO(selectedYear + "-01-01", {
+                      zone: DateTime.local().zoneName,
+                    })
+                      .plus({ days: -1 })
+                      .toJSDate()
+                  : shiftDate(new Date(), -365)
+              }
+              endDate={
+                selectedYear
+                  ? DateTime.fromISO(selectedYear + "-12-31", {
+                      zone: DateTime.local().zoneName,
+                    }).toJSDate()
+                  : new Date()
+              }
+              values={calendarVal}
+              classForValue={(value) => {
+                if (!value) {
+                  return "color-empty";
                 }
-                endDate={
-                  selectedYear
-                    ? DateTime.fromISO(selectedYear + "-12-31", {
-                        zone: DateTime.local().zoneName,
-                      }).toJSDate()
-                    : new Date()
+                return `color-github-${value.count}`;
+              }}
+              tooltipDataAttrs={(value) => {
+                return {
+                  "data-tip":
+                    `${DateTime.fromJSDate(value.date)
+                      .setLocale("en-US")
+                      .toLocaleString(DateTime.DATE_HUGE)} has ${
+                      value.count
+                    } route` + (value.count !== 1 ? "s" : ""),
+                };
+              }}
+              showWeekdayLabels={true}
+              onClick={(v) => {
+                if (v.count) {
+                  history.push(
+                    `/athletes/${data.username}/${v.date
+                      .toISOString()
+                      .substring(0, 10)}`
+                  );
                 }
-                values={getCalValues()}
-                classForValue={(value) => {
-                  if (!value) {
-                    return "color-empty";
-                  }
-                  return `color-github-${value.count}`;
-                }}
-                tooltipDataAttrs={(value) => {
-                  return {
-                    "data-tip":
-                      `${DateTime.fromJSDate(value.date)
-                        .setLocale("en-US")
-                        .toLocaleString(DateTime.DATE_HUGE)} has ${
-                        value.count
-                      } route` + (value.count !== 1 ? "s" : ""),
-                  };
-                }}
-                showWeekdayLabels={true}
-                onClick={(v) => {
-                  if (v.count) {
-                    history.push(
-                      `/athletes/${data.username}/${v.date
-                        .toISOString()
-                        .substring(0, 10)}`
-                    );
-                  }
-                }}
-              />
-              <ReactTooltip />
-            </>
+              }}
+            />
+            <ReactTooltip />
+          </>
           }
           {match.params.date ? (
             <h3>
@@ -367,7 +287,9 @@ const UserView = ({ match, history }) => {
               </span>
             ))
             .reduce((accu, elem, idx) => {
-              return accu === null ? [elem] : [...accu, <> | </>, elem];
+              return accu === null
+                ? [elem]
+                : [...accu, <span key={`spacer-${idx}`}> | </span>, elem];
             }, null)}
           <hr />
           <h3 data-testid="routeCount">
@@ -423,6 +345,13 @@ const UserView = ({ match, history }) => {
               ))}
             </div>
           </div>
+        </div>
+      )}
+      {!data && loading && (
+        <div style={{ textAlign: "center" }}>
+          <h2>
+            <i className="fa fa-spinner fa-spin"></i> Loading
+          </h2>
         </div>
       )}
       {found === false && <NotFound />}
