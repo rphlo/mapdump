@@ -108,7 +108,7 @@ const UserView = ({ match, history }) => {
         : DateTime.fromJSDate(new Date(), { zone }).startOf("day").toJSDate();
       
       const dates = data.routes.map((r) =>
-        r.start_time.split("T")[0]
+        DateTime.fromISO(r.start_time, {zone: r.tz}).startOf("day").toISODate()
       );
       for (let i = 0; i < 368; i++) {
         const count = dates.filter(
