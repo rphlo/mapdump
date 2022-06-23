@@ -48,7 +48,7 @@ class RouteAdmin(admin.ModelAdmin):
 
 
 class UserSettingsAdmin(admin.ModelAdmin):
-    list_display = ("user", "strava_access_token")
+    list_display = ("user", "strava_access_token", "avatar")
     list_filter = ("user",)
 
 

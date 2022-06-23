@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
-import LazyLoad from "vanilla-lazyload";
+import LazyImage from "./LazyImage";
 import { printPace, printTime } from "../utils/drawHelpers";
 import { capitalizeFirstLetter } from "../utils/Utils";
 
@@ -14,10 +14,6 @@ const LatestRoute = () => {
         process.env.REACT_APP_API_URL + "/v1/latest-routes/"
       );
       setRoutes(await res.json());
-      if (!document.lazyLoadInstance) {
-        document.lazyLoadInstance = new LazyLoad();
-      }
-      document.lazyLoadInstance.update();
     })();
   }, []);
 
@@ -52,14 +48,10 @@ const LatestRoute = () => {
                 >
                   <div className="card route-card">
                     <Link to={"/routes/" + r.id}>
-                      <img
-                        className="card-img-top lazyload"
-                        src="/static/placeholder-image.png"
-                        data-src={r.map_thumbnail_url}
+                      <LazyImage
+                        src={r.map_thumbnail_url}
                         alt="map thumbnail"
-                        width="500"
-                        height="auto"
-                      ></img>
+                      ></LazyImage>
                     </Link>
                     <div className="card-body">
                       <h5

@@ -56,6 +56,7 @@ const UserSettings = () => {
       globalState.setUser({ username, api_token });
     }
   };
+
   return (
     <div>
       {

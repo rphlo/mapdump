@@ -32,7 +32,7 @@ map_storage = S3Storage(aws_s3_bucket_name="drawmyroute-maps")
 def map_upload_path(instance=None, file_name=None):
     tmp_path = ["maps"]
     time_hash = time_base64()
-    basename = instance.uid + "_" + time_hash
+    basename = f"{instance.uid}_{time_hash}"
     tmp_path.append(basename[0])
     tmp_path.append(basename[1])
     tmp_path.append(basename)
@@ -48,9 +48,45 @@ def route_upload_path(instance=None, file_name=None):
     return os.path.join(*tmp_path)
 
 
+def avatar_upload_path(instance=None, file_name=None):
+    tmp_path = ["avatars"]
+    time_hash = time_base64()
+    basename = f"{instance.id}_{time_hash}"
+    tmp_path.append(basename)
+    return os.path.join(*tmp_path)
+
+
 class UserSettings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     strava_access_token = models.TextField(blank=True, null=True)
+    avatar = models.ImageField(
+        upload_to=avatar_upload_path, storage=map_storage, null=True
+    )
+
+    @property
+    def avatar_data(self):
+        if not self.avatar:
+            return b""
+        with self.avatar.open("rb") as fp:
+            data = fp.read()
+            return data
+
+    @property
+    def avatar_b64(self):
+        data = self.avatar_data
+        return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+
+    @avatar_b64.setter
+    def avatar_b64(self, value):
+        if not value:
+            self.avatar = None
+        content_b64 = value.partition("base64,")[2]
+        self.avatar.save(
+            "filename",
+            ContentFile(base64.b64decode(content_b64)),
+            save=False,
+        )
+        self.avatar.close()
 
     class Meta:
         verbose_name = "user settings"

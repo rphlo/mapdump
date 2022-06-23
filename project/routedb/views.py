@@ -1,4 +1,5 @@
 import json
+import os.path
 import re
 import time
 import urllib
@@ -21,7 +22,7 @@ from rest_framework import generics, parsers, status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
-from routedb.models import RasterMap, Route
+from routedb.models import RasterMap, Route, UserSettings
 from routedb.serializers import (
     AuthTokenSerializer,
     EmailSerializer,
@@ -31,6 +32,7 @@ from routedb.serializers import (
     RouteSerializer,
     UserInfoSerializer,
     UserMainSerializer,
+    UserSettingsSerializer,
 )
 from stravalib import Client as StravaClient
 from utils.s3 import s3_object_url, upload_to_s3
@@ -167,6 +169,19 @@ class UserDetail(generics.RetrieveAPIView):
     def get_queryset(self):
         username = self.kwargs["username"]
         return User.objects.filter(username=username).prefetch_related("routes")
+
+
+class UserSettingsDetail(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSettingsSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.get_queryset()
+
+    def get_queryset(self):
+        user = self.request.user
+        s, _ = UserSettings.objects.get_or_create(user=user)
+        return s
 
 
 class UserEditView(generics.RetrieveUpdateDestroyAPIView):
@@ -422,6 +437,18 @@ def route_view(request, route_id):
 def athlete_view(request, athlete_username):
     athlete = get_object_or_404(User, username__iexact=athlete_username)
     return render(request, "frontend/athlete.html", {"athlete": athlete})
+
+
+def athlete_avatar(request, athlete_username):
+    athlete = get_object_or_404(User, username__iexact=athlete_username)
+
+    athlete_settings, _ = UserSettings.objects.get_or_create(user=athlete)
+    if athlete_settings.avatar:
+        return HttpResponse(athlete_settings.avatar.read(), content_type="image/png")
+    with open(
+        os.path.join(settings.BASE_DIR, "routedb", "default-avatar.png"), "rb"
+    ) as fp:
+        return HttpResponse(fp.read(), content_type="image/png")
 
 
 def athlete_day_view(request, athlete_username, date):
