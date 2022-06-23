@@ -4,6 +4,7 @@ import UserSettings from "./UserSettings";
 import EmailsList from "./EmailsList";
 import UserDeletion from "./UserDeletion";
 import useGlobalState from "../utils/useGlobalState";
+import { Helmet } from "react-helmet";
 
 const Settings = ({ history }) => {
   const globalState = useGlobalState();
@@ -17,6 +18,9 @@ const Settings = ({ history }) => {
 
   return (
     <div className="container main-container">
+      <Helmet>
+        <title>User Settings | Mapdump.com</title>
+      </Helmet>
       <h1>
         <i className="fas fa-user-cog"></i> Settings
       </h1>

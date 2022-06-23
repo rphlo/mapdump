@@ -1,11 +1,16 @@
+import base64
+import re
+from io import BytesIO, StringIO
+
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from PIL import Image
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from routedb.models import RasterMap, Route
+from routedb.models import RasterMap, Route, UserSettings
 from utils.validators import (
     custom_username_validators,
     validate_latitude,
@@ -66,6 +71,47 @@ class RelativeURLField(serializers.ReadOnlyField):
         request = self.context.get("request")
         url = request and request.build_absolute_uri(value) or ""
         return url
+
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+    avatar_base64 = serializers.CharField(source="avatar_b64", write_only=True)
+
+    def clean_avatar_base64(self):
+        value = self.cleaned_data["avatar_base64"]
+        if not value:
+            return None
+        data_matched = re.match(
+            r"^data:image/png;base64,"
+            r"(?P<data_b64>(?:[A-Za-z0-9+/]{4})*"
+            r"(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$",
+            value,
+        )
+        if not data_matched:
+            raise ValidationError("Image should be a PNG image")
+        sbuf = StringIO()
+        sbuf.write(base64.b64decode(data_matched.group("data_b64")))
+        with Image.open(sbuf) as image:
+            rgba_img = image.convert("RGBA")
+            target = 256
+            if image.size[0] != image.size[1]:
+                raise ValidationError("The image should be square")
+            if image.size[0] < 128:
+                raise ValidationError("The image is too small, < 128px width")
+            if image.size[0] > target:
+                scale = target / image.size[0]
+                new_w = image.size[0] * scale
+                rgba_img.thumbnail((new_w, new_w), Image.ANTIALIAS)
+            out_buffer = BytesIO()
+            params = {
+                "dpi": (72, 72),
+            }
+            rgba_img.save(out_buffer, "PNG", **params)
+            data_b64 = base64.b64encode(out_buffer.getvalue()).decode()
+            return f"data:image/png;base64,{data_b64}"
+
+    class Meta:
+        model = UserSettings
+        fields = "avatar_base64"
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
