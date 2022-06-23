@@ -1,4 +1,5 @@
 import json
+import os.path
 import re
 import time
 import urllib
@@ -441,10 +442,12 @@ def athlete_view(request, athlete_username):
 def athlete_avatar(request, athlete_username):
     athlete = get_object_or_404(User, username__iexact=athlete_username)
 
-    settings, _ = UserSettings.objects.get_or_create(user=athlete)
-    if settings.avatar:
-        return HttpResponse(settings.avatar.read(), content_type="image/png")
-    with open("project/routedb/default-avatar.png", "rb") as fp:
+    athlete_settings, _ = UserSettings.objects.get_or_create(user=athlete)
+    if not athlete_settings.avatar:
+        return HttpResponse(athlete_settings.avatar.read(), content_type="image/png")
+    with open(
+        os.path.join(settings.BASE_DIR, "routedb", "default-avatar.png"), "rb"
+    ) as fp:
         return HttpResponse(fp.read(), content_type="image/png")
 
 
