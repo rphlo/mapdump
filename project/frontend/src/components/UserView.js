@@ -108,8 +108,7 @@ const UserView = ({ match, history }) => {
         : new Date();
       const zone = DateTime.local().zoneName;
       const dates = data.routes.map((r) =>
-        DateTime.fromISO(r.start_time, { zone })
-          .setZone("UTC")
+        DateTime.fromISO(r.start_time.split("T")[0], { zone: "Europe/Paris"})
           .toFormat("yyyyMMdd")
       );
       for (let i = 0; i < 368; i++) {
@@ -250,8 +249,8 @@ const UserView = ({ match, history }) => {
               onClick={(v) => {
                 if (v.count) {
                   const zone = DateTime.local().zoneName;
-                  const dateStr = DateTime.fromJSDate(v.date, { zone: "UTC" })
-                    .setZone("UTC")
+                  const dateStr = DateTime.fromJSDate(v.date)
+                    .setZone("Europe/Paris")
                     .toFormat("yyyy-MM-dd");
                   history.push(
                     `/athletes/${data.username}/${dateStr}`
