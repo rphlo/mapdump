@@ -253,7 +253,6 @@ const UserView = ({ match, history }) => {
                   const dateStr = DateTime.fromISO(r.start_time, { zone })
                     .setZone("UTC")
                     .toFormat("yyyy-MM-dd");
-      );
                   history.push(
                     `/athletes/${data.username}/${dateStr}`
                   );
