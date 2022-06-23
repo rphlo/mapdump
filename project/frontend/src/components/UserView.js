@@ -97,7 +97,9 @@ const UserView = ({ match, history }) => {
       setYears(y);
     }
   }, [data?.routes]);
+
   const zone = DateTime.local().zoneName;
+
   React.useEffect(() => {
     const val = [];
     if (data?.routes) {
@@ -105,17 +107,16 @@ const UserView = ({ match, history }) => {
         ? DateTime.fromISO(parseInt(selectedYear, 10) + "12-31", {
             zone
           }).toJSDate()
-        : new Date();
+        : DateTime.fromJSDate(new Date(), { zone }).startOf("day").toJSDate();
       
       const dates = data.routes.map((r) =>
-        DateTime.fromISO(r.start_time.split("T")[0], { zone })
-          .toFormat("yyyyMMdd")
+        r.start_time.split("T")[0]
       );
       for (let i = 0; i < 368; i++) {
         const count = dates.filter(
           ((yesterdayString) => {
             return (dayString) => dayString === yesterdayString;
-          })(DateTime.fromJSDate(yesterday).toFormat("yyyyMMdd"))
+          })(DateTime.fromJSDate(yesterday).toISODate())
         ).length;
         val.push({ date: yesterday, count });
         yesterday = shiftDate(yesterday, -1);
