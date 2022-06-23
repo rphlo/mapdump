@@ -13,11 +13,6 @@ urlpatterns = [
         name="user_detail",
     ),
     re_path(
-        r"^user/(?P<username>[a-zA-Z0-9_-]+)/settings/?$",
-        views.UserSettingsDetail.as_view(),
-        name="user_settings_detail",
-    ),
-    re_path(
         r"^user/(?P<username>[a-zA-Z0-9_-]+)/feed/?$",
         feeds.athlete_routes_feed,
         name="user_feed",
@@ -46,6 +41,11 @@ urlpatterns = [
         name="raster_map_image",
     ),
     path("auth/user/", view=views.UserEditView.as_view(), name="auth_user_detail"),
+    path(
+        "auth/user/settings/",
+        views.UserSettingsDetail.as_view(),
+        name="user_settings_detail",
+    ),
     path("auth/", include("dj_rest_auth.urls")),
     path("auth/registration/", include("dj_rest_auth.registration.urls")),
     path("auth/emails/", view=views.EmailsView.as_view(), name="auth_emails"),

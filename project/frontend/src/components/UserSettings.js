@@ -1,6 +1,4 @@
 import React from "react";
-import AvatarUploader from "react-avatar-uploader";
-import Swal from "sweetalert2";
 import useGlobalState from "../utils/useGlobalState";
 
 const UserSettings = () => {
@@ -11,7 +9,6 @@ const UserSettings = () => {
   const [username, setUsername] = React.useState();
   const [firstName, setFirstName] = React.useState();
   const [lastName, setLastName] = React.useState();
-  const [avatar, setAvatar] = React.useState();
   const [errors, setErrors] = React.useState({});
 
   React.useEffect(() => {
@@ -33,72 +30,6 @@ const UserSettings = () => {
     })();
   }, [api_token]);
 
-  function crop(url, aspectRatio) {
-    // we return a Promise that gets resolved with our canvas element
-    return new Promise((resolve) => {
-      // this image will hold our source image data
-      const inputImage = new Image();
-
-      // we want to wait for our image to load
-      inputImage.onload = () => {
-        // let's store the width and height of our image
-        const inputWidth = inputImage.naturalWidth;
-        const inputHeight = inputImage.naturalHeight;
-
-        // get the aspect ratio of the input image
-        const inputImageAspectRatio = inputWidth / inputHeight;
-
-        // if it's bigger than our target aspect ratio
-        let outputWidth = inputWidth;
-        let outputHeight = inputHeight;
-        if (inputImageAspectRatio > aspectRatio) {
-          outputWidth = inputHeight * aspectRatio;
-        } else if (inputImageAspectRatio < aspectRatio) {
-          outputHeight = inputWidth / aspectRatio;
-        }
-
-        // calculate the position to draw the image at
-        const outputX = (outputWidth - inputWidth) * 0.5;
-        const outputY = (outputHeight - inputHeight) * 0.5;
-
-        // create a canvas that will present the output image
-        const outputImage = document.createElement("canvas");
-
-        // set it to the same size as the image
-        outputImage.width = outputWidth;
-        outputImage.height = outputHeight;
-
-        // draw our image at position 0, 0 on the canvas
-        const ctx = outputImage.getContext("2d");
-        ctx.drawImage(inputImage, outputX, outputY);
-        resolve(outputImage);
-      };
-
-      // start loading our image
-      inputImage.src = url;
-    });
-  }
-
-  const onAvatar = async (e) => {
-    var reader = new FileReader();
-    reader.onload = async function (e) {
-      const newAvatar = await crop(e.target.result, 1);
-      if (newAvatar.width >= 150) {
-        const avatarB64 = newAvatar.toDataURL("image/png");
-        setAvatar(avatarB64);
-        console.log(avatarB64);
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: "Image is too small!",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    };
-    reader.readAsDataURL(e.target.files[0]);
-  };
-
   const onSubmit = async (e) => {
     setChanged(false);
     setErrors({});
@@ -107,9 +38,6 @@ const UserSettings = () => {
     const postData = { first_name: firstName, last_name: lastName };
     if (_username !== username) {
       postData.username = username;
-    }
-    if (avatar) {
-      postData.avatar = avatar;
     }
     const res = await fetch(process.env.REACT_APP_API_URL + "/v1/auth/user/", {
       method: "PATCH",
@@ -120,33 +48,6 @@ const UserSettings = () => {
       },
       body: JSON.stringify(postData),
     });
-    if (res.status === 400) {
-      const data = await res.json();
-      setErrors(data);
-    } else if (res.status === 200) {
-      setChanged(true);
-      globalState.setUser({ username, api_token });
-    }
-  };
-
-  const onSubmitAvatar = async (e) => {
-    setChanged(false);
-    setErrors({});
-
-    e.preventDefault();
-    const postData = { avatar_base64: avatar };
-    const res = await fetch(
-      process.env.REACT_APP_API_URL + "/v1/auth/user/settings/",
-      {
-        method: "PATCH",
-        credentials: "omit",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Token " + api_token,
-        },
-        body: JSON.stringify(postData),
-      }
-    );
     if (res.status === 400) {
       const data = await res.json();
       setErrors(data);
@@ -171,21 +72,6 @@ const UserSettings = () => {
                 {e}
               </div>
             ))}
-          <form onSubmit={onSubmitAvatar}>
-            <div className={"form-group"}>
-              '
-              <label>
-                <i className="fas fa-user"></i> Profile Picture
-              </label>
-              <AvatarUploader
-                onImageChange={onAvatar}
-                size={150}
-                defaultImg={`/${username}.png`}
-                currentImage={avatar}
-                fileType={"image/*"}
-              ></AvatarUploader>
-            </div>
-          </form>
           <form onSubmit={onSubmit}>
             <div className={"form-group"}>
               '

@@ -170,19 +170,17 @@ class UserDetail(generics.RetrieveAPIView):
         return User.objects.filter(username=username).prefetch_related("routes")
 
 
-class UserSettingsDetail(generics.RetrieveAPIView):
+class UserSettingsDetail(generics.RetrieveUpdateAPIView):
     serializer_class = UserSettingsSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         return self.get_queryset()
 
     def get_queryset(self):
-        username = self.kwargs["username"]
-        user = User.objects.filter(username=username).first()
-        if user:
-            s, _ = UserSettings.objects.get_or_create(user)
-            return s
-        return None
+        user = self.request.user
+        s, _ = UserSettings.objects.get_or_create(user=user)
+        return s
 
 
 class UserEditView(generics.RetrieveUpdateDestroyAPIView):

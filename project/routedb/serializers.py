@@ -77,7 +77,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
     avatar_base64 = serializers.CharField(source="avatar_b64", write_only=True)
 
     def clean_avatar_base64(self):
-        value = self.cleaned_data["avatar_base64"]
+        value = self.cleaned_data["avatar_b64"]
         if not value:
             return None
         data_matched = re.match(
@@ -111,7 +111,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserSettings
-        fields = "avatar_base64"
+        fields = ("avatar_base64",)
 
 
 class UserInfoSerializer(serializers.ModelSerializer):

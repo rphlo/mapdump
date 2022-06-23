@@ -1,6 +1,7 @@
 import React from "react";
 import PasswordChange from "./PasswordChange";
 import UserSettings from "./UserSettings";
+import Avatar from "./Avatar";
 import EmailsList from "./EmailsList";
 import UserDeletion from "./UserDeletion";
 import useGlobalState from "../utils/useGlobalState";
@@ -24,6 +25,8 @@ const Settings = ({ history }) => {
       <h1>
         <i className="fas fa-user-cog"></i> Settings
       </h1>
+      <hr />
+      <Avatar />
       <hr />
       <UserSettings />
       <hr />

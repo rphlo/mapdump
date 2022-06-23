@@ -250,25 +250,37 @@ const UserView = ({ match, history }) => {
               )}
             </div>
           )}
-          <h2>
-            <Link to={`/athletes/${data.username}`}>
-              {capitalizeFirstLetter(data.first_name) +
-                " " +
-                capitalizeFirstLetter(data.last_name)}
-            </Link>{" "}
-            <a
-              href={
-                process.env.REACT_APP_API_URL +
-                "/v1/user/" +
-                match.params.username +
-                "/feed/"
-              }
-            >
-              <i className="fa fa-rss" title="RSS"></i>
-            </a>
-          </h2>
-          <h5>@{data.username}</h5>
-
+          <div style={{ display: "flex", justifyContent: "flex-start" }}>
+            <div style={{ marginRight: "15px" }}>
+              <img
+                src={`http://localhost:8080/athletes/${data.username}.png`}
+                alt="avatar"
+                style={{ borderRadius: "50%" }}
+                height="75px"
+                width="75px"
+              ></img>
+            </div>
+            <div>
+              <h2>
+                <Link to={`/athletes/${data.username}`}>
+                  {capitalizeFirstLetter(data.first_name) +
+                    " " +
+                    capitalizeFirstLetter(data.last_name)}
+                </Link>{" "}
+                <a
+                  href={
+                    process.env.REACT_APP_API_URL +
+                    "/v1/user/" +
+                    match.params.username +
+                    "/feed/"
+                  }
+                >
+                  <i className="fa fa-rss" title="RSS"></i>
+                </a>
+              </h2>
+              <h5>@{data.username}</h5>
+            </div>
+          </div>
           <div>
             {years.map((y) => (
               <span key={y}>

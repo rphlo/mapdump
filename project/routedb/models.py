@@ -80,22 +80,13 @@ class UserSettings(models.Model):
     def avatar_b64(self, value):
         if not value:
             self.avatar = None
-        data_matched = re.match(
-            r"^data:image/png;base64,"
-            r"(?P<data_b64>(?:[A-Za-z0-9+/]{4})*"
-            r"(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$",
-            value,
+        content_b64 = value.partition("base64,")[2]
+        self.avatar.save(
+            "filename",
+            ContentFile(base64.b64decode(content_b64)),
+            save=False,
         )
-        if data_matched:
-            self.avatar.save(
-                "filename",
-                ContentFile(base64.b64decode(data_matched.group("data_b64"))),
-                save=False,
-            )
-            self.avatar.close()
-        else:
-            raise ValueError("Not a base 64 encoded data URI of an image")
-        self.avatar = base64.b64decode(value)
+        self.avatar.close()
 
     class Meta:
         verbose_name = "user settings"
