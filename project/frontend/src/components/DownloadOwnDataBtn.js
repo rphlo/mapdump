@@ -1,5 +1,4 @@
 import React from "react";
-import { DateTime } from "luxon";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import useGlobalState from "../utils/useGlobalState";
@@ -78,7 +77,7 @@ const DownloadOwnDataBtn = () => {
     z.generateAsync({ type: "blob" }).then(function (blob) {
       saveAs(
         blob,
-        `mapdump_${username}_${DateTime.now().toFormat("yyyyMMdd")}.zip`
+        `mapdump_${username}_${new Date().toISOString().split("T")[0]}.zip`
       );
     });
     setDl(null);
