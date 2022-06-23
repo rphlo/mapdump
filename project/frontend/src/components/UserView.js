@@ -250,7 +250,7 @@ const UserView = ({ match, history }) => {
               onClick={(v) => {
                 if (v.count) {
                   const zone = DateTime.local().zoneName;
-                  const dateStr = DateTime.fromISO(r.start_time, { zone })
+                  const dateStr = DateTime.fromJS(v.date, { zone: "UTC" })
                     .setZone("UTC")
                     .toFormat("yyyy-MM-dd");
                   history.push(
