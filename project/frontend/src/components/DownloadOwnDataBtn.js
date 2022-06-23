@@ -42,45 +42,44 @@ const DownloadOwnDataBtn = () => {
     setRouteCount(routes.length);
     const z = new JSZip();
     setDl(0);
-    await Promise.all(
-      routes.map(async (r) => {
-        const jsonData = await fetch(r.url).then((r) => r.json());
-        const gpx = await fetch(jsonData.gpx_url).then((r) => r.blob());
-        setDl((prevCount) => prevCount + 1 / 3);
-        const kmz = await fetch(jsonData.map_url)
-          .then((r) => r.blob())
-          .then((blob) => {
-            const newCorners = getCorners(
-              jsonData.map_size,
-              transformMapBounds(jsonData.map_bounds),
-              [],
-              false,
-              false
-            );
-            const kmz_raw = getKMZ(jsonData.name, newCorners, blob);
-            return kmz_raw.generateAsync({
-              type: "blob",
-              mimeType: "application/vnd.google-earth.kmz",
-            });
+    for (const r of routes) {
+      const jsonData = await fetch(r.url).then((r) => r.json());
+      const gpx = await fetch(jsonData.gpx_url).then((r) => r.blob());
+      setDl((prevCount) => prevCount + 1 / 3);
+      const kmz = await fetch(jsonData.map_url)
+        .then((r) => r.blob())
+        .then((blob) => {
+          const newCorners = getCorners(
+            jsonData.map_size,
+            transformMapBounds(jsonData.map_bounds),
+            [],
+            false,
+            false
+          );
+          const kmz_raw = getKMZ(jsonData.name, newCorners, blob);
+          return kmz_raw.generateAsync({
+            type: "blob",
+            mimeType: "application/vnd.google-earth.kmz",
           });
-        setDl((prevCount) => prevCount + 1 / 3);
-        const img = await fetch(
-          jsonData.map_url + "?show_route=1&show_header=1"
-        ).then((r) => r.blob());
-        setDl((prevCount) => prevCount + 1 / 3);
-        const folderName = r.name + " " + r.id;
-        z.folder(folderName);
-        z.file(folderName + "/route.gpx", gpx);
-        z.file(folderName + "/map.kmz", kmz);
-        z.file(folderName + "/map+route.jpg", img);
-        z.file(
-          folderName + "/data.json",
-          JSON.stringify(jsonData, null, "    ")
-        );
-      })
-    );
+        });
+      setDl((prevCount) => prevCount + 1 / 3);
+      const img = await fetch(
+        jsonData.map_url + "?show_route=1&show_header=1"
+      ).then((r) => r.blob());
+      setDl((prevCount) => prevCount + 1 / 3);
+      const folderName = r.name + " " + r.id;
+      z.folder(folderName);
+      z.file(folderName + "/route.gpx", gpx);
+      z.file(folderName + "/map.kmz", kmz);
+      z.file(folderName + "/map+route.jpg", img);
+      z.file(folderName + "/data.json", JSON.stringify(jsonData, null, "    "));
+      await new Promise((r) => setTimeout(r, 100));
+    }
     z.generateAsync({ type: "blob" }).then(function (blob) {
-      saveAs(blob, `mapdump_${username}_${DateTime.toFormat("yyyyMMdd")}.zip`);
+      saveAs(
+        blob,
+        `mapdump_${username}_${DateTime.now().toFormat("yyyyMMdd")}.zip`
+      );
     });
     setDl(null);
   };
