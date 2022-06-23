@@ -213,18 +213,12 @@ const UserView = ({ match, history }) => {
             <CalendarHeatmap
               startDate={
                 selectedYear
-                  ? DateTime.fromISO(selectedYear + "-01-01", {
-                      zone: DateTime.local().zoneName,
-                    })
-                      .plus({ days: -1 })
-                      .toJSDate()
+                  ? DateTime.local(selectedYear, 1, 1).startOf("day").toJSDate()
                   : shiftDate(new Date(), -365)
               }
               endDate={
                 selectedYear
-                  ? DateTime.fromISO(selectedYear + "-12-31", {
-                      zone: DateTime.local().zoneName,
-                    }).toJSDate()
+                  ? DateTime.local(selectedYear, 12, 31).endOf("day").toJSDate()
                   : new Date()
               }
               values={calendarVal}
