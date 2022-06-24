@@ -158,10 +158,10 @@ const UserView = ({ match, history }) => {
               {capitalizeFirstLetter(data.first_name) +
                 " " +
                 capitalizeFirstLetter(data.last_name) +
-                " Maps on " +
+                " Maps" + (match.params.date ? (" on " +
                 DateTime.fromISO(match.params.date, {
                   setZone: false,
-                }).toFormat("DDDD") +
+                }).toFormat("DDDD"))) : "" +
                 " | Mapdump.com"}
             </title>
           </Helmet>
