@@ -106,10 +106,14 @@ const UserView = ({ match, history }) => {
     const val = [];
     if (data?.routes) {
       let yesterday = selectedYear
-        ? DateTime.local(parseInt(selectedYear, 10), 12, 31).startOf("day").toJSDate()
+        ? DateTime.local(parseInt(selectedYear, 10), 12, 31)
+            .startOf("day")
+            .toJSDate()
         : DateTime.fromJSDate(new Date()).startOf("day").toJSDate();
       const dates = data.routes.map((r) =>
-        DateTime.fromISO(r.start_time, {zone: r.tz}).startOf("day").toISODate()
+        DateTime.fromISO(r.start_time, { zone: r.tz })
+          .startOf("day")
+          .toISODate()
       );
       for (let i = 0; i < 368; i++) {
         const count = dates.filter(
@@ -158,10 +162,15 @@ const UserView = ({ match, history }) => {
               {capitalizeFirstLetter(data.first_name) +
                 " " +
                 capitalizeFirstLetter(data.last_name) +
-                " Maps" + (match.params.date ? (" on " +
-                DateTime.fromISO(match.params.date, {
-                  setZone: false,
-                }).toFormat("DDDD")) : (match.params.year ? (" in " + match.params.year):"")) +
+                " Maps" +
+                (match.params.date
+                  ? " on " +
+                    DateTime.fromISO(match.params.date, {
+                      setZone: false,
+                    }).toFormat("DDDD")
+                  : match.params.year
+                  ? " in " + match.params.year
+                  : "") +
                 " | Mapdump.com"}
             </title>
           </Helmet>
@@ -214,12 +223,16 @@ const UserView = ({ match, history }) => {
             <CalendarHeatmap
               startDate={
                 selectedYear
-                  ? DateTime.local(parseInt(selectedYear, 10), 1, 1).startOf("day").toJSDate()
+                  ? DateTime.local(parseInt(selectedYear, 10), 1, 1)
+                      .startOf("day")
+                      .toJSDate()
                   : shiftDate(new Date(), -365)
               }
               endDate={
                 selectedYear
-                  ? DateTime.local(parseInt(selectedYear, 10), 12, 31).endOf("day").toJSDate()
+                  ? DateTime.local(parseInt(selectedYear, 10), 12, 31)
+                      .endOf("day")
+                      .toJSDate()
                   : new Date()
               }
               values={calendarVal}
@@ -242,11 +255,10 @@ const UserView = ({ match, history }) => {
               showWeekdayLabels={true}
               onClick={(v) => {
                 if (v.count) {
-                  const dateStr = DateTime.fromJSDate(v.date)
-                    .toFormat("yyyy-MM-dd");
-                  history.push(
-                    `/athletes/${data.username}/${dateStr}`
+                  const dateStr = DateTime.fromJSDate(v.date).toFormat(
+                    "yyyy-MM-dd"
                   );
+                  history.push(`/athletes/${data.username}/${dateStr}`);
                 }
               }}
             ></CalendarHeatmap>
