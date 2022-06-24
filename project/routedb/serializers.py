@@ -76,21 +76,14 @@ class RelativeURLField(serializers.ReadOnlyField):
 class UserSettingsSerializer(serializers.ModelSerializer):
     avatar_base64 = serializers.CharField(source="avatar_b64", write_only=True)
 
-    def clean_avatar_base64(self):
-        value = self.cleaned_data["avatar_b64"]
-        raise Exception('ok')
+    def validate_avatar_base64(self, value):
         if not value:
             return None
-        data_matched = re.match(
-            r"^data:image/png;base64,"
-            r"(?P<data_b64>(?:[A-Za-z0-9+/]{4})*"
-            r"(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$",
-            value,
-        )
-        if not data_matched:
-            raise ValidationError("Image should be a PNG image")
+        if not value.startswith("data:image/png;base64,2):
+            raise ValidationError("The image should be a base 64 encoded PNG")
+        content_b64 = value.partition("base64,")[2]
         sbuf = StringIO()
-        sbuf.write(base64.b64decode(data_matched.group("data_b64")))
+        sbuf.write(base64.b64decode(content_b64))
         with Image.open(sbuf) as image:
             rgba_img = image.convert("RGBA")
             target = 256
