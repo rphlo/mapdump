@@ -64,7 +64,6 @@ const Avatar = () => {
       if (newAvatar.width >= 150) {
         const avatarB64 = newAvatar.toDataURL("image/png");
         setAvatar(avatarB64);
-        console.log(avatarB64);
       } else {
         Swal.fire({
           title: "Error!",
