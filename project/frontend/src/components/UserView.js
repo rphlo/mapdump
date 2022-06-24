@@ -161,7 +161,7 @@ const UserView = ({ match, history }) => {
                 " Maps" + (match.params.date ? (" on " +
                 DateTime.fromISO(match.params.date, {
                   setZone: false,
-                }).toFormat("DDDD")) : "") +
+                }).toFormat("DDDD")) : (match.params.year ? (" in " + match.params.year):"")) +
                 " | Mapdump.com"}
             </title>
           </Helmet>
