@@ -31,6 +31,10 @@ const UserView = ({ match, history }) => {
   const [selectedYear, setSelectedYear] = React.useState(false);
 
   React.useEffect(() => {
+    ReactTooltip.rebuild();
+  });
+
+  React.useEffect(() => {
     if (urls.includes(match.params.username)) {
       return;
     }
@@ -245,7 +249,7 @@ const UserView = ({ match, history }) => {
                   );
                 }
               }}
-            />
+            ></CalendarHeatmap>
             <ReactTooltip />
           </>
           {match.params.date ? (
