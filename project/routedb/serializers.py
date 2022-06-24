@@ -78,6 +78,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 
     def clean_avatar_base64(self):
         value = self.cleaned_data["avatar_b64"]
+        raise Exception('ok')
         if not value:
             return None
         data_matched = re.match(
@@ -98,9 +99,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
             if image.size[0] < 128:
                 raise ValidationError("The image is too small, < 128px width")
             if image.size[0] > target:
-                scale = target / image.size[0]
-                new_w = image.size[0] * scale
-                rgba_img.thumbnail((new_w, new_w), Image.ANTIALIAS)
+                rgba_img.thumbnail((target, target), Image.ANTIALIAS)
             out_buffer = BytesIO()
             params = {
                 "dpi": (72, 72),
