@@ -1,6 +1,6 @@
 import base64
 import re
-from io import BytesIO, StringIO
+from io import BytesIO
 
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
@@ -82,9 +82,9 @@ class UserSettingsSerializer(serializers.ModelSerializer):
         if not value.startswith("data:image/png;base64,"):
             raise ValidationError("The image should be a base 64 encoded PNG")
         content_b64 = value.partition("base64,")[2]
-        sbuf = StringIO()
-        sbuf.write(base64.b64decode(content_b64))
-        with Image.open(sbuf) as image:
+        in_buf = BytesIO()
+        in_buf.write(base64.b64decode(content_b64))
+        with Image.open(in_buf) as image:
             rgba_img = image.convert("RGBA")
             target = 256
             if image.size[0] != image.size[1]:
