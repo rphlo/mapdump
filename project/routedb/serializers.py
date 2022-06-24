@@ -79,7 +79,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
     def validate_avatar_base64(self, value):
         if not value:
             return None
-        if not value.startswith("data:image/png;base64,2):
+        if not value.startswith("data:image/png;base64,"):
             raise ValidationError("The image should be a base 64 encoded PNG")
         content_b64 = value.partition("base64,")[2]
         sbuf = StringIO()
