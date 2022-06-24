@@ -30,7 +30,7 @@
     "react-scripts": "^4.0.3",
     "react-tooltip": "^3.11.2",
     "sax": "^1.2.4",
-    "strava-v3": "^2.0.5",
+    "strava-v3": "^2.1.0",
     "styled-components": "^5.3.5",
     "sweetalert2": "^11.1.2",
     "vanilla-lazyload": "^13.0.1",
@@ -46,10 +46,7 @@
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "yarn run build && cp CNAME ./build",
-    "deploy": "mv build/index.html build/200.html && surge build --token $SURGE_TOKEN",
-    "uploadsources": "node ./uploadSourcemaps.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -68,7 +65,6 @@
   },
   "devDependencies": {
     "@sentry/cli": "^1.49.0",
-    "dotenv": "^8.2.0",
-    "surge": "^0.21.3"
+    "dotenv": "^8.2.0"
   }
 }
