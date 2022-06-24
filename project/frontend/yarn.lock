@@ -8356,6 +8356,11 @@ luxon@^1.25.0:
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.25.0.tgz#d86219e90bc0102c0eb299d65b2f5e95efe1fe72"
   integrity sha512-hEgLurSH8kQRjY6i4YLey+mcKVAWXbDNlZRmM6AgWDJ1cY3atl8Ztf5wEY7VBReFbmGnwQPz7KYJblL8B2k0jQ==
 
+luxon@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.4.0.tgz#9435806545bb32d4234dab766ab8a3d54847a765"
+  integrity sha512-w+NAwWOUL5hO0SgwOHsMBAmZ15SoknmQXhSO0hIbJCAmPKSsGeK8MlmhYh2w6Iib38IxN2M+/ooXWLbeis7GuA==
+
 magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.7"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051"
@@ -10569,9 +10574,10 @@ react-app-polyfill@^2.0.0:
     styled-components "^5.3.5"
 
 "react-calendar-heatmap@https://github.com/rphlo/react-calendar-heatmap":
-  version "1.9.0"
-  resolved "https://github.com/rphlo/react-calendar-heatmap#130ce88b1659c5f60120e37d13907c0dcee69bad"
+  version "1.9.1"
+  resolved "https://github.com/rphlo/react-calendar-heatmap#99e417ae6e36f8b5d6f2de62a0c20277e569a9b1"
   dependencies:
+    luxon "^2.4.0"
     memoize-one "^5.0.0"
     prop-types "^15.6.2"
 
