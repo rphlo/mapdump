@@ -1,3 +1,5 @@
+const { DateTime } = require("luxon");
+
 const Point = (function () {
   function P(x, y) {
     this.x = x;
@@ -282,9 +284,20 @@ const dataURItoBlob = (dataURI) => {
   return new Blob([ia], { type: mimeString });
 };
 
-const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+const capitalizeFirstLetter = ([ first, ...rest ]) => {
+  return [ first.toUpperCase(), ...rest ].join('');
 };
+
+const displayDate = (date) => {
+  if(date.startOf('day').diff(DateTime.local().startOf('day'), "days").days < -1) {
+    return date.setLocale('en').toLocaleString(DateTime.DATE_MED) + ", " + date.toFormat("T");
+  }
+  return capitalizeFirstLetter(date.toRelativeCalendar()) + " at " + date.toFormat("T");
+};
+
+const regionNames = new Intl.DisplayNames(
+  ['en'], {type: 'region'}
+);
 
 module.exports = {
   Point,
@@ -295,4 +308,6 @@ module.exports = {
   dataURItoBlob,
   getResolution,
   capitalizeFirstLetter,
+  displayDate,
+  regionNames,
 };

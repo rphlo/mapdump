@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import LazyImage from "./LazyImage";
 import { printPace, printTime } from "../utils/drawHelpers";
-import { capitalizeFirstLetter } from "../utils/Utils";
+import { capitalizeFirstLetter, displayDate, regionNames } from "../utils/Utils";
 
 const LatestRoute = () => {
   const [routes, setRoutes] = React.useState(false);
@@ -54,39 +54,39 @@ const LatestRoute = () => {
                       ></LazyImage>
                     </Link>
                     <div className="card-body">
-                      <h5
-                        className="card-title"
-                        style={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        <span
-                          className={
-                            "flag-icon flag-icon-" + r.country.toLowerCase()
-                          }
-                        ></span>{" "}
-                        {r.name}
-                      </h5>
-                      <p className="card-text">
-                        {DateTime.fromISO(r.start_time, {
-                          zone: r.tz,
-                        }).toFormat("DDDD, T")}
-                        <br />
-                        {(r.distance / 1000).toFixed(1) + "km"}
-                        {r.duration ? " - " + printTime(r.duration * 1000) : ""}
-                        {r.duration
-                          ? " - " + printPace((r.duration / r.distance) * 1000)
-                          : ""}
-                      </p>
-                      <p className="card-text">
-                        By{" "}
-                        <Link to={"/athletes/" + r.athlete.username}>
-                          {capitalizeFirstLetter(r.athlete.first_name)}{" "}
-                          {capitalizeFirstLetter(r.athlete.last_name)}
-                        </Link>
-                      </p>
+                      <div style={{display: "flex", justifyContent: "start"}}>
+                        <div style={{marginRight: "10px", textAlign: "center"}}>
+                          <img src={"https://mapdump.com/athletes/" + r.athlete.username + ".png"} alt="profile" style={{borderRadius: "50%", width: "40px"}}></img>
+                          <br/>
+                          <span
+                            title={regionNames.of(r.country)}
+                            style={{fontSize: "1.5em", margin: "5px"}}
+                            className={
+                              "flag-icon flag-icon-" + r.country.toLowerCase()
+                            }
+                          ></span>
+                        </div>
+                        <div>
+                          <p className="card-text">
+                            <Link to={"/athletes/" + r.athlete.username}>
+                              {capitalizeFirstLetter(r.athlete.first_name)}{" "}
+                              {capitalizeFirstLetter(r.athlete.last_name)}
+                            </Link>
+                            <br/>
+                            <b><Link style={{color: "black"}} to={"/routes/" + r.id}>{r.name}</Link></b>
+                            <br/>
+                            <span>{displayDate(DateTime.fromISO(r.start_time, {
+                              zone: r.tz,
+                            }))}</span>
+                            <br/>
+                            {(r.distance / 1000).toFixed(1) + "km"}
+                            {r.duration ? " - " + printTime(r.duration * 1000) : ""}
+                            {r.duration
+                              ? " - " + printPace((r.duration / r.distance) * 1000)
+                              : ""}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

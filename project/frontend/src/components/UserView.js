@@ -8,7 +8,7 @@ import "react-calendar-heatmap/dist/styles.css";
 import LazyImage from "./LazyImage";
 import NotFound from "./NotFound";
 import { printTime, printPace } from "../utils/drawHelpers";
-import { capitalizeFirstLetter } from "../utils/Utils";
+import { capitalizeFirstLetter, displayDate, regionNames } from "../utils/Utils";
 
 const urls = [
   "new",
@@ -298,47 +298,54 @@ const UserView = ({ match, history }) => {
             <div className="row">
               {routes.map((r) => (
                 <div
-                  key={r.id}
-                  className="col-12 col-md-4"
-                  style={{ marginBottom: "15px" }}
-                >
-                  <div className="card route-card">
-                    <Link to={"/routes/" + r.id}>
-                      <LazyImage
-                        src={r.map_thumbnail_url}
-                        alt="map thumbnail"
-                      ></LazyImage>
-                    </Link>
-                    <div className="card-body">
-                      <h5
-                        className="card-title"
-                        style={{
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
+                key={r.id}
+                className="col-12 col-md-4"
+                style={{ marginBottom: "15px" }}
+              >
+                <div className="card route-card">
+                  <Link to={"/routes/" + r.id}>
+                    <LazyImage
+                      src={r.map_thumbnail_url}
+                      alt="map thumbnail"
+                    ></LazyImage>
+                  </Link>
+                  <div className="card-body">
+                    <div style={{display: "flex", justifyContent: "start"}}>
+                      <div style={{marginRight: "10px", textAlign: "center"}}>
+                        <img src={"https://mapdump.com/athletes/" + data.username + ".png"} alt="profile" style={{borderRadius: "50%", width: "40px"}}></img>
+                        <br/>
                         <span
+                          title={regionNames.of(r.country)}
+                          style={{fontSize: "1.5em", margin: "5px"}}
                           className={
                             "flag-icon flag-icon-" + r.country.toLowerCase()
                           }
-                        ></span>{" "}
-                        <span>{r.name}</span>
-                      </h5>
-                      <p className="card-text">
-                        {DateTime.fromISO(r.start_time, {
-                          zone: r.tz,
-                        }).toFormat("DDDD, T")}
-                        <br />
-                        {(r.distance / 1000).toFixed(1) + "km"}
-                        {r.duration ? " - " + printTime(r.duration * 1000) : ""}
-                        {r.duration
-                          ? " - " + printPace((r.duration / r.distance) * 1000)
-                          : ""}
-                      </p>{" "}
+                        ></span>
+                      </div>
+                      <div>
+                        <p className="card-text">
+                          <Link to={"/athletes/" + data.username}>
+                            {capitalizeFirstLetter(data.first_name)}{" "}
+                            {capitalizeFirstLetter(data.last_name)}
+                          </Link>
+                          <br/>
+                          <b><Link style={{color: "black"}} to={"/routes/" + r.id}>{r.name}</Link></b>
+                          <br/>
+                          <span>{displayDate(DateTime.fromISO(r.start_time, {
+                            zone: r.tz,
+                          }))}</span>
+                          <br/>
+                          {(r.distance / 1000).toFixed(1) + "km"}
+                          {r.duration ? " - " + printTime(r.duration * 1000) : ""}
+                          {r.duration
+                            ? " - " + printPace((r.duration / r.distance) * 1000)
+                            : ""}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
               ))}
             </div>
           </div>
