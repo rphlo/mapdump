@@ -248,7 +248,6 @@ const RouteHeader = (props) => {
           </div>
         )}
       </div>
-      <hr/>
       <div style={{ marginBottom: "5px" }}>
         {(!canEdit() || !commentEditing) && (
           <blockquote style={{ whiteSpace: "pre-wrap" }}>
