@@ -56,7 +56,7 @@ const LatestRoute = () => {
                     <div className="card-body">
                       <div style={{display: "flex", justifyContent: "start"}}>
                         <div style={{marginRight: "10px", textAlign: "center"}}>
-                          <img src={"https://mapdump.com/athletes/" + r.athlete.username + ".png"} alt="profile" style={{borderRadius: "50%", width: "40px"}}></img>
+                          <img src={"/athletes/" + r.athlete.username + ".png"} alt="profile" style={{borderRadius: "50%", width: "40px"}}></img>
                           <br/>
                           <span
                             title={regionNames.of(r.country)}
