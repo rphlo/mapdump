@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { DateTime } from "luxon";
 import useGlobalState from "../utils/useGlobalState";
 import { printTime, printPace } from "../utils/drawHelpers";
-import { capitalizeFirstLetter } from "../utils/Utils";
+import { capitalizeFirstLetter, displayDate, regionNames } from "../utils/Utils";
 import { LinkItUrl } from "react-linkify-it";
 
 const RouteHeader = (props) => {
@@ -170,23 +170,48 @@ const RouteHeader = (props) => {
         </title>
       </Helmet>
       <h2>
-        <span
-          className={"flag-icon flag-icon-" + props.country.toLowerCase()}
-        ></span>
-        &nbsp;
-        {(!canEdit() || !nameEditing) && <>{name}</>}
-        {canEdit() && nameEditing && (
-          <input
-            ref={inputRef}
-            type="text"
-            maxLength={52}
-            defaultValue={name}
-            onBlur={saveName}
-            data-testid="editNameInput"
-          />
-        )}
+        <Link to={"/athletes/" + props.athlete.username}>
+          {capitalizeFirstLetter(props.athlete.first_name)} {capitalizeFirstLetter(props.athlete.last_name)}
+        </Link>
+      </h2>
+      <div style={{display: "flex", justifyContent: "space-between"}}>
+        <div style={{display: "flex", justifyContent: "start"}}>
+          <div style={{marginRight: "10px", textAlign: "center"}}>
+            <img src={"/athletes/" + props.athlete.username + ".png"} alt="profile" style={{borderRadius: "50%", width: "80px"}}></img>
+            <br/>
+            <span
+              title={regionNames.of(props.country)}
+              className={"fa-2x flag-icon flag-icon-" + props.country.toLowerCase()}
+              style={{marginTop: "15px"}}
+            ></span>
+          </div>
+          <div>
+            <h2 style={{marginTop: "-15px"}}>
+              <small style={{fontSize: "0.5em"}}>{displayDate(DateTime.fromISO(props.startTime, { zone: props.tz }))}</small><br/>
+              {(!canEdit() || !nameEditing) && <>{name}</>}
+              {canEdit() && nameEditing && (
+                <input
+                  ref={inputRef}
+                  type="text"
+                  maxLength={52}
+                  defaultValue={name}
+                  onBlur={saveName}
+                  data-testid="editNameInput"
+                />
+              )}
+              <br/>
+              <small>
+                {(props.distance / 1000).toFixed(1) + "km"}
+                {props.duration ? " - " + printTime(props.duration * 1000) : ""}
+                {props.duration
+                  ? " - " + printPace((props.duration / props.distance) * 1000)
+                  : ""}
+              </small>
+            </h2>
+          </div>
+        </div>
         {canEdit() && (
-          <div className="btn-group float-right">
+          <div>
             <button
               type="button"
               className="btn btn-light"
@@ -195,7 +220,7 @@ const RouteHeader = (props) => {
               aria-expanded="false"
               data-testid="actionMenuBtn"
             >
-              Edit <i className="fas fa-pen"></i>
+              <i className="fas fa-ellipsis-h"></i>
             </button>
             <div className="dropdown-menu dropdown-menu-right">
               <a
@@ -222,24 +247,8 @@ const RouteHeader = (props) => {
             </div>
           </div>
         )}
-      </h2>
-      <h4>
-        by{" "}
-        <Link to={"/athletes/" + props.athlete.username}>
-          {props.athlete.first_name} {props.athlete.last_name}
-        </Link>{" "}
-        <small>
-          {DateTime.fromISO(props.startTime, { zone: props.tz }).toFormat(
-            "DDDD, T"
-          )}
-          <br />
-          {(props.distance / 1000).toFixed(1) + "km"}
-          {props.duration ? " - " + printTime(props.duration * 1000) : ""}
-          {props.duration
-            ? " - " + printPace((props.duration / props.distance) * 1000)
-            : ""}
-        </small>
-      </h4>
+      </div>
+      <hr/>
       <div style={{ marginBottom: "5px" }}>
         {(!canEdit() || !commentEditing) && (
           <blockquote style={{ whiteSpace: "pre-wrap" }}>
