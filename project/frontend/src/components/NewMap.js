@@ -3,13 +3,13 @@ import JSZip from "jszip";
 import { pdfjs as pdfjsLib } from "react-pdf";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import Swal from "sweetalert2";
-import useGlobalState from "../utils/useGlobalState";
 import GPXDropzone from "./GPXDrop";
 import ImageDropzone from "./ImgDrop";
 import RouteDrawing from "./RouteDrawing";
 import PathDrawing from "./PathDrawing";
 import StravaPicker from "./StravaPicker";
 import CornerCoordsInput from "./CornerCoordsInput";
+import useGlobalState from "../utils/useGlobalState";
 import {
   parseGpx,
   extractCornersCoordsFromFilename,
