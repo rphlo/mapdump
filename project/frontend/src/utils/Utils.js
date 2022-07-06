@@ -1,6 +1,7 @@
 const { DateTime } = require("luxon");
 
-const Point = (function () {
+
+const Point = (() => {
   function P(x, y) {
     this.x = x;
     this.y = y;
@@ -8,7 +9,7 @@ const Point = (function () {
   return P;
 })();
 
-const LatLon = (function () {
+const LatLon = (() => {
   const p = "prototype",
     m = Math,
     mcos = m.cos,
@@ -33,7 +34,7 @@ const LatLon = (function () {
   return L;
 })();
 
-const SpheroidProjection = (function () {
+const SpheroidProjection = (() => {
   const p = "prototype",
     m = Math,
     pi = m.PI,
@@ -284,8 +285,8 @@ const dataURItoBlob = (dataURI) => {
   return new Blob([ia], { type: mimeString });
 };
 
-const capitalizeFirstLetter = ([ first, ...rest ]) => {
-  return [ first.toUpperCase(), ...rest ].join('');
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 const displayDate = (date) => {
