@@ -169,11 +169,6 @@ const RouteHeader = (props) => {
             " | Mapdump.com"}{" "}
         </title>
       </Helmet>
-      <h2>
-        <Link to={"/athletes/" + props.athlete.username}>
-          {capitalizeFirstLetter(props.athlete.first_name)} {capitalizeFirstLetter(props.athlete.last_name)}
-        </Link>
-      </h2>
       <div style={{display: "flex", justifyContent: "space-between"}}>
         <div style={{display: "flex", justifyContent: "start", width: "calc(100% - 50px)"}}>
           <div style={{marginRight: "10px", textAlign: "center"}}>
@@ -186,21 +181,24 @@ const RouteHeader = (props) => {
             ></span>
           </div>
           <div style={{borderLeft: "1px solid #B4B4B4", width: "100%"}}>
-            <h2 style={{marginTop: "-15px"}}>
+            <h2>
               <div style={{paddingLeft: "5px"}}>
-              <small style={{fontSize: "0.5em"}}>{displayDate(DateTime.fromISO(props.startTime, { zone: props.tz }))}</small><br/>
-              {(!canEdit() || !nameEditing) && <>{name}</>}
-              {canEdit() && nameEditing && (
-                <input
-                  style={{width: "100%"}}
-                  ref={inputRef}
-                  type="text"
-                  maxLength={52}
-                  defaultValue={name}
-                  onBlur={saveName}
-                  data-testid="editNameInput"
-                />
-              )}
+                <Link to={"/athletes/" + props.athlete.username}>
+                  {capitalizeFirstLetter(props.athlete.first_name)} {capitalizeFirstLetter(props.athlete.last_name)}
+                </Link>
+                <div style={{marginTop: "-10px"}}><small style={{fontSize: "0.5em"}}>{displayDate(DateTime.fromISO(props.startTime, { zone: props.tz }))}</small></div>
+                {(!canEdit() || !nameEditing) && <>{name}</>}
+                {canEdit() && nameEditing && (
+                  <input
+                    style={{width: "100%"}}
+                    ref={inputRef}
+                    type="text"
+                    maxLength={52}
+                    defaultValue={name}
+                    onBlur={saveName}
+                    data-testid="editNameInput"
+                  />
+                )}
               </div>
               <div style={{marginLeft: "-1px"}}>
                 <div style={{display: "flex", justifyContent: "start", gap: "5px", flexFlow: "row wrap", fontSize: "0.8em"}}>
