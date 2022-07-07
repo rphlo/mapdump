@@ -297,6 +297,7 @@ const RouteDrawing = (props) => {
       <div className="container main-container">
         <h2>
           <input
+            style={{width: "100%"}}
             type="text"
             data-testid="nameInput"
             maxLength={52}
