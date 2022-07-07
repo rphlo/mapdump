@@ -185,8 +185,9 @@ const RouteHeader = (props) => {
               style={{marginTop: "15px"}}
             ></span>
           </div>
-          <div>
+          <div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)"}}>
             <h2 style={{marginTop: "-15px"}}>
+              <div style={{paddingLeft: "5px"}}>
               <small style={{fontSize: "0.5em"}}>{displayDate(DateTime.fromISO(props.startTime, { zone: props.tz }))}</small><br/>
               {(!canEdit() || !nameEditing) && <>{name}</>}
               {canEdit() && nameEditing && (
@@ -199,14 +200,27 @@ const RouteHeader = (props) => {
                   data-testid="editNameInput"
                 />
               )}
-              <br/>
-              <small>
-                {(props.distance / 1000).toFixed(1) + "km"}
-                {props.duration ? " - " + printTime(props.duration * 1000) : ""}
-                {props.duration
-                  ? " - " + printPace((props.duration / props.distance) * 1000)
-                  : ""}
-              </small>
+              </div>
+              <div style={{marginLeft: "-1px"}}>
+                <div style={{display: "flex", justifyContent: "start", gap: "5px", flexFlow: "row wrap", fontSize: "0.8em"}}>
+                  <div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", paddingLeft: "5px"}}>
+                    <span style={{color: "#666"}}>Distance</span>
+                    <br/>
+                    {(props.distance / 1000).toFixed(1) + "km"}
+                  </div>
+                  {props.duration ? (<><div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", paddingLeft: "5px"}}>
+                    <span style={{color: "#666"}}>Duration</span>
+                    <br/>
+                    {printTime(props.duration * 1000)}
+                  </div>
+                  <div style={{borderLeft: "1px solid #666", paddingLeft: "5px"}}>
+                    <span style={{color: "#666"}}>Pace</span>
+                    <br/>
+                    {printPace((props.duration / props.distance) * 1000)}
+                  </div>
+                  </>) : ""}
+                </div>
+              </div>
             </h2>
           </div>
         </div>

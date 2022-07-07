@@ -66,24 +66,44 @@ const LatestRoute = () => {
                             }
                           ></span>
                         </div>
-                        <div>
-                          <p className="card-text">
-                            <Link to={"/athletes/" + r.athlete.username}>
-                              {capitalizeFirstLetter(r.athlete.first_name)}{" "}
-                              {capitalizeFirstLetter(r.athlete.last_name)}
-                            </Link>
-                            <br/>
-                            <b><Link style={{color: "black"}} to={"/routes/" + r.id}>{r.name}</Link></b>
-                            <br/>
-                            <span>{displayDate(DateTime.fromISO(r.start_time, {
-                              zone: r.tz,
-                            }))}</span>
-                            <br/>
-                            {(r.distance / 1000).toFixed(1) + "km"}
-                            {r.duration ? " - " + printTime(r.duration * 1000) : ""}
-                            {r.duration
-                              ? " - " + printPace((r.duration / r.distance) * 1000)
-                              : ""}
+                        <div style={{width: "calc(100% - 46px)", borderLeft: "1px solid rgb(0, 0, 0, 0.3)"}}>
+                          <p className="card-text" >
+                            <div style={{paddingLeft: "5px"}}>
+                              <div style={{color: "black", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>
+                                <Link to={"/athletes/" + r.athlete.username}>
+                                  {capitalizeFirstLetter(r.athlete.first_name)}{" "}
+                                  {capitalizeFirstLetter(r.athlete.last_name)}
+                                </Link>
+                              </div>
+                              <div style={{fontSize: "0.8em"}}>
+                                  {displayDate(DateTime.fromISO(r.start_time, {
+                                    zone: r.tz,
+                                  }))}
+                              </div>
+                              <div style={{color: "black", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>
+                                <b><Link style={{color: "black", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}} to={"/routes/" + r.id}>{r.name}</Link></b>
+                              </div>
+                            </div>
+                            <div style={{marginLeft: "-1px"}}>
+                              <div style={{display: "flex", justifyContent: "start", gap: "5px", flexFlow: "row wrap", fontSize: "0.8em"}}>
+                                <div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", paddingLeft: "5px"}}>
+                                  <span style={{color: "#666"}}>Distance</span>
+                                  <br/>
+                                  {(r.distance / 1000).toFixed(1) + "km"}
+                                </div>
+                                {r.duration ? (<><div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", paddingLeft: "5px"}}>
+                                  <span style={{color: "#666"}}>Duration</span>
+                                  <br/>
+                                  {printTime(r.duration * 1000)}
+                                </div>
+                                <div style={{borderLeft: "1px solid #666", paddingLeft: "5px"}}>
+                                  <span style={{color: "#666"}}>Pace</span>
+                                  <br/>
+                                  {printPace((r.duration / r.distance) * 1000)}
+                                </div>
+                                </>) : ""}
+                              </div>
+                            </div>
                           </p>
                         </div>
                       </div>
