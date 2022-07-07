@@ -185,7 +185,7 @@ const RouteHeader = (props) => {
               style={{marginTop: "15px"}}
             ></span>
           </div>
-          <div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", width: "100%"}}>
+          <div style={{borderLeft: "1px solid #B4B4B4", width: "100%"}}>
             <h2 style={{marginTop: "-15px"}}>
               <div style={{paddingLeft: "5px"}}>
               <small style={{fontSize: "0.5em"}}>{displayDate(DateTime.fromISO(props.startTime, { zone: props.tz }))}</small><br/>
@@ -204,17 +204,17 @@ const RouteHeader = (props) => {
               </div>
               <div style={{marginLeft: "-1px"}}>
                 <div style={{display: "flex", justifyContent: "start", gap: "5px", flexFlow: "row wrap", fontSize: "0.8em"}}>
-                  <div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", paddingLeft: "5px"}}>
+                  <div style={{borderLeft: "1px solid #B4B4B4", paddingLeft: "5px"}}>
                     <span style={{color: "#666"}}>Distance</span>
                     <br/>
                     {(props.distance / 1000).toFixed(1) + "km"}
                   </div>
-                  {props.duration ? (<><div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", paddingLeft: "5px"}}>
+                  {props.duration ? (<><div style={{borderLeft: "1px solid #B4B4B4", paddingLeft: "5px"}}>
                     <span style={{color: "#666"}}>Duration</span>
                     <br/>
                     {printTime(props.duration * 1000)}
                   </div>
-                  <div style={{borderLeft: "1px solid #666", paddingLeft: "5px"}}>
+                  <div style={{borderLeft: "1px solid #B4B4B4", paddingLeft: "5px"}}>
                     <span style={{color: "#666"}}>Pace</span>
                     <br/>
                     {printPace((props.duration / props.distance) * 1000)}
