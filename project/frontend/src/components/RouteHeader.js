@@ -175,7 +175,7 @@ const RouteHeader = (props) => {
         </Link>
       </h2>
       <div style={{display: "flex", justifyContent: "space-between"}}>
-        <div style={{display: "flex", justifyContent: "start"}}>
+        <div style={{display: "flex", justifyContent: "start", width: "calc(100% - 50px)"}}>
           <div style={{marginRight: "10px", textAlign: "center"}}>
             <img src={"/athletes/" + props.athlete.username + ".png"} alt="profile" style={{borderRadius: "50%", width: "80px"}}></img>
             <br/>
@@ -185,13 +185,14 @@ const RouteHeader = (props) => {
               style={{marginTop: "15px"}}
             ></span>
           </div>
-          <div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)"}}>
+          <div style={{borderLeft: "1px solid rgb(0, 0, 0, 0.3)", width: "100%"}}>
             <h2 style={{marginTop: "-15px"}}>
               <div style={{paddingLeft: "5px"}}>
               <small style={{fontSize: "0.5em"}}>{displayDate(DateTime.fromISO(props.startTime, { zone: props.tz }))}</small><br/>
               {(!canEdit() || !nameEditing) && <>{name}</>}
               {canEdit() && nameEditing && (
                 <input
+                  style={{width: "100%"}}
                   ref={inputRef}
                   type="text"
                   maxLength={52}
@@ -262,7 +263,7 @@ const RouteHeader = (props) => {
           </div>
         )}
       </div>
-      <div style={{ marginBottom: "5px" }}>
+      <div style={{ margin: "15px 0" }}>
         {(!canEdit() || !commentEditing) && (
           <blockquote style={{ whiteSpace: "pre-wrap" }}>
             <p>
