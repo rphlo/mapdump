@@ -39,10 +39,8 @@ services:
     expose:
       - "1025"
   django:
+    image: rphl/routechoices-dev-server
     stop_signal: SIGINT
-    build:
-      context: ..
-      dockerfile: docker/django.dockerfile
     volumes:
       - ../:/app/:rw
     environment:
@@ -57,3 +55,4 @@ services:
       - minio
       - db
       - smtp
+    command: ['/venv/bin/python3.10', './project/manage.py', 'runserver', '0.0.0.0:8000']

@@ -10,8 +10,8 @@ jobs:
     steps:
     - checkout
     - run: mkdir -p media/drawmyroute-maps/
-    - run: ./dc build
     - run: ./dc up -d
+    - run: ./dc pipinstall
     - run: ./da migrate
     - run:
         name: Install Yarn and add react-scripts
