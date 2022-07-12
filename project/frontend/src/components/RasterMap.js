@@ -86,9 +86,11 @@ const RasterMap = ({ match, history }) => {
     <>
       {found && data && getComponent()}
       {found !== false && !data && (
-        <h2>
-          <i className="fa fa-spin fa-spinner"></i> Loading...
-        </h2>
+        <div className="container main-container">
+          <h2>
+            <i className="fa fa-spin fa-spinner"></i> Loading...
+          </h2>
+        </div>
       )}
       {found === false && <NotFound />}
     </>

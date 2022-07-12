@@ -282,7 +282,7 @@ const RouteViewing = (props) => {
           {!imgLoaded && (
             <div>
               <h3>
-                <i className="fa fa-spin fa-spinner"></i> Loading
+                <i className="fa fa-spin fa-spinner"></i> Loading...
               </h3>
             </div>
           )}
