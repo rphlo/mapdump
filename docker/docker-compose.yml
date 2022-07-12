@@ -1,7 +1,7 @@
 version: '2'
 services:
   db:
-    image: postgres:latest
+    image: postgres:13
     environment:
       POSTGRES_DB: app_db
       POSTGRES_USER: app_user
