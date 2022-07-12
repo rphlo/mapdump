@@ -39,6 +39,7 @@ services:
     expose:
       - "1025"
   django:
+    container_name: md_django
     image: rphl/routechoices-dev-server
     stop_signal: SIGINT
     volumes:

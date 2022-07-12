@@ -28,12 +28,12 @@ elif [ "$1" = 'restoredb' ]; then
     exit 0
 elif [ "$1" = 'pipcompile' ]; then
     echo "Compiling pip env..."
-    docker exec -u root -i mapdump-django-1 \
+    docker exec -u root -i md_django \
         /venv/bin/pip-compile project/requirements.in --upgrade --no-header --no-annotate --output-file project/requirements.txt
     exit 0
 elif [ "$1" = 'pipinstall' ]; then
     echo "Updating pip env..."
-    docker exec -u root -i mapdump-django-1 \
+    docker exec -u root -i md_django \
         /venv/bin/pip --no-cache-dir install -r project/requirements.txt
     exit 0
 elif [ "$1" = 'test' ]; then
