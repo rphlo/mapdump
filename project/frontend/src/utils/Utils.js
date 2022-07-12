@@ -1,6 +1,5 @@
 const { DateTime } = require("luxon");
 
-
 const Point = (() => {
   function P(x, y) {
     this.x = x;
@@ -290,15 +289,23 @@ const capitalizeFirstLetter = (string) => {
 };
 
 const displayDate = (date) => {
-  if(date.startOf('day').diff(DateTime.local().startOf('day'), "days").days < -1) {
-    return date.setLocale('en').toLocaleString(DateTime.DATE_MED) + ", " + date.toFormat("T");
+  if (
+    date.startOf("day").diff(DateTime.local().startOf("day"), "days").days < -1
+  ) {
+    return (
+      date.setLocale("en").toLocaleString(DateTime.DATE_MED) +
+      ", " +
+      date.toFormat("T")
+    );
   }
-  return capitalizeFirstLetter(date.toRelativeCalendar()) + " at " + date.toFormat("T");
+  return (
+    capitalizeFirstLetter(date.toRelativeCalendar()) +
+    " at " +
+    date.toFormat("T")
+  );
 };
 
-const regionNames = new Intl.DisplayNames(
-  ['en'], {type: 'region'}
-);
+const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 
 module.exports = {
   Point,
