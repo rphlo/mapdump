@@ -5,7 +5,11 @@ import Swal from "sweetalert2";
 import { DateTime } from "luxon";
 import useGlobalState from "../utils/useGlobalState";
 import { printTime, printPace } from "../utils/drawHelpers";
-import { capitalizeFirstLetter, displayDate, regionNames } from "../utils/Utils";
+import {
+  capitalizeFirstLetter,
+  displayDate,
+  regionNames,
+} from "../utils/Utils";
 import { LinkItUrl } from "react-linkify-it";
 
 const RouteHeader = (props) => {
@@ -169,28 +173,47 @@ const RouteHeader = (props) => {
             " | Mapdump.com"}{" "}
         </title>
       </Helmet>
-      <div style={{display: "flex", justifyContent: "space-between"}}>
-        <div style={{display: "flex", justifyContent: "start", width: "calc(100% - 50px)"}}>
-          <div style={{marginRight: "10px", textAlign: "center"}}>
-            <img src={"/athletes/" + props.athlete.username + ".png"} alt="profile" style={{borderRadius: "50%", width: "80px"}}></img>
-            <br/>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "start",
+            width: "calc(100% - 50px)",
+          }}
+        >
+          <div style={{ marginRight: "10px", textAlign: "center" }}>
+            <img
+              src={"/athletes/" + props.athlete.username + ".png"}
+              alt="profile"
+              style={{ borderRadius: "50%", width: "80px" }}
+            ></img>
+            <br />
             <span
               title={regionNames.of(props.country)}
-              className={"fa-2x flag-icon flag-icon-" + props.country.toLowerCase()}
-              style={{marginTop: "15px"}}
+              className={
+                "fa-2x flag-icon flag-icon-" + props.country.toLowerCase()
+              }
+              style={{ marginTop: "15px" }}
             ></span>
           </div>
-          <div style={{borderLeft: "1px solid #B4B4B4", width: "100%"}}>
+          <div style={{ borderLeft: "1px solid #B4B4B4", width: "100%" }}>
             <h2>
-              <div style={{paddingLeft: "5px"}}>
+              <div style={{ paddingLeft: "5px" }}>
                 <Link to={"/athletes/" + props.athlete.username}>
-                  {capitalizeFirstLetter(props.athlete.first_name)} {capitalizeFirstLetter(props.athlete.last_name)}
+                  {capitalizeFirstLetter(props.athlete.first_name)}{" "}
+                  {capitalizeFirstLetter(props.athlete.last_name)}
                 </Link>
-                <div style={{marginTop: "-10px"}}><small style={{fontSize: "0.5em"}}>{displayDate(DateTime.fromISO(props.startTime, { zone: props.tz }))}</small></div>
+                <div style={{ marginTop: "-10px" }}>
+                  <small style={{ fontSize: "0.5em" }}>
+                    {displayDate(
+                      DateTime.fromISO(props.startTime, { zone: props.tz })
+                    )}
+                  </small>
+                </div>
                 {(!canEdit() || !nameEditing) && <>{name}</>}
                 {canEdit() && nameEditing && (
                   <input
-                    style={{width: "100%"}}
+                    style={{ width: "100%" }}
                     ref={inputRef}
                     type="text"
                     maxLength={52}
@@ -200,24 +223,52 @@ const RouteHeader = (props) => {
                   />
                 )}
               </div>
-              <div style={{marginLeft: "-1px"}}>
-                <div style={{display: "flex", justifyContent: "start", gap: "5px", flexFlow: "row wrap", fontSize: "0.8em"}}>
-                  <div style={{borderLeft: "1px solid #B4B4B4", paddingLeft: "5px"}}>
-                    <span style={{color: "#666"}}>Distance</span>
-                    <br/>
+              <div style={{ marginLeft: "-1px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "start",
+                    gap: "5px",
+                    flexFlow: "row wrap",
+                    fontSize: "0.8em",
+                  }}
+                >
+                  <div
+                    style={{
+                      borderLeft: "1px solid #B4B4B4",
+                      paddingLeft: "5px",
+                    }}
+                  >
+                    <span style={{ color: "#666" }}>Distance</span>
+                    <br />
                     {(props.distance / 1000).toFixed(1) + "km"}
                   </div>
-                  {props.duration ? (<><div style={{borderLeft: "1px solid #B4B4B4", paddingLeft: "5px"}}>
-                    <span style={{color: "#666"}}>Duration</span>
-                    <br/>
-                    {printTime(props.duration * 1000)}
-                  </div>
-                  <div style={{borderLeft: "1px solid #B4B4B4", paddingLeft: "5px"}}>
-                    <span style={{color: "#666"}}>Pace</span>
-                    <br/>
-                    {printPace((props.duration / props.distance) * 1000)}
-                  </div>
-                  </>) : ""}
+                  {props.duration ? (
+                    <>
+                      <div
+                        style={{
+                          borderLeft: "1px solid #B4B4B4",
+                          paddingLeft: "5px",
+                        }}
+                      >
+                        <span style={{ color: "#666" }}>Duration</span>
+                        <br />
+                        {printTime(props.duration * 1000)}
+                      </div>
+                      <div
+                        style={{
+                          borderLeft: "1px solid #B4B4B4",
+                          paddingLeft: "5px",
+                        }}
+                      >
+                        <span style={{ color: "#666" }}>Pace</span>
+                        <br />
+                        {printPace((props.duration / props.distance) * 1000)}
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </h2>
