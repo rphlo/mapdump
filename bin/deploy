@@ -15,5 +15,4 @@ then
 fi
 project/manage.py migrate --noinput
 project/manage.py build_frontend
-project/manage.py collectstatic --noinput
 ./bin/reload
