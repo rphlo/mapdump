@@ -19,6 +19,7 @@ const RouteReplay = (props) => {
   const [leafletTail, setLeafletTail] = useState(null);
   const [leafletMarker, setLeafletMarker] = useState(null);
   const [playInterval, setPlayInterval] = useState(null);
+  const [isPortrait, setIsPortrait] = useState(false);
   const mapDiv = useRef(null);
 
   const FPS = 15;
@@ -295,7 +296,7 @@ const RouteReplay = (props) => {
           <div
             id="raster_map"
             ref={mapDiv}
-            style={{ marginBottom: "5px", height: "500px", width: "100%" }}
+            style={{ marginBottom: "5px", width: "100%", aspectRatio: (isPortrait ? '9 / 16' : '16 / 9') }}
           ></div>
           <div style={{ marginBottom: "5px" }}>
             {!playing ? (
@@ -307,9 +308,14 @@ const RouteReplay = (props) => {
                 <i className="fa fa-pause"></i>
               </button>
             )}
+            <span style={{float: "right"}}>
+              <button className="btn btn-light" onClick={() => setIsPortrait(!isPortrait)}>
+                <i className="fa fa-sync"></i>
+              </button>
+            </span>
             <span style={{ paddingLeft: "15px" }}>
               <Slider
-                style={{ width: "calc(100% - 65px)" }}
+                style={{ width: "100%" }}
                 axis="x"
                 onChange={onChangeProgress}
                 xmin="0"
