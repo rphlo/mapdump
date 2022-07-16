@@ -309,7 +309,7 @@ const RouteReplay = (props) => {
               </button>
             )}
             <span style={{float: "right"}}>
-              <button className="btn btn-light" onClick={() => setIsPortrait(!isPortrait)}>
+              <button className="btn btn-light" onClick={() => {setIsPortrait(!isPortrait);leafletMap.invalidateSize();}}>
                 <i className="fa fa-sync"></i>
               </button>
             </span>
