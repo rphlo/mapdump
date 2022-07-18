@@ -34,7 +34,7 @@ class RouteAdmin(admin.ModelAdmin):
             cache.delete(f"route_{r.images_path}_r")
             cache.delete(f"route_{r.images_path}_h_r")
             cache.delete(f"route_{r.images_path}")
-            cache.delete(f"map_{r.raster_map.image.path}_thumb")
+            cache.delete(f"map_{r.raster_map.image.name}_thumb")
         updated = qs.count()
 
         self.message_user(

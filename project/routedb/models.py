@@ -237,7 +237,7 @@ class RasterMap(models.Model):
 
     @property
     def thumbnail(self):
-        cache_key = f"map_{self.image.path}_thumb"
+        cache_key = f"map_{self.image.name}_thumb"
         cached_thumb = cache.get(cache_key)
         if cached_thumb:
             return cached_thumb
