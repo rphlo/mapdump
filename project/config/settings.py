@@ -742,6 +742,20 @@ AWS_S3_ENDPOINT_URL = "http://minio:9000"
 AWS_S3_BUCKET = "mapdump"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+
+CACHES = {
+    "default": {
+        "BACKEND": "diskcache.DjangoCache",
+        "LOCATION": os.path.join(BASE_DIR, "cache"),
+        "TIMEOUT": 300,
+        # ^-- Django setting for default timeout of each key.
+        "SHARDS": 4,
+        "DATABASE_TIMEOUT": 0.10,  # 10 milliseconds
+        # ^-- Timeout for each DjangoCache database transaction.
+        "OPTIONS": {"size_limit": 2**30},  # 1 gigabyte
+    },
+}
+
 try:
     from .local_settings import *  # noqa: F403, F401
 except ImportError:

@@ -9,6 +9,7 @@ cffi==1.15.1
 charset-normalizer==2.1.0
 cryptography==37.0.4
 defusedxml==0.7.1
+diskcache==5.4.0
 dj-rest-auth[with_social]==2.2.4
 django==3.2.14
 django-allauth==0.50.0

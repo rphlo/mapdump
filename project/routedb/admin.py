@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.core.cache import cache
 from django.utils.translation import ngettext
 from routedb.models import RasterMap, Route, UserSettings
 
@@ -28,13 +29,14 @@ class RouteAdmin(admin.ModelAdmin):
 
     @admin.action(description="Clear images")
     def clear_images(self, request, qs):
-        updated = qs.update(
-            has_image_w_header=False,
-            has_image_w_route=False,
-            has_image_w_header_route=False,
-            has_image_thumbnail=False,
-            has_image_blank=False,
-        )
+        for r in qs:
+            cache.delete(f"route_{r.images_path}_h")
+            cache.delete(f"route_{r.images_path}_r")
+            cache.delete(f"route_{r.images_path}_h_r")
+            cache.delete(f"route_{r.images_path}")
+            cache.delete(f"map_{r.raster_map.image.path}_thumb")
+        updated = qs.count()
+
         self.message_user(
             request,
             ngettext(

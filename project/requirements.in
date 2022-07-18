@@ -1,4 +1,5 @@
 arrow
+diskcache
 django<4
 pillow
 django-cors-headers

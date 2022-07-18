@@ -3,7 +3,6 @@ import os.path
 import re
 import time
 import urllib
-from io import BytesIO
 
 import arrow
 from allauth.account import app_settings as allauth_settings
@@ -35,7 +34,7 @@ from routedb.serializers import (
     UserSettingsSerializer,
 )
 from stravalib import Client as StravaClient
-from utils.s3 import s3_object_url, upload_to_s3
+from utils.s3 import s3_object_url
 
 
 def x_accel_redirect(request, path, filename="", mime="application/force-download"):
@@ -267,44 +266,26 @@ def map_download(request, uid, *args, **kwargs):
         Route.objects.select_related("raster_map"),
         uid=uid,
     )
-    suffix = "_header" if show_header else ""
-    suffix += "_route" if show_route else ""
     basename = f"{route.name}."
+    mime_type = "image/jpeg"
     if show_header or show_route:
-        file_path = route.images_path + suffix
-        mime_type = "image/jpeg"
-        if not getattr(route, "has_image_w" + suffix, False):
-            img = route.route_image(show_header, show_route)
-            up_buffer = BytesIO(img)
-            up_buffer.seek(0)
-            upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
-            route.__setattr__("has_image_w" + suffix, True)
-            route.save()
-            filename = f"{basename}{mime_type[6:]}"
-            r = HttpResponse(img, content_type=mime_type)
-            r["Content-Disposition"] = 'attachment; filename="{}"'.format(
-                filename.replace("\\", "_").replace('"', '\\"')
-            ).encode("utf-8")
-            return r
+        img = route.route_image(show_header, show_route)
+        filename = f"{basename}{mime_type[6:]}"
+        r = HttpResponse(img, content_type=mime_type)
+        r["Content-Disposition"] = 'attachment; filename="{}"'.format(
+            filename.replace("\\", "_").replace('"', '\\"')
+        ).encode("utf-8")
+        return r
     elif out_bounds:
-        file_path = route.images_path
-        mime_type = "image/jpeg"
-        if not route.has_image_blank:
-            img = route.route_image(False, False)
-            up_buffer = BytesIO(img)
-            up_buffer.seek(0)
-            upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
-            route.has_image_blank = True
-            route.save()
-            filename = f"{basename}{mime_type[6:]}"
-            r = HttpResponse(img, content_type=mime_type)
-            r["Content-Disposition"] = 'attachment; filename="{}"'.format(
-                filename.replace("\\", "_").replace('"', '\\"')
-            ).encode("utf-8")
-            return r
-    else:
-        file_path = route.raster_map.path
-        mime_type = route.raster_map.mime_type
+        img = route.route_image(False, False)
+        filename = f"{basename}{mime_type[6:]}"
+        r = HttpResponse(img, content_type=mime_type)
+        r["Content-Disposition"] = 'attachment; filename="{}"'.format(
+            filename.replace("\\", "_").replace('"', '\\"')
+        ).encode("utf-8")
+        return r
+    file_path = route.raster_map.path
+    mime_type = route.raster_map.mime_type
     return serve_from_s3(
         settings.AWS_S3_BUCKET,
         request,
@@ -319,25 +300,8 @@ def map_thumbnail(request, uid, *args, **kwargs):
         Route.objects.select_related("raster_map"),
         uid=uid,
     )
-    file_path = route.raster_map.path + "_thumb"
-    if not route.has_image_thumbnail:
-        image = route.raster_map.thumbnail
-        up_buffer = BytesIO()
-        image.save(up_buffer, "JPEG", quality=80)
-        up_buffer.seek(0)
-        upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
-        route.has_image_thumbnail = True
-        route.save()
-        response = HttpResponse(content_type="image/jpeg")
-        image.save(response, "JPEG", quality=80)
-        return response
-    return serve_from_s3(
-        settings.AWS_S3_BUCKET,
-        request,
-        "/internal/" + file_path,
-        filename="{}_thumbnail.jpg".format(route.name),
-        mime="image/jpeg",
-    )
+    image = route.raster_map.thumbnail
+    return HttpResponse(image, content_type="image/jpeg")
 
 
 def gpx_download(request, uid, *args, **kwargs):

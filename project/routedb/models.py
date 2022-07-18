@@ -13,6 +13,7 @@ import arrow
 import gpxpy
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.files.base import ContentFile, File
 from django.db import models
 from django.urls import reverse
@@ -236,6 +237,10 @@ class RasterMap(models.Model):
 
     @property
     def thumbnail(self):
+        cache_key = f"map_{self.image.path}_thumb"
+        cached_thumb = cache.get(cache_key)
+        if cached_thumb:
+            return cached_thumb
         orig = self.image.storage.open(self.image.name, "rb").read()
         img = Image.open(BytesIO(orig))
         if img.mode != "RGBA":
@@ -257,6 +262,10 @@ class RasterMap(models.Model):
         img_out = Image.new("RGB", img.size, (255, 255, 255, 0))
         img_out.paste(img, (0, 0))
         img.close()
+        up_buffer = BytesIO()
+        img_out.save(up_buffer, "JPEG", quality=80)
+        up_buffer.seek(0)
+        cache.set(cache_key, up_buffer.read(), 31*24*3600)
         return img_out
 
     @property
@@ -298,12 +307,6 @@ class Route(models.Model):
     duration = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True)
 
-    has_image_w_header = models.BooleanField(default=False)
-    has_image_w_route = models.BooleanField(default=False)
-    has_image_w_header_route = models.BooleanField(default=False)
-    has_image_thumbnail = models.BooleanField(default=False)
-    has_image_blank = models.BooleanField(default=False)
-
     def prefetch_route_extras(self, *args, **kwargs):
         if self.route[0]["time"]:
             self.start_time = datetime.fromtimestamp(self.route[0]["time"], utc)
@@ -323,8 +326,12 @@ class Route(models.Model):
         self.route_json = json.dumps(value)
 
     def route_image(self, header=True, route=True):
-        arg = "h" if header else ""
-        arg += "r" if route else ""
+        arg = "_h" if header else ""
+        arg += "_r" if route else ""
+        cache_key = f"route_{route.images_path}_{arg}"
+        cached = cache.get(cache_key)
+        if cached:
+            return cached
         orig = self.raster_map.data
         data_uri = ""
         with tempfile.NamedTemporaryFile() as img_file, tempfile.NamedTemporaryFile() as route_file:
@@ -351,6 +358,7 @@ class Route(models.Model):
             if not header.startswith("data"):
                 return None
             data = base64.b64decode(encoded)
+            cache.set(cache_key, data, 31*24*3600)
             return data
         return None
 
