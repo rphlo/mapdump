@@ -26,7 +26,7 @@ from utils.validators import (
     validate_longitude,
 )
 
-map_storage = S3Storage(aws_s3_bucket_name="drawmyroute-maps")
+map_storage = S3Storage(aws_s3_bucket_name=settings.AWS_S3_BUCKET)
 
 
 def map_upload_path(instance=None, file_name=None):

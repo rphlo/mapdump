@@ -2,6 +2,7 @@
 
 import django_s3_storage.storage
 import routedb.models
+from django.conf import settings
 from django.db import migrations, models
 
 
@@ -18,7 +19,7 @@ class Migration(migrations.Migration):
             field=models.ImageField(
                 height_field="height",
                 storage=django_s3_storage.storage.S3Storage(
-                    aws_s3_bucket_name="drawmyroute-maps"
+                    aws_s3_bucket_name=settings.AWS_S3_BUCKET
                 ),
                 upload_to=routedb.models.map_upload_path,
                 width_field="width",

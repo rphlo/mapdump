@@ -9,7 +9,7 @@ jobs:
       docker_layer_caching: false
     steps:
     - checkout
-    - run: mkdir -p media/drawmyroute-maps/
+    - run: mkdir -p media/mapdump/
     - run: ./dc up -d
     - run: ./dc pipinstall
     - run: ./da migrate

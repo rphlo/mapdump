@@ -15,7 +15,7 @@ class Command(BaseCommand):
             up_buffer = BytesIO()
             image.save(up_buffer, "JPEG", quality=80)
             up_buffer.seek(0)
-            upload_to_s3("drawmyroute-maps", file_path, up_buffer)
+            upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
             route.has_image_thumbnail = True
             route.save()
 
@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 img = route.route_image(show_header, show_route)
                 up_buffer = BytesIO(img)
                 up_buffer.seek(0)
-                upload_to_s3("drawmyroute-maps", file_path, up_buffer)
+                upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
                 route.__setattr__("has_image_w" + suffix, True)
                 route.save()
         else:
@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 img = route.route_image(False, False)
                 up_buffer = BytesIO(img)
                 up_buffer.seek(0)
-                upload_to_s3("drawmyroute-maps", file_path, up_buffer)
+                upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
                 route.has_image_blank = True
                 route.save()
 

@@ -251,7 +251,7 @@ def raster_map_download(request, uid, *args, **kwargs):
     file_path = rmap.path
     mime_type = rmap.mime_type
     return serve_from_s3(
-        "drawmyroute-maps",
+        settings.AWS_S3_BUCKET,
         request,
         "/internal/" + file_path,
         filename="{}.{}".format(rmap.uid, mime_type[6:]),
@@ -277,7 +277,7 @@ def map_download(request, uid, *args, **kwargs):
             img = route.route_image(show_header, show_route)
             up_buffer = BytesIO(img)
             up_buffer.seek(0)
-            upload_to_s3("drawmyroute-maps", file_path, up_buffer)
+            upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
             route.__setattr__("has_image_w" + suffix, True)
             route.save()
             filename = f"{basename}{mime_type[6:]}"
@@ -293,7 +293,7 @@ def map_download(request, uid, *args, **kwargs):
             img = route.route_image(False, False)
             up_buffer = BytesIO(img)
             up_buffer.seek(0)
-            upload_to_s3("drawmyroute-maps", file_path, up_buffer)
+            upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
             route.has_image_blank = True
             route.save()
             filename = f"{basename}{mime_type[6:]}"
@@ -306,7 +306,7 @@ def map_download(request, uid, *args, **kwargs):
         file_path = route.raster_map.path
         mime_type = route.raster_map.mime_type
     return serve_from_s3(
-        "drawmyroute-maps",
+        settings.AWS_S3_BUCKET,
         request,
         "/internal/" + file_path,
         filename="{}{}".format(basename, mime_type[6:]),
@@ -325,14 +325,14 @@ def map_thumbnail(request, uid, *args, **kwargs):
         up_buffer = BytesIO()
         image.save(up_buffer, "JPEG", quality=80)
         up_buffer.seek(0)
-        upload_to_s3("drawmyroute-maps", file_path, up_buffer)
+        upload_to_s3(settings.AWS_S3_BUCKET, file_path, up_buffer)
         route.has_image_thumbnail = True
         route.save()
         response = HttpResponse(content_type="image/jpeg")
         image.save(response, "JPEG", quality=80)
         return response
     return serve_from_s3(
-        "drawmyroute-maps",
+        settings.AWS_S3_BUCKET,
         request,
         "/internal/" + file_path,
         filename="{}_thumbnail.jpg".format(route.name),
