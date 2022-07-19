@@ -265,8 +265,9 @@ class RasterMap(models.Model):
         up_buffer = BytesIO()
         img_out.save(up_buffer, "JPEG", quality=80)
         up_buffer.seek(0)
-        cache.set(cache_key, up_buffer.read(), 31*24*3600)
-        return img_out
+        data_out = up_buffer.read()
+        cache.set(cache_key, data_out, 31*24*3600)
+        return data_out
 
     @property
     def image_url(self):
