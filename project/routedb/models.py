@@ -266,7 +266,10 @@ class RasterMap(models.Model):
         img_out.save(up_buffer, "JPEG", quality=80)
         up_buffer.seek(0)
         data_out = up_buffer.read()
-        cache.set(cache_key, data_out, 31*24*3600)
+        try:
+            cache.set(cache_key, data_out, 31*24*3600)
+        except Exception:
+            pass
         return data_out
 
     @property
@@ -359,7 +362,10 @@ class Route(models.Model):
             if not header.startswith("data"):
                 return None
             data = base64.b64decode(encoded)
-            cache.set(cache_key, data, 31*24*3600)
+            try:
+                cache.set(cache_key, data, 31*24*3600)
+            except Exception:
+                pass
             return data
         return None
 
