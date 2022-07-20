@@ -11,7 +11,7 @@ cryptography==37.0.4
 defusedxml==0.7.1
 diskcache==5.4.0
 dj-rest-auth[with_social]==2.2.4
-django==3.2.14
+django==4.0.6
 django-allauth==0.50.0
 django-cors-headers==3.13.0
 django-rest-knox==4.2.0

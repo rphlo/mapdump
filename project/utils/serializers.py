@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.translation import ugettext_lazy as _
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -41,7 +40,7 @@ class RegisterSerializer(serializers.Serializer):
         if allauth_settings.UNIQUE_EMAIL:
             if email and email_address_exists(email):
                 raise serializers.ValidationError(
-                    _("A user is already registered with this e-mail address.")
+                    "A user is already registered with this e-mail address."
                 )
         return email
 
@@ -51,7 +50,7 @@ class RegisterSerializer(serializers.Serializer):
     def validate(self, data):
         if data["password1"] != data["password2"]:
             raise serializers.ValidationError(
-                _("The two password fields didn't match.")
+                "The two password fields didn't match."
             )
         return data
 

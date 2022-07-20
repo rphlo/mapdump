@@ -1,6 +1,6 @@
 arrow
 diskcache
-django<4
+django
 pillow
 django-cors-headers
 requests
