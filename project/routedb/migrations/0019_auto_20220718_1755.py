@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('routedb', '0018_usersettings_avatar'),
+        ("routedb", "0018_usersettings_avatar"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='route',
-            name='has_image_blank',
+            model_name="route",
+            name="has_image_blank",
         ),
         migrations.RemoveField(
-            model_name='route',
-            name='has_image_thumbnail',
+            model_name="route",
+            name="has_image_thumbnail",
         ),
         migrations.RemoveField(
-            model_name='route',
-            name='has_image_w_header',
+            model_name="route",
+            name="has_image_w_header",
         ),
         migrations.RemoveField(
-            model_name='route',
-            name='has_image_w_header_route',
+            model_name="route",
+            name="has_image_w_header_route",
         ),
         migrations.RemoveField(
-            model_name='route',
-            name='has_image_w_route',
+            model_name="route",
+            name="has_image_w_route",
         ),
     ]

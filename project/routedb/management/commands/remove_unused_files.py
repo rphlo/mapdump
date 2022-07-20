@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from routedb.models import Route
 from utils.s3 import s3_delete_key, s3_key_exists
 
+
 class Command(BaseCommand):
     help = "Remove image file from prev version"
 
