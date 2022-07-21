@@ -296,7 +296,11 @@ const RouteReplay = (props) => {
           <div
             id="raster_map"
             ref={mapDiv}
-            style={{ marginBottom: "5px", width: "100%", aspectRatio: (isPortrait ? '9 / 16' : '16 / 9') }}
+            style={{
+              marginBottom: "5px",
+              width: "100%",
+              aspectRatio: isPortrait ? "9 / 16" : "16 / 9",
+            }}
           ></div>
           <div style={{ marginBottom: "5px" }}>
             {!playing ? (
@@ -308,8 +312,14 @@ const RouteReplay = (props) => {
                 <i className="fa fa-pause"></i>
               </button>
             )}
-            <span style={{float: "right"}}>
-              <button className="btn btn-light" onClick={() => {setIsPortrait(!isPortrait);leafletMap.invalidateSize();}}>
+            <span style={{ float: "right" }}>
+              <button
+                className="btn btn-light"
+                onClick={() => {
+                  setIsPortrait(!isPortrait);
+                  leafletMap.invalidateSize();
+                }}
+              >
                 <i className="fa fa-sync"></i>
               </button>
             </span>

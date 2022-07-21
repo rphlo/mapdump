@@ -267,7 +267,7 @@ class RasterMap(models.Model):
         up_buffer.seek(0)
         data_out = up_buffer.read()
         try:
-            cache.set(cache_key, data_out, 31*24*3600)
+            cache.set(cache_key, data_out, 31 * 24 * 3600)
         except Exception:
             pass
         return data_out
@@ -363,7 +363,7 @@ class Route(models.Model):
                 return None
             data = base64.b64decode(encoded)
             try:
-                cache.set(cache_key, data, 31*24*3600)
+                cache.set(cache_key, data, 31 * 24 * 3600)
             except Exception:
                 pass
             return data

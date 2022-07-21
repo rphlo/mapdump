@@ -65,9 +65,7 @@ def validate_corners_coordinates(val):
         )
     for val in cal_values:
         if not FLOAT_RE.match(val):
-            raise ValidationError(
-                "Corners coordinates must only contain float values."
-            )
+            raise ValidationError("Corners coordinates must only contain float values.")
 
 
 custom_username_validators = [
