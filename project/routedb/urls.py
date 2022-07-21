@@ -36,6 +36,11 @@ urlpatterns = [
         name="map_thumbnail",
     ),
     re_path(
+        r"^route/(?P<uid>[a-zA-Z0-9_-]+)/opengraph-thumbnail/?$",
+        views.map_og_thumbnail,
+        name="map_og_thumbnail",
+    ),
+    re_path(
         r"^map/(?P<uid>[a-zA-Z0-9_-]+)/image/?$",
         views.raster_map_download,
         name="raster_map_image",

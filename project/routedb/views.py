@@ -304,6 +304,15 @@ def map_thumbnail(request, uid, *args, **kwargs):
     return HttpResponse(image, content_type="image/jpeg")
 
 
+def map_og_thumbnail(request, uid, *args, **kwargs):
+    route = get_object_or_404(
+        Route.objects.select_related("raster_map"),
+        uid=uid,
+    )
+    image = route.raster_map.og_thumbnail
+    return HttpResponse(image, content_type="image/jpeg")
+
+
 def gpx_download(request, uid, *args, **kwargs):
     route = get_object_or_404(
         Route,
