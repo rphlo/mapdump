@@ -241,10 +241,10 @@ const UserView = ({ match, history }) => {
               }
               values={calendarVal}
               classForValue={(value) => {
-                if (!value) {
+                if (!value?.count) {
                   return "color-empty";
                 }
-                return `color-github-${value.count}`;
+                return "color-github-1";
               }}
               tooltipDataAttrs={(value) => {
                 return {

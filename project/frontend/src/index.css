@@ -56,3 +56,7 @@ footer {
 body {
   background-color: #f6f8fa;
 }
+
+.color-day-activity {
+  fill: rgb(56, 85, 250);
+}
