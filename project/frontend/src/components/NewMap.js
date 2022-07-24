@@ -3,6 +3,8 @@ import JSZip from "jszip";
 import { pdfjs as pdfjsLib } from "react-pdf";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import Swal from "sweetalert2";
+import FitParser from 'fit-file-parser';
+
 import GPXDropzone from "./GPXDrop";
 import ImageDropzone from "./ImgDrop";
 import RouteDrawing from "./RouteDrawing";
@@ -46,6 +48,7 @@ function NewMap() {
     "image/gif": true,
     "image/png": true,
     "image/webp": true,
+    "image/avif": true,
   };
 
   const onRouteLoaded = (newRoute) => {
@@ -114,6 +117,42 @@ function NewMap() {
     }
   };
 
+  const onFITLoaded = (e) => {
+    var fitParser = new FitParser({
+      force: true,
+      speedUnit: 'km/h',
+      lengthUnit: 'km',
+      temperatureUnit: 'celsius',
+      elapsedRecordField: 'timer_time',
+      mode: 'list',
+    });
+    console.log(e.target.result)
+    // Parse your file
+    fitParser.parse(e.target.result, function (error, data) {
+    
+      // Handle result of parse method
+      if (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Error parsing your FIT file!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        const newRoute = [];
+        data.records.forEach((rec) => {
+          if (rec.position_lat !== null) {
+            newRoute.push({
+              time: +rec.timestamp,
+              latLon: [rec.position_lat, rec.position_long],
+            });
+          }
+        });
+        onRouteLoaded(newRoute);
+      }
+    });
+  };
+
   const onDropGPX = (acceptedFiles) => {
     if (!acceptedFiles.length) {
       return;
@@ -124,6 +163,10 @@ function NewMap() {
     const fr = new FileReader();
     if (filename.toLowerCase().endsWith(".tcx")) {
       fr.onload = onTCXLoaded;
+    } else if (filename.toLowerCase().endsWith(".fit")) {
+      fr.onload = onFITLoaded;
+      fr.readAsArrayBuffer(gpxFile);
+      return
     } else {
       fr.onload = onGPXLoaded;
     }
@@ -180,7 +223,7 @@ function NewMap() {
         let mime = "";
         if (extension === "jpg") {
           mime = "image/jpeg";
-        } else if (["png", "gif", "jpeg"].includes(extension)) {
+        } else if (["png", "gif", "jpeg", "webp", "avif"].includes(extension)) {
           mime = "image/" + extension;
         }
         const imageDataURI =
