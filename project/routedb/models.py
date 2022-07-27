@@ -460,6 +460,7 @@ class Route(models.Model):
     @property
     def gpx(self):
         gpx = gpxpy.gpx.GPX()
+        gpx.creator = "Mapdump.com"
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx.tracks.append(gpx_track)
 
