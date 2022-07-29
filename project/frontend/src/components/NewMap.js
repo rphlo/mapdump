@@ -52,6 +52,15 @@ function NewMap() {
   };
 
   const onRouteLoaded = (newRoute) => {
+    if(!newRoute?.length) {
+      Swal.fire({
+        title: "Error!",
+        text: "Error parsing your file! No GPS points detected!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return
+    }
     setRoute(newRoute);
   };
 
@@ -76,7 +85,9 @@ function NewMap() {
     }
     for (let i = 0; i < parsedGpx.segments[0].length; i++) {
       const pos = parsedGpx.segments[0][i];
-      newRoute.push({ time: pos.time, latLon: [pos.loc[0], pos.loc[1]] });
+      if (pos.loc[0]) {
+        newRoute.push({ time: pos.time, latLon: [pos.loc[0], pos.loc[1]] });
+      }
     }
     onRouteLoaded(newRoute);
   };
@@ -94,10 +105,12 @@ function NewMap() {
     const newRoute = [];
     workout.laps.forEach((lap) => {
       lap.track.forEach((pos) => {
-        newRoute.push({
-          time: +pos.datetime,
-          latLon: [pos.latitude, pos.longitude],
-        });
+        if (pos.latitude) {
+          newRoute.push({
+            time: +pos.datetime,
+            latLon: [pos.latitude, pos.longitude],
+          });
+        }
       });
     });
     onRouteLoaded(newRoute);
@@ -126,11 +139,7 @@ function NewMap() {
       elapsedRecordField: 'timer_time',
       mode: 'list',
     });
-    console.log(e.target.result)
-    // Parse your file
     fitParser.parse(e.target.result, function (error, data) {
-    
-      // Handle result of parse method
       if (error) {
         Swal.fire({
           title: "Error!",
@@ -141,7 +150,7 @@ function NewMap() {
       } else {
         const newRoute = [];
         data.records.forEach((rec) => {
-          if (rec.position_lat !== null) {
+          if (rec.position_lat) {
             newRoute.push({
               time: +rec.timestamp,
               latLon: [rec.position_lat, rec.position_long],
@@ -332,7 +341,6 @@ function NewMap() {
         };
         var renderTask = page.render(renderContext);
         renderTask.promise.then(function () {
-          console.log("Page rendered");
           setMapDataURL(canvas.toDataURL("image/jpeg", 0.8));
         });
       });
