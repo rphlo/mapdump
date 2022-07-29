@@ -129,11 +129,11 @@ class RouteSerializer(serializers.ModelSerializer):
     athlete = UserInfoSerializer(read_only=True)
     country = serializers.ReadOnlyField()
     tz = serializers.ReadOnlyField()
-    start_time = serializers.ReadOnlyField()
     modification_date = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
     map_size = serializers.ReadOnlyField(source="raster_map.size")
+    start_time = serializers.DateTimeField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -175,6 +175,9 @@ class RouteSerializer(serializers.ModelSerializer):
             if data.get("raster_map"):
                 raise ValidationError("This method does not allow to update to map")
         else:  # Method is POST
+            if data.get("start_time"):
+                if data.get("route_data", {}).get("time", [None])[0]:
+                    raise ValidationError("Route data already include time")
             if not data.get("raster_map", {}).get("uid") and not data.get(
                 "raster_map", {}
             ).get("image"):
@@ -217,8 +220,10 @@ class RouteSerializer(serializers.ModelSerializer):
             athlete=user,
             raster_map=raster_map,
             name=validated_data["name"],
-            comment=validated_data["comment"],
+            comment=validated_data["comment"],  
         )
+        if validated_data.get("start_time"):
+            route.start_time = validated_data["start_time"]
         route.route = validated_data["route"]
         route.prefetch_route_extras()
         route.save()

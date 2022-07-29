@@ -11,6 +11,9 @@ import {
 import useGlobalState from "../utils/useGlobalState";
 import { saveKMZ } from "../utils/fileHelpers";
 import ReactTooltip from "react-tooltip";
+import { DateTime } from "luxon";
+
+let startTime = null
 
 const RouteDrawing = (props) => {
   const [name, setName] = useState();
@@ -153,6 +156,28 @@ const RouteDrawing = (props) => {
     }
     const tkn = api_token;
     setSaving(true);
+    if (!props.route[0].time) {
+      const { value: isSet } = await Swal.fire({
+        title: 'Enter your start time',
+        html:'<input id="startDatePicker" type="datetime-local" autofocus class="swal2-input">',
+        inputValue: new Date(),
+        showCancelButton: true,
+        didOpen: function() {
+          document.getElementById("startDatePicker").value = DateTime.local().toFormat("yyyy-LL-dd'T'HH:mm");
+        },
+        preConfirm: function() {
+          try{
+            startTime = new Date(document.getElementById("startDatePicker").value);
+          }catch{
+            startTime = null
+          }
+        }
+      })
+      if (!isSet || !startTime) {
+        setSaving(false);
+        return
+        }
+    }
 
     const mWidth = imgData.width;
     const mHeight = imgData.height;
@@ -172,7 +197,6 @@ const RouteDrawing = (props) => {
         ? `https://www.strava.com/activities/${props.stravaDetails.id}`
         : ""
     }`;
-
     fetch(canvas.toDataURL("image/jpeg", 0.8))
       .then((res) => res.blob())
       .then(async (blob) => {
@@ -182,6 +206,9 @@ const RouteDrawing = (props) => {
         fd.append("route_data", formatRoute(props.route));
         fd.append("name", name);
         fd.append("comment", comment);
+        if (!props.route[0].time) {
+          fd.append("start_time", startTime.toISOString())
+        }
         try {
           const response = await fetch(
             process.env.REACT_APP_API_URL + "/v1/routes/new",
