@@ -22,7 +22,6 @@ import { parseTCXString } from "../utils/tcxParser";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const pkg = require("../../package.json");
 
 function NewMap() {
   const globalState = useGlobalState();
@@ -35,11 +34,9 @@ function NewMap() {
   const [stravaDetails, setStravaDetails] = React.useState("");
 
   const setRoute = (newRoute) => {
-    window.drawmyroute.route = newRoute;
     _setRoute(newRoute);
   };
   const setMapDataURL = (newMapDataURL) => {
-    window.drawmyroute.mapDataURL = newMapDataURL;
     _setMapDataURL(newMapDataURL);
   };
 
@@ -468,7 +465,6 @@ function NewMap() {
               >
                 <i className="fas fa-pen"></i> Draw route manually
               </button>
-              <span style={{ color: "white" }}>v{pkg.version}</span>
             </>
           )}
           {(drawRoute || route) && !mapDataURL && (
@@ -487,6 +483,8 @@ function NewMap() {
                 onSet={onSetCornerCoords}
                 onUndo={onRemoveMap}
                 coordsCallback={onSetCornerCoords}
+                route={route}
+                mapDataURL={mapDataURL}
               />
             </>
           )}
@@ -495,6 +493,7 @@ function NewMap() {
               mapCornersCoords={mapCornersCoords}
               mapDataURL={mapDataURL}
               onRoute={setRoute}
+              onUndo={() => onRemoveMap()}
             />
           )}
         </div>

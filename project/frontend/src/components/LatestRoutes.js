@@ -82,7 +82,7 @@ const LatestRoute = () => {
                             borderLeft: "1px solid #B4B4B4",
                           }}
                         >
-                          <p className="card-text">
+                          <div className="card-text">
                             <div style={{ paddingLeft: "5px" }}>
                               <div
                                 style={{
@@ -183,7 +183,7 @@ const LatestRoute = () => {
                                 )}
                               </div>
                             </div>
-                          </p>
+                          </div>
                         </div>
                       </div>
                     </div>

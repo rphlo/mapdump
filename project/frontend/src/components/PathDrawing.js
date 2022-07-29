@@ -60,7 +60,6 @@ const PathDrawing = (props) => {
       pl.removeFrom(leafletMap);
       pl.setLatLngs(route);
       pl.addTo(leafletMap);
-      console.log("b");
     } else if (route.length < 2) {
       pl.remove();
     }
@@ -92,6 +91,7 @@ const PathDrawing = (props) => {
 
   return (
     <>
+      <h1>Draw Route</h1>
       <div className="alert alert-primary">
         Click on map to add points to your route
       </div>
@@ -99,22 +99,23 @@ const PathDrawing = (props) => {
         id="raster_map"
         style={{ marginBottom: "5px", height: "500px", width: "100%" }}
       ></div>
-      {route.length > 0 && (
-        <>
+      <div>
           <button
             className="btn btn-danger"
+            disabled={route.length < 1}
             onClick={(e) => setRoute((r) => removeLastPoint(e, r))}
           >
             <i className="fas fa-undo"></i> Remove last point
           </button>
-          &nbsp;
-        </>
-      )}
-      {route.length > 1 && (
-        <button className="btn btn-primary" onClick={onSubmit}>
+      </div>
+      <div style={{marginTop: "10px"}}>
+        <button className="btn btn-danger" onClick={props.onUndo}>
+          <i className="fas fa-undo"></i> Back
+        </button>{" "}
+        <button className="btn btn-primary" onClick={onSubmit} disabled={route.length < 2}>
           <i className="fa fa-save"></i> Save route
         </button>
-      )}
+      </div>
     </>
   );
 };
