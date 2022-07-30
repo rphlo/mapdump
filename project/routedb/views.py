@@ -163,11 +163,11 @@ class MapsList(generics.ListAPIView):
 
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserMainSerializer
-    lookup_field = "username"
+    lookup_field = "username__iexact"
 
     def get_queryset(self):
         username = self.kwargs["username"]
-        return User.objects.filter(username=username).prefetch_related("routes")
+        return User.objects.filter(username__iexact=username).prefetch_related("routes")
 
 
 class UserSettingsDetail(generics.RetrieveUpdateAPIView):
