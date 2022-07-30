@@ -163,7 +163,11 @@ class MapsList(generics.ListAPIView):
 
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserMainSerializer
-    lookup_field = "username__iexact"
+    lookup_field = "username"
+
+    def get_object(self):
+        username = self.kwargs["username"]
+        return self.get_queryset().get(username__iexact=username)
 
     def get_queryset(self):
         username = self.kwargs["username"]
