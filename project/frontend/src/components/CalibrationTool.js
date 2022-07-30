@@ -137,7 +137,6 @@ const CalibrationTool = (props) => {
   const [imgDataURI, setImgDataURI] = useState(null)
   const [imgWidth, setImgWidth] = useState(0)
   const [imgHeight, setImgHeight] = useState(0)
-  const [cornersCoordinates, setCornersCoordinates] = useState(null)
 
   function getCornerCoordinates(){
     const xyA = [];
@@ -171,10 +170,8 @@ const CalibrationTool = (props) => {
   useEffect(() => {
     if (markersRaster.length === 4 && markersWorld.length === 4) {
       setIsReady(true)
-      setCornersCoordinates(getCornerCoordinates())
     } else {
       setIsReady(false)
-      setCornersCoordinates(null)
     }
   }, [markersRaster, markersWorld])
 
@@ -288,7 +285,7 @@ const CalibrationTool = (props) => {
             </div>
         </div>
         { previewOpen && (
-          <CalibrationPreview imgDataURI={imgDataURI} cornersCoordinates={cornersCoordinates} route={route} onValue={(v) => {if(v) {onValue(v)};setPreviewOpen(false)}}></CalibrationPreview>
+          <CalibrationPreview imgDataURI={imgDataURI} cornersCoordinates={getCornerCoordinates()} route={route} onValue={(v) => {if(v) {onValue(v)};setPreviewOpen(false)}}></CalibrationPreview>
         )}
     </>
   );
