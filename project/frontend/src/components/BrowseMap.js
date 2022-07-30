@@ -1,18 +1,8 @@
 import React, { useEffect } from "react";
 import * as L from "leaflet";
 import "../utils/Leaflet.SmoothWheelZoom";
-import "../utils/Leaflet.ImageTransform";
 
-const RouteReplay = () => {
-  /*
-  const loadMap = (lmap, m, polygon) => {
-    console.log(m)
-    const bound = [m.bounds.top_left, m.bounds.top_right, m.bounds.bottom_right, m.bounds.bottom_left];
-    const transformedImage = L.imageTransform(m.image_url, bound, {opacity: 0.7});
-    polygon.remove();
-    transformedImage.addTo(lmap);
-  };
-*/
+const BrowseMap = () => {
   const onClickLayer = (e, map, m) => {
     const point = e.latlng;
     const layers = [];
@@ -103,4 +93,4 @@ const RouteReplay = () => {
   );
 };
 
-export default RouteReplay;
+export default BrowseMap;

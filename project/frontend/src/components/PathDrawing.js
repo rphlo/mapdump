@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Point, cornerBackTransform } from "../utils/Utils";
 import * as L from "leaflet";
+import "../utils/Leaflet.SmoothWheelZoom";
 
 const PathDrawing = (props) => {
   const [mapImage, setMapImage] = useState(false);
@@ -21,31 +22,30 @@ const PathDrawing = (props) => {
       ctx.drawImage(img, 0, 0);
 
       // export base64
-      callback(canvas.toDataURL("image/jpeg", 0.8));
+      callback(canvas.toDataURL("image/png"), width, height);
     };
     img.src = src;
   }
 
   useEffect(() => {
-    resetOrientation(props.mapDataURL, function (imgDataURI) {
-      var img = new Image();
-      img.onload = function () {
-        setMapImage(this);
-        const map = L.map("raster_map", {
-          crs: L.CRS.Simple,
-          minZoom: -5,
-          maxZoom: 2,
-        });
-        setLeafletMap(map);
-        const bounds = [
-          map.unproject([0, 0]),
-          map.unproject([this.width, this.height]),
-        ];
-        new L.imageOverlay(this.src, bounds).addTo(map);
-        map.fitBounds(bounds);
-        map.invalidateSize();
-      };
-      img.src = imgDataURI;
+    resetOrientation(props.mapDataURL, function (imgDataURI, width, height) {
+      setMapImage(imgDataURI);
+      const map = L.map("rasterMap", {
+        crs: L.CRS.Simple,
+        minZoom: -5,
+        maxZoom: 2,
+        zoomSnap: 0,
+        scrollWheelZoom: false,
+        smoothWheelZoom: true,
+      });
+      setLeafletMap(map);
+      const bounds = [
+        map.unproject([0, 0]),
+        map.unproject([width, height]),
+      ];
+      new L.imageOverlay(imgDataURI, bounds).addTo(map);
+      map.fitBounds(bounds);
+      map.invalidateSize();
     });
   }, [props.mapDataURL]);
 
@@ -96,7 +96,7 @@ const PathDrawing = (props) => {
         Click on map to add points to your route
       </div>
       <div
-        id="raster_map"
+        id="rasterMap"
         style={{ marginBottom: "5px", height: "500px", width: "100%" }}
       ></div>
       <div>
