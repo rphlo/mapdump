@@ -59,6 +59,19 @@ const UserView = ({ match, history }) => {
   }, [match.params.username]);
 
   React.useEffect(() => {
+    if (data?.username && match.params.username !== data?.username) {
+      let url = `/athletes/${data.username}`
+      if (match.params.year) {
+        url += `/${match.params.year}`
+      } else if (match.params.date) {
+        url += `/${match.params.date}`
+      }
+      history.push(url)
+    }
+    // eslint-disable-next-line
+  }, [match.params.username, data?.username])
+
+  React.useEffect(() => {
     if (match.params.date) {
       setSelectedYear(match.params.date.slice(0, 4));
     } else if (match.params.year) {

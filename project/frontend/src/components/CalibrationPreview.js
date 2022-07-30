@@ -31,8 +31,6 @@ const CalibrationPreview = (props) => {
   const { onValue, route, imgDataURI, cornersCoordinates} = props;
 
   const [mapPreview, setMapPreview] = useState()
-
-
   
   useEffect(() => {
     const routeData = route || [];
@@ -67,6 +65,7 @@ const CalibrationPreview = (props) => {
     tmpMapPreview.addLayer(defaultLayer);
     tmpMapPreview.addControl(new L.Control.Layers(baseLayers, {'Map': transformedImage}))
     setMapPreview(tmpMapPreview);
+    // eslint-disable-next-line
   }, [])
 
   return (

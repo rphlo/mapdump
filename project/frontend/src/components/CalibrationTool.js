@@ -187,6 +187,7 @@ const CalibrationTool = (props) => {
       mapRaster.off('click')
       mapRaster.on('click', onClickRaster)
     }
+    // eslint-disable-next-line
   }, [mapRaster, markersRaster])
 
   const onClickWorld = (e) => {
@@ -201,6 +202,7 @@ const CalibrationTool = (props) => {
       mapWorld.off('click')
       mapWorld.on('click', onClickWorld)
     }
+    // eslint-disable-next-line
   }, [mapWorld, markersWorld]);
 
   useEffect(() => {
@@ -255,6 +257,7 @@ const CalibrationTool = (props) => {
     tmpMapWorld.addLayer(defaultLayer);
     tmpMapWorld.addControl(new L.Control.Layers(baseLayers))
     setMapWorld(tmpMapWorld);
+    // eslint-disable-next-line
   }, [])
 
   return (
