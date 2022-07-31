@@ -1,6 +1,7 @@
 import base64
 from io import BytesIO
 
+from django.db.models import Q
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -311,14 +312,22 @@ class LatestRouteListSerializer(serializers.ModelSerializer):
 
 class UserMainSerializer(serializers.ModelSerializer):
     # latest_routes = serializers.SerializerMethodField()
-    routes = UserRouteListSerializer(many=True)
+    # routes = UserRouteListSerializer(many=True)
+    routes = serializers.SerializerMethodField('get_public_or_own_routes')
 
     class Meta:
         model = User
-        fields = ("username", "first_name", "last_name", "routes")
+        fields = ("username", "first_name", "last_name", "get_public_or_own_routes")
 
-    # def get_latest_routes(self, obj):
-    #    return UserRouteListSerializer(instance=obj.routes.all()[:5], many=True, context=self.context).data
+    def get_public_or_own_routes(self, obj):
+        filters = Q(is_private=False)
+        if self.context.get('request'):
+            filters |= Q(athlete_id=self.context['request'].user.id)
+        return UserRouteListSerializer(
+            instance=obj.routes.filter(filters)(),
+            many=True,
+            context=self.context
+        ).data
 
 
 class EmailSerializer(serializers.ModelSerializer):

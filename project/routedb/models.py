@@ -335,6 +335,7 @@ class Route(models.Model):
     )
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
+    is_private = models.BooleanField(default=False)
     athlete = models.ForeignKey(User, related_name="routes", on_delete=models.CASCADE)
     name = models.CharField(max_length=52)
     route_json = models.TextField()
