@@ -22,7 +22,7 @@ const RouteReplay = (props) => {
   const [playInterval, setPlayInterval] = useState(null);
   const [isPortrait, setIsPortrait] = useState(false);
   const mapDiv = useRef(null);
-  
+
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
 
@@ -68,7 +68,7 @@ const RouteReplay = (props) => {
   useEffect(() => {
     if (mapDiv.current) {
       resetOrientation(props.mapDataURL + (props.isPrivate ? '?auth_token=' + api_token : ''), function (imgDataURI, width, height) {
-        setMapImage(imgDataURI);
+        setMapImage({width, height});
         const map = L.map("raster_map", {
           crs: L.CRS.Simple,
           minZoom: -5,
