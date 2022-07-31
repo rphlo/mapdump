@@ -317,7 +317,7 @@ class UserMainSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("username", "first_name", "last_name", "get_public_or_own_routes")
+        fields = ("username", "first_name", "last_name", "routes")
 
     def get_public_or_own_routes(self, obj):
         filters = Q(is_private=False)
