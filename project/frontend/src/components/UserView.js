@@ -334,7 +334,7 @@ const UserView = ({ match, history }) => {
                   <div className="card route-card">
                     <Link to={"/routes/" + r.id}>
                       <LazyImage
-                        src={r.map_thumbnail_url}
+                        src={r.map_thumbnail_url + (r.is_private ? ('?auth_token=' + api_token) : '')}
                         alt="map thumbnail"
                       ></LazyImage>
                     </Link>

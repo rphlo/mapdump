@@ -135,6 +135,7 @@ class RouteSerializer(serializers.ModelSerializer):
     duration = serializers.ReadOnlyField()
     map_size = serializers.ReadOnlyField(source="raster_map.size")
     start_time = serializers.DateTimeField(required=False)
+    is_private = serializers.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -225,6 +226,8 @@ class RouteSerializer(serializers.ModelSerializer):
         )
         if validated_data.get("start_time"):
             route.start_time = validated_data["start_time"]
+        if validated_data.get("is_private"):
+            route.is_private = True
         route.route = validated_data["route"]
         route.prefetch_route_extras()
         route.save()
@@ -251,6 +254,7 @@ class RouteSerializer(serializers.ModelSerializer):
             "map_size",
             "comment",
             "route_data",
+            "is_private"
         )
 
 
@@ -278,6 +282,7 @@ class UserRouteListSerializer(serializers.ModelSerializer):
             "duration",
             "country",
             "name",
+            "is_private"
         )
 
 
@@ -307,6 +312,7 @@ class LatestRouteListSerializer(serializers.ModelSerializer):
             "country",
             "name",
             "athlete",
+            "is_private"
         )
 
 
