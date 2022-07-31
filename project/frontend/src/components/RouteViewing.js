@@ -4,6 +4,7 @@ import { saveAs } from "file-saver";
 import RouteHeader from "./RouteHeader";
 import ShareModal from "./ShareModal";
 import { saveKMZ } from "../utils/fileHelpers";
+import useGlobalState from "../utils/useGlobalState";
 
 const RouteViewing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
@@ -16,6 +17,9 @@ const RouteViewing = (props) => {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
   let finalImage = createRef();
+
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
 
   const loadCache = async (url) => {
     return new Promise((resolve, reject) => {
@@ -39,6 +43,9 @@ const RouteViewing = (props) => {
     if (includeRoute) {
       qp.set("show_route", "1");
     }
+    if(props.isPrivate) {
+      qp.set("auth_token", api_token)
+    }
     const url = props.mapDataURL + "?" + qp.toString();
     setImgURL(url);
   }, [
@@ -48,6 +55,8 @@ const RouteViewing = (props) => {
     props.modificationDate,
     togglingHeader,
     togglingRoute,
+    props.isPrivate,
+    api_token
   ]);
 
   useEffect(() => {
@@ -151,6 +160,9 @@ const RouteViewing = (props) => {
       const qp = new URLSearchParams();
       qp.set("m", props.modificationDate);
       qp.set("show_header", "1");
+      if(props.isPrivate) {
+        qp.set("auth_token", api_token)
+      }
       const url = props.mapDataURL + "?" + qp.toString();
       await loadCache(url);
     }
