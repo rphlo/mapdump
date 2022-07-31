@@ -102,7 +102,7 @@ const RouteViewing = (props) => {
   };
 
   const downloadKmz = (e) => {
-    fetch(props.mapDataURL)
+    fetch(props.mapDataURL + (props.isPrivate ? '?auth_token=' + api_token : ''))
       .then((r) => r.blob())
       .then((blob) => {
         const newCorners = getCorners(
@@ -117,7 +117,7 @@ const RouteViewing = (props) => {
   };
 
   const downloadGPX = (ev) => {
-    saveAs(props.gpx, name + ".gpx");
+    saveAs(props.gpx + (props.isPrivate ? '?auth_token=' + api_token : ''), name + ".gpx");
   };
 
   const toggleHeader = (ev) => {
