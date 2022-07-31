@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import LazyImage from "./LazyImage";
 import { printPace, printTime } from "../utils/drawHelpers";
+import useGlobalState from "../utils/useGlobalState";
 import {
   capitalizeFirstLetter,
   displayDate,
@@ -12,14 +13,25 @@ import {
 const LatestRoute = () => {
   const [routes, setRoutes] = React.useState(false);
 
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
+
   React.useEffect(() => {
     (async () => {
+      const headers = {};
+      if (api_token) {
+        headers.Authorization = "Token " + api_token
+      }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + "/v1/latest-routes/"
+        process.env.REACT_APP_API_URL + "/v1/latest-routes/",
+        {
+          credentials: "omit",
+          headers
+        }
       );
       setRoutes(await res.json());
     })();
-  }, []);
+  }, [api_token]);
 
   return (
     <>

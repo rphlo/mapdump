@@ -8,6 +8,7 @@ import "react-calendar-heatmap/dist/styles.css";
 import LazyImage from "./LazyImage";
 import NotFound from "./NotFound";
 import { printTime, printPace } from "../utils/drawHelpers";
+import useGlobalState from "../utils/useGlobalState";
 import {
   capitalizeFirstLetter,
   displayDate,
@@ -34,6 +35,9 @@ const UserView = ({ match, history }) => {
   const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState(false);
 
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
+
   React.useEffect(() => {
     ReactTooltip.rebuild();
   });
@@ -44,8 +48,16 @@ const UserView = ({ match, history }) => {
     }
     (async () => {
       setLoading(true);
+      const headers = {};
+      if (api_token) {
+        headers.Authorization = "Token " + api_token
+      }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + "/v1/user/" + match.params.username
+        process.env.REACT_APP_API_URL + "/v1/user/" + match.params.username,
+        {
+          credentials: "omit",
+          headers
+        }
       );
       if (res.status === 200) {
         const rawData = await res.json();
@@ -56,7 +68,7 @@ const UserView = ({ match, history }) => {
       }
       setLoading(false);
     })();
-  }, [match.params.username]);
+  }, [match.params.username, api_token]);
 
   React.useEffect(() => {
     if (data?.username && match.params.username !== data?.username) {
