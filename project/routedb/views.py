@@ -415,7 +415,7 @@ def index_view(request):
 
 
 def route_view(request, route_id):
-    route = get_object_or_404(Route.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)).select_related("athlete"), uid=route_id)
+    route = get_object_or_404(Route.objects.all().select_related("athlete"), uid=route_id)
     return render(
         request, "frontend/route.html", {"route": route, "athlete": route.athlete}
     )
