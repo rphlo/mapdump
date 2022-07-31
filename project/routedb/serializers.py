@@ -324,7 +324,7 @@ class UserMainSerializer(serializers.ModelSerializer):
         if self.context.get('request'):
             filters |= Q(athlete_id=self.context['request'].user.id)
         return UserRouteListSerializer(
-            instance=obj.routes.filter(filters)(),
+            instance=obj.routes.filter(filters),
             many=True,
             context=self.context
         ).data
