@@ -251,6 +251,7 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
         return super().destroy(request, *args, **kwargs)
 
 
+@api_view(["GET"])
 def raster_map_download(request, uid, *args, **kwargs):
     rmap = get_object_or_404(
         RasterMap.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)),
@@ -267,6 +268,7 @@ def raster_map_download(request, uid, *args, **kwargs):
     )
 
 
+@api_view(["GET"])
 def map_download(request, uid, *args, **kwargs):
     show_header = request.GET.get("show_header", False)
     show_route = request.GET.get("show_route", False)
@@ -304,6 +306,7 @@ def map_download(request, uid, *args, **kwargs):
     )
 
 
+@api_view(["GET"])
 def map_thumbnail(request, uid, *args, **kwargs):
     route = get_object_or_404(
         Route.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)).select_related("raster_map"),
@@ -313,6 +316,7 @@ def map_thumbnail(request, uid, *args, **kwargs):
     return HttpResponse(image, content_type="image/jpeg")
 
 
+@api_view(["GET"])
 def map_og_thumbnail(request, uid, *args, **kwargs):
     route = get_object_or_404(
         Route.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)).select_related("raster_map"),
@@ -322,6 +326,7 @@ def map_og_thumbnail(request, uid, *args, **kwargs):
     return HttpResponse(image, content_type="image/jpeg")
 
 
+@api_view(["GET"])
 def gpx_download(request, uid, *args, **kwargs):
     route = get_object_or_404(
         Route.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)),
