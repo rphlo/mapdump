@@ -162,7 +162,7 @@ class MapsList(generics.ListAPIView):
     def get_queryset(self):
         public_routes = Route.objects.filter(is_private=False)
         maps_id = set(public_routes.values_list("raster_map_id", flat=True))
-        return RasterMap.filter(pk__in=maps_id).prefetch_related(
+        return RasterMap.objects.filter(pk__in=maps_id).prefetch_related(
             "route_set", "route_set__athlete"
         )
 
