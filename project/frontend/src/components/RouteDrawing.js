@@ -13,7 +13,7 @@ import { saveKMZ } from "../utils/fileHelpers";
 import ReactTooltip from "react-tooltip";
 import { DateTime } from "luxon";
 
-let startTime = null
+let startTime = null;
 
 const RouteDrawing = (props) => {
   const [name, setName] = useState();
@@ -158,25 +158,28 @@ const RouteDrawing = (props) => {
     setSaving(true);
     if (!props.route[0].time) {
       const { value: isSet } = await Swal.fire({
-        title: 'Enter your start time',
-        html:'<input id="startDatePicker" type="datetime-local" autofocus class="swal2-input">',
+        title: "Enter your start time",
+        html: '<input id="startDatePicker" type="datetime-local" autofocus class="swal2-input">',
         inputValue: new Date(),
         showCancelButton: true,
-        didOpen: function() {
-          document.getElementById("startDatePicker").value = DateTime.local().toFormat("yyyy-LL-dd'T'HH:mm");
+        didOpen: function () {
+          document.getElementById("startDatePicker").value =
+            DateTime.local().toFormat("yyyy-LL-dd'T'HH:mm");
         },
-        preConfirm: function() {
-          try{
-            startTime = new Date(document.getElementById("startDatePicker").value);
-          }catch{
-            startTime = null
+        preConfirm: function () {
+          try {
+            startTime = new Date(
+              document.getElementById("startDatePicker").value
+            );
+          } catch {
+            startTime = null;
           }
-        }
-      })
+        },
+      });
       if (!isSet || !startTime) {
         setSaving(false);
-        return
-        }
+        return;
+      }
     }
 
     const mWidth = imgData.width;
@@ -202,13 +205,13 @@ const RouteDrawing = (props) => {
       .then(async (blob) => {
         const fd = new FormData();
         fd.append("map_image", blob, name + ".jpg");
-        
+
         fd.append("map_bounds", formatMapBounds(bounds));
         fd.append("route_data", formatRoute(props.route));
         fd.append("name", name);
         fd.append("comment", comment);
         if (!props.route[0].time) {
-          fd.append("start_time", startTime.toISOString())
+          fd.append("start_time", startTime.toISOString());
         }
         if (makePrivate) {
           fd.append("is_private", true);

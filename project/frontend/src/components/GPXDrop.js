@@ -55,7 +55,9 @@ const GPXDropzone = (props) => {
       {isDragActive ? (
         <p>Drop a GPX, FIT or TCX file here ...</p>
       ) : (
-        <p>Drag and drop a GPX, FIT or TCX file here, or click to select a file</p>
+        <p>
+          Drag and drop a GPX, FIT or TCX file here, or click to select a file
+        </p>
       )}
     </div>
   );

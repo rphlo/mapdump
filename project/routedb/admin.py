@@ -23,7 +23,7 @@ class RouteAdmin(admin.ModelAdmin):
         "start_time",
         "athlete",
     )
-    fields = ("athlete", "name", "route_json", "raster_map", 'is_private')
+    fields = ("athlete", "name", "route_json", "raster_map", "is_private")
     list_filter = ("athlete",)
     actions = ["clear_images"]
 

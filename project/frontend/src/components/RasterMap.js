@@ -42,13 +42,13 @@ const RasterMap = ({ match, history }) => {
     (async () => {
       const headers = {};
       if (api_token) {
-        headers.Authorization = "Token " + api_token
+        headers.Authorization = "Token " + api_token;
       }
       const res = await fetch(
         process.env.REACT_APP_API_URL + "/v1/route/" + match.params.uid,
         {
           credentials: "omit",
-          headers
+          headers,
         }
       );
       if (res.status === 200) {

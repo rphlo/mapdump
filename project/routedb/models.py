@@ -271,7 +271,7 @@ class RasterMap(models.Model):
         except Exception:
             pass
         return data_out
-    
+
     @property
     def og_thumbnail(self):
         cache_key = f"map_{self.image.name}_og_thumb"

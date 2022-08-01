@@ -20,13 +20,13 @@ const LatestRoute = () => {
     (async () => {
       const headers = {};
       if (api_token) {
-        headers.Authorization = "Token " + api_token
+        headers.Authorization = "Token " + api_token;
       }
       const res = await fetch(
         process.env.REACT_APP_API_URL + "/v1/latest-routes/",
         {
           credentials: "omit",
-          headers
+          headers,
         }
       );
       setRoutes(await res.json());
@@ -65,7 +65,10 @@ const LatestRoute = () => {
                   <div className="card route-card">
                     <Link to={"/routes/" + r.id}>
                       <LazyImage
-                        src={r.map_thumbnail_url + (r.is_private ? ('?auth_token=' + api_token) : '')}
+                        src={
+                          r.map_thumbnail_url +
+                          (r.is_private ? "?auth_token=" + api_token : "")
+                        }
                         alt="map thumbnail"
                       ></LazyImage>
                     </Link>

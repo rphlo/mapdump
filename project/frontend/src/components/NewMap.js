@@ -3,7 +3,7 @@ import JSZip from "jszip";
 import { pdfjs as pdfjsLib } from "react-pdf";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import Swal from "sweetalert2";
-import FitParser from 'fit-file-parser';
+import FitParser from "fit-file-parser";
 
 import GPXDropzone from "./GPXDrop";
 import ImageDropzone from "./ImgDrop";
@@ -21,7 +21,6 @@ import { LatLon } from "../utils/Utils";
 import { parseTCXString } from "../utils/tcxParser";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-
 
 function NewMap() {
   const globalState = useGlobalState();
@@ -49,14 +48,14 @@ function NewMap() {
   };
 
   const onRouteLoaded = (newRoute) => {
-    if(!newRoute?.length) {
+    if (!newRoute?.length) {
       Swal.fire({
         title: "Error!",
         text: "Error parsing your file! No GPS points detected!",
         icon: "error",
         confirmButtonText: "OK",
       });
-      return
+      return;
     }
     setRoute(newRoute);
   };
@@ -130,11 +129,11 @@ function NewMap() {
   const onFITLoaded = (e) => {
     var fitParser = new FitParser({
       force: true,
-      speedUnit: 'km/h',
-      lengthUnit: 'km',
-      temperatureUnit: 'celsius',
-      elapsedRecordField: 'timer_time',
-      mode: 'list',
+      speedUnit: "km/h",
+      lengthUnit: "km",
+      temperatureUnit: "celsius",
+      elapsedRecordField: "timer_time",
+      mode: "list",
     });
     fitParser.parse(e.target.result, function (error, data) {
       if (error) {
@@ -172,7 +171,7 @@ function NewMap() {
     } else if (filename.toLowerCase().endsWith(".fit")) {
       fr.onload = onFITLoaded;
       fr.readAsArrayBuffer(gpxFile);
-      return
+      return;
     } else {
       fr.onload = onGPXLoaded;
     }
