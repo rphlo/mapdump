@@ -150,7 +150,7 @@ const RouteDrawing = (props) => {
     img.src = dataURL;
   };
 
-  const onExport = async (e) => {
+  const onExport = async (makePrivate) => {
     if (saving || !username) {
       return;
     }
@@ -202,12 +202,16 @@ const RouteDrawing = (props) => {
       .then(async (blob) => {
         const fd = new FormData();
         fd.append("map_image", blob, name + ".jpg");
+        
         fd.append("map_bounds", formatMapBounds(bounds));
         fd.append("route_data", formatRoute(props.route));
         fd.append("name", name);
         fd.append("comment", comment);
         if (!props.route[0].time) {
           fd.append("start_time", startTime.toISOString())
+        }
+        if (makePrivate) {
+          fd.append("is_private", true);
         }
         try {
           const response = await fetch(
@@ -386,20 +390,28 @@ const RouteDrawing = (props) => {
         </button>
         &nbsp;
         {!saved && username && (
-          <>
+          <div style={{ float: "right" }}>
             <button
               data-testid="saveBtn"
-              style={{ float: "right" }}
+              className="btn btn-sm btn-secondary"
+              onClick={() => onExport(true)}
+            >
+              <i
+                className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}
+              ></i>{" "}
+              Save as Private
+            </button>{" "}
+            <button
+              data-testid="saveBtn"
               className="btn btn-sm btn-primary"
-              onClick={onExport}
+              onClick={() => onExport()}
             >
               <i
                 className={saving ? "fa fa-spinner fa-spin" : "fas fa-save"}
               ></i>{" "}
               Save
             </button>
-            &nbsp;
-          </>
+          </div>
         )}
         {!saved && !username && (
           <span style={{ float: "right" }} data-tip={"Login/Signup to Save"}>
