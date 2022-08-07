@@ -44,8 +44,8 @@ const RouteViewing = (props) => {
     if (includeRoute) {
       qp.set("show_route", "1");
     }
-    if(isPrivate) {
-      qp.set("auth_token", api_token)
+    if (isPrivate) {
+      qp.set("auth_token", api_token);
     }
     const url = props.mapDataURL + "?" + qp.toString();
     setImgURL(url);
@@ -57,7 +57,7 @@ const RouteViewing = (props) => {
     togglingHeader,
     togglingRoute,
     isPrivate,
-    api_token
+    api_token,
   ]);
 
   useEffect(() => {
@@ -103,7 +103,7 @@ const RouteViewing = (props) => {
   };
 
   const downloadKmz = (e) => {
-    fetch(props.mapDataURL + (isPrivate ? '?auth_token=' + api_token : ''))
+    fetch(props.mapDataURL + (isPrivate ? "?auth_token=" + api_token : ""))
       .then((r) => r.blob())
       .then((blob) => {
         const newCorners = getCorners(
@@ -118,7 +118,10 @@ const RouteViewing = (props) => {
   };
 
   const downloadGPX = (ev) => {
-    saveAs(props.gpx + (isPrivate ? '?auth_token=' + api_token : ''), name + ".gpx");
+    saveAs(
+      props.gpx + (isPrivate ? "?auth_token=" + api_token : ""),
+      name + ".gpx"
+    );
   };
 
   const toggleHeader = (ev) => {
@@ -161,8 +164,8 @@ const RouteViewing = (props) => {
       const qp = new URLSearchParams();
       qp.set("m", props.modificationDate);
       qp.set("show_header", "1");
-      if(isPrivate) {
-        qp.set("auth_token", api_token)
+      if (isPrivate) {
+        qp.set("auth_token", api_token);
       }
       const url = props.mapDataURL + "?" + qp.toString();
       await loadCache(url);
@@ -191,17 +194,21 @@ const RouteViewing = (props) => {
   return (
     <>
       <div className="container main-container">
-        <RouteHeader {...props} onNameChanged={setName} onPrivacyChanged={setIsPrivate}/>
+        <RouteHeader
+          {...props}
+          onNameChanged={setName}
+          onPrivacyChanged={setIsPrivate}
+        />
         <div>
-          { !isPrivate && 
+          {!isPrivate && (
             <button
               style={{ marginBottom: "5px" }}
               className="btn btn-sm btn-warning"
               onClick={share}
             >
-            <i className="fas fa-share"></i> Share
-          </button>
-          }
+              <i className="fas fa-share"></i> Share
+            </button>
+          )}
           <br />
           <button
             style={{ marginBottom: "5px" }}

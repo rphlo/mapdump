@@ -30,8 +30,19 @@ const CornersCoordsInput = (props) => {
       setCoords(null);
     }
   };
-  return calibrationToolOpen ? 
-    <CalibrationTool onValue={(v) => {setCalibrationToolOpen(false);updateCoords(v ? v : '');if(v){props.coordsCallback && props.coordsCallback(v)}}} route={props.route} mapDataURL={props.mapDataURL}></CalibrationTool> :
+  return calibrationToolOpen ? (
+    <CalibrationTool
+      onValue={(v) => {
+        setCalibrationToolOpen(false);
+        updateCoords(v ? v : "");
+        if (v) {
+          props.coordsCallback && props.coordsCallback(v);
+        }
+      }}
+      route={props.route}
+      mapDataURL={props.mapDataURL}
+    ></CalibrationTool>
+  ) : (
     <div>
       <div className="form-group">
         <label htmlFor="corners-coords">Corners Coordinates</label>
@@ -55,7 +66,13 @@ const CornersCoordsInput = (props) => {
           <br />
           eg: 60.519,22.078,60.518,22.115,60.491,22.112,60.492,22.073
           <br />
-          <Link to="/" onClick={(e) => { e.preventDefault();setCalibrationToolOpen(true)}}>
+          <Link
+            to="/"
+            onClick={(e) => {
+              e.preventDefault();
+              setCalibrationToolOpen(true);
+            }}
+          >
             Use online calibration tool
           </Link>
         </p>
@@ -71,7 +88,7 @@ const CornersCoordsInput = (props) => {
         <i className="fas fa-arrow-alt-circle-right"></i> Next
       </button>
     </div>
-  ;
+  );
 };
 
 export default CornersCoordsInput;

@@ -114,12 +114,12 @@ const RouteHeader = (props) => {
       }
       props.onNameChanged && props.onNameChanged(newName);
     } catch (e) {}
-  };  
+  };
   const putPrivacy = async (newPrivacy) => {
     if (saving) {
       return;
     }
-    setIsPrivate(newPrivacy)
+    setIsPrivate(newPrivacy);
     const tkn = api_token;
     setSaving(true);
     try {
@@ -354,7 +354,8 @@ const RouteHeader = (props) => {
                 onClick={togglePrivacy}
                 data-testid="togglePrivacyBtn"
               >
-                <i className="fa fa-lock"></i> {isPrivate ? "Make Public": "Make Private"}
+                <i className="fa fa-lock"></i>{" "}
+                {isPrivate ? "Make Public" : "Make Private"}
               </a>
               <div className="dropdown-divider"></div>
               <a className="dropdown-item" href="/#" onClick={deleteMap}>

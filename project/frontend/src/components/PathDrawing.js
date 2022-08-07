@@ -39,10 +39,7 @@ const PathDrawing = (props) => {
         smoothWheelZoom: true,
       });
       setLeafletMap(map);
-      const bounds = [
-        map.unproject([0, 0]),
-        map.unproject([width, height]),
-      ];
+      const bounds = [map.unproject([0, 0]), map.unproject([width, height])];
       new L.imageOverlay(imgDataURI, bounds).addTo(map);
       map.fitBounds(bounds);
       map.invalidateSize();
@@ -100,19 +97,23 @@ const PathDrawing = (props) => {
         style={{ marginBottom: "5px", height: "500px", width: "100%" }}
       ></div>
       <div>
-          <button
-            className="btn btn-danger"
-            disabled={route.length < 1}
-            onClick={(e) => setRoute((r) => removeLastPoint(e, r))}
-          >
-            <i className="fas fa-undo"></i> Remove last point
-          </button>
+        <button
+          className="btn btn-danger"
+          disabled={route.length < 1}
+          onClick={(e) => setRoute((r) => removeLastPoint(e, r))}
+        >
+          <i className="fas fa-undo"></i> Remove last point
+        </button>
       </div>
-      <div style={{marginTop: "10px"}}>
+      <div style={{ marginTop: "10px" }}>
         <button className="btn btn-danger" onClick={props.onUndo}>
           <i className="fas fa-undo"></i> Back
         </button>{" "}
-        <button className="btn btn-primary" onClick={onSubmit} disabled={route.length < 2}>
+        <button
+          className="btn btn-primary"
+          onClick={onSubmit}
+          disabled={route.length < 2}
+        >
           <i className="fa fa-save"></i> Save route
         </button>
       </div>

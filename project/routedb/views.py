@@ -3,7 +3,6 @@ import os.path
 import re
 import time
 import urllib
-from django.db.models import Q
 
 import arrow
 from allauth.account import app_settings as allauth_settings
@@ -15,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from knox.models import AuthToken
@@ -154,17 +154,21 @@ class LatestRoutesList(generics.ListAPIView):
     serializer_class = LatestRouteListSerializer
 
     def get_queryset(self):
-        return Route.objects.filter(Q(athlete_id=self.request.user.id) | Q(is_private=False)).select_related("athlete")[:24]
-    
+        return Route.objects.filter(
+            Q(athlete_id=self.request.user.id) | Q(is_private=False)
+        ).select_related("athlete")[:24]
+
+
 class MapsList(generics.ListAPIView):
     serializer_class = MapListSerializer
-    
+
     def get_queryset(self):
         public_routes = Route.objects.filter(is_private=False)
         maps_id = set(public_routes.values_list("raster_map_id", flat=True))
         return RasterMap.objects.filter(pk__in=maps_id).prefetch_related(
             "route_set", "route_set__athlete"
         )
+
 
 class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserMainSerializer
@@ -241,7 +245,11 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         if self.request.method not in SAFE_METHODS:
             return super().get_queryset().filter(athlete_id=self.request.user.id)
-        return super().get_queryset().filter(Q(athlete_id=self.request.user.id) | Q(is_private=False))
+        return (
+            super()
+            .get_queryset()
+            .filter(Q(athlete_id=self.request.user.id) | Q(is_private=False))
+        )
 
     def destroy(self, request, *args, **kwargs):
         obj = self.get_object()
@@ -274,7 +282,9 @@ def map_download(request, uid, *args, **kwargs):
     show_route = request.GET.get("show_route", False)
     out_bounds = request.GET.get("out_bounds", False)
     route = get_object_or_404(
-        Route.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)).select_related("raster_map"),
+        Route.objects.filter(
+            Q(athlete_id=request.user.id) | Q(is_private=False)
+        ).select_related("raster_map"),
         uid=uid,
     )
     basename = f"{route.name}."
@@ -309,7 +319,9 @@ def map_download(request, uid, *args, **kwargs):
 @api_view(["GET"])
 def map_thumbnail(request, uid, *args, **kwargs):
     route = get_object_or_404(
-        Route.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)).select_related("raster_map"),
+        Route.objects.filter(
+            Q(athlete_id=request.user.id) | Q(is_private=False)
+        ).select_related("raster_map"),
         uid=uid,
     )
     image = route.raster_map.thumbnail
@@ -319,7 +331,9 @@ def map_thumbnail(request, uid, *args, **kwargs):
 @api_view(["GET"])
 def map_og_thumbnail(request, uid, *args, **kwargs):
     route = get_object_or_404(
-        Route.objects.filter(Q(athlete_id=request.user.id) | Q(is_private=False)).select_related("raster_map"),
+        Route.objects.filter(
+            Q(athlete_id=request.user.id) | Q(is_private=False)
+        ).select_related("raster_map"),
         uid=uid,
     )
     image = route.raster_map.og_thumbnail
@@ -415,7 +429,9 @@ def index_view(request):
 
 
 def route_view(request, route_id):
-    route = get_object_or_404(Route.objects.all().select_related("athlete"), uid=route_id)
+    route = get_object_or_404(
+        Route.objects.all().select_related("athlete"), uid=route_id
+    )
     return render(
         request, "frontend/route.html", {"route": route, "athlete": route.athlete}
     )

@@ -50,13 +50,13 @@ const UserView = ({ match, history }) => {
       setLoading(true);
       const headers = {};
       if (api_token) {
-        headers.Authorization = "Token " + api_token
+        headers.Authorization = "Token " + api_token;
       }
       const res = await fetch(
         process.env.REACT_APP_API_URL + "/v1/user/" + match.params.username,
         {
           credentials: "omit",
-          headers
+          headers,
         }
       );
       if (res.status === 200) {
@@ -72,16 +72,16 @@ const UserView = ({ match, history }) => {
 
   React.useEffect(() => {
     if (data?.username && match.params.username !== data?.username) {
-      let url = `/athletes/${data.username}`
+      let url = `/athletes/${data.username}`;
       if (match.params.year) {
-        url += `/${match.params.year}`
+        url += `/${match.params.year}`;
       } else if (match.params.date) {
-        url += `/${match.params.date}`
+        url += `/${match.params.date}`;
       }
-      history.push(url)
+      history.push(url);
     }
     // eslint-disable-next-line
-  }, [match.params.username, data?.username])
+  }, [match.params.username, data?.username]);
 
   React.useEffect(() => {
     if (match.params.date) {
@@ -334,7 +334,10 @@ const UserView = ({ match, history }) => {
                   <div className="card route-card">
                     <Link to={"/routes/" + r.id}>
                       <LazyImage
-                        src={r.map_thumbnail_url + (r.is_private ? ('?auth_token=' + api_token) : '')}
+                        src={
+                          r.map_thumbnail_url +
+                          (r.is_private ? "?auth_token=" + api_token : "")
+                        }
                         alt="map thumbnail"
                       ></LazyImage>
                     </Link>

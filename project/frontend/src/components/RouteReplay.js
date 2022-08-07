@@ -67,25 +67,28 @@ const RouteReplay = (props) => {
 
   useEffect(() => {
     if (mapDiv.current) {
-      resetOrientation(props.mapDataURL + (props.isPrivate ? '?auth_token=' + api_token : ''), function (imgDataURI, width, height) {
-        setMapImage({width, height});
-        const map = L.map("raster_map", {
-          crs: L.CRS.Simple,
-          minZoom: -5,
-          maxZoom: 2,
-          zoomSnap: 0,
-          scrollWheelZoom: false,
-          smoothWheelZoom: true,
-        });
-        setLeafletMap(map);
-        const bounds = [
-          map.unproject([0, 0]),
-          map.unproject([width, height]),
-        ];
-        new L.imageOverlay(imgDataURI, bounds).addTo(map);
-        map.fitBounds(bounds);
-        map.invalidateSize();
-      });
+      resetOrientation(
+        props.mapDataURL + (props.isPrivate ? "?auth_token=" + api_token : ""),
+        function (imgDataURI, width, height) {
+          setMapImage({ width, height });
+          const map = L.map("raster_map", {
+            crs: L.CRS.Simple,
+            minZoom: -5,
+            maxZoom: 2,
+            zoomSnap: 0,
+            scrollWheelZoom: false,
+            smoothWheelZoom: true,
+          });
+          setLeafletMap(map);
+          const bounds = [
+            map.unproject([0, 0]),
+            map.unproject([width, height]),
+          ];
+          new L.imageOverlay(imgDataURI, bounds).addTo(map);
+          map.fitBounds(bounds);
+          map.invalidateSize();
+        }
+      );
     }
   }, [props.mapDataURL, mapDiv, props.isPrivate, api_token]);
 

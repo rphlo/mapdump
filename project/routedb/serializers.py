@@ -1,10 +1,10 @@
 import base64
 from io import BytesIO
 
-from django.db.models import Q
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from PIL import Image
@@ -222,7 +222,7 @@ class RouteSerializer(serializers.ModelSerializer):
             athlete=user,
             raster_map=raster_map,
             name=validated_data["name"],
-            comment=validated_data["comment"],  
+            comment=validated_data["comment"],
         )
         if validated_data.get("start_time"):
             route.start_time = validated_data["start_time"]
@@ -254,7 +254,7 @@ class RouteSerializer(serializers.ModelSerializer):
             "map_size",
             "comment",
             "route_data",
-            "is_private"
+            "is_private",
         )
 
 
@@ -282,7 +282,7 @@ class UserRouteListSerializer(serializers.ModelSerializer):
             "duration",
             "country",
             "name",
-            "is_private"
+            "is_private",
         )
 
 
@@ -312,14 +312,14 @@ class LatestRouteListSerializer(serializers.ModelSerializer):
             "country",
             "name",
             "athlete",
-            "is_private"
+            "is_private",
         )
 
 
 class UserMainSerializer(serializers.ModelSerializer):
     # latest_routes = serializers.SerializerMethodField()
     # routes = UserRouteListSerializer(many=True)
-    routes = serializers.SerializerMethodField('get_public_or_own_routes')
+    routes = serializers.SerializerMethodField("get_public_or_own_routes")
 
     class Meta:
         model = User
@@ -327,12 +327,10 @@ class UserMainSerializer(serializers.ModelSerializer):
 
     def get_public_or_own_routes(self, obj):
         filters = Q(is_private=False)
-        if self.context.get('request'):
-            filters |= Q(athlete_id=self.context['request'].user.id)
+        if self.context.get("request"):
+            filters |= Q(athlete_id=self.context["request"].user.id)
         return UserRouteListSerializer(
-            instance=obj.routes.filter(filters),
-            many=True,
-            context=self.context
+            instance=obj.routes.filter(filters), many=True, context=self.context
         ).data
 
 
