@@ -3,6 +3,8 @@ import JSZip from "jszip";
 import { pdfjs as pdfjsLib } from "react-pdf";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import Swal from "sweetalert2";
+import FitParser from "fit-file-parser";
+
 import GPXDropzone from "./GPXDrop";
 import ImageDropzone from "./ImgDrop";
 import RouteDrawing from "./RouteDrawing";
@@ -20,8 +22,6 @@ import { parseTCXString } from "../utils/tcxParser";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const pkg = require("../../package.json");
-
 function NewMap() {
   const globalState = useGlobalState();
   const { username } = globalState.user;
@@ -33,11 +33,9 @@ function NewMap() {
   const [stravaDetails, setStravaDetails] = React.useState("");
 
   const setRoute = (newRoute) => {
-    window.drawmyroute.route = newRoute;
     _setRoute(newRoute);
   };
   const setMapDataURL = (newMapDataURL) => {
-    window.drawmyroute.mapDataURL = newMapDataURL;
     _setMapDataURL(newMapDataURL);
   };
 
@@ -46,9 +44,19 @@ function NewMap() {
     "image/gif": true,
     "image/png": true,
     "image/webp": true,
+    "image/avif": true,
   };
 
   const onRouteLoaded = (newRoute) => {
+    if (!newRoute?.length) {
+      Swal.fire({
+        title: "Error!",
+        text: "Error parsing your file! No GPS points detected!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
     setRoute(newRoute);
   };
 
@@ -73,7 +81,9 @@ function NewMap() {
     }
     for (let i = 0; i < parsedGpx.segments[0].length; i++) {
       const pos = parsedGpx.segments[0][i];
-      newRoute.push({ time: pos.time, latLon: [pos.loc[0], pos.loc[1]] });
+      if (pos.loc[0]) {
+        newRoute.push({ time: pos.time, latLon: [pos.loc[0], pos.loc[1]] });
+      }
     }
     onRouteLoaded(newRoute);
   };
@@ -91,10 +101,12 @@ function NewMap() {
     const newRoute = [];
     workout.laps.forEach((lap) => {
       lap.track.forEach((pos) => {
-        newRoute.push({
-          time: +pos.datetime,
-          latLon: [pos.latitude, pos.longitude],
-        });
+        if (pos.latitude) {
+          newRoute.push({
+            time: +pos.datetime,
+            latLon: [pos.latitude, pos.longitude],
+          });
+        }
       });
     });
     onRouteLoaded(newRoute);
@@ -114,6 +126,38 @@ function NewMap() {
     }
   };
 
+  const onFITLoaded = (e) => {
+    var fitParser = new FitParser({
+      force: true,
+      speedUnit: "km/h",
+      lengthUnit: "km",
+      temperatureUnit: "celsius",
+      elapsedRecordField: "timer_time",
+      mode: "list",
+    });
+    fitParser.parse(e.target.result, function (error, data) {
+      if (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Error parsing your FIT file!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        const newRoute = [];
+        data.records.forEach((rec) => {
+          if (rec.position_lat) {
+            newRoute.push({
+              time: +rec.timestamp,
+              latLon: [rec.position_lat, rec.position_long],
+            });
+          }
+        });
+        onRouteLoaded(newRoute);
+      }
+    });
+  };
+
   const onDropGPX = (acceptedFiles) => {
     if (!acceptedFiles.length) {
       return;
@@ -124,6 +168,10 @@ function NewMap() {
     const fr = new FileReader();
     if (filename.toLowerCase().endsWith(".tcx")) {
       fr.onload = onTCXLoaded;
+    } else if (filename.toLowerCase().endsWith(".fit")) {
+      fr.onload = onFITLoaded;
+      fr.readAsArrayBuffer(gpxFile);
+      return;
     } else {
       fr.onload = onGPXLoaded;
     }
@@ -180,7 +228,7 @@ function NewMap() {
         let mime = "";
         if (extension === "jpg") {
           mime = "image/jpeg";
-        } else if (["png", "gif", "jpeg"].includes(extension)) {
+        } else if (["png", "gif", "jpeg", "webp", "avif"].includes(extension)) {
           mime = "image/" + extension;
         }
         const imageDataURI =
@@ -289,7 +337,6 @@ function NewMap() {
         };
         var renderTask = page.render(renderContext);
         renderTask.promise.then(function () {
-          console.log("Page rendered");
           setMapDataURL(canvas.toDataURL("image/jpeg", 0.8));
         });
       });
@@ -417,7 +464,6 @@ function NewMap() {
               >
                 <i className="fas fa-pen"></i> Draw route manually
               </button>
-              <span style={{ color: "white" }}>v{pkg.version}</span>
             </>
           )}
           {(drawRoute || route) && !mapDataURL && (
@@ -436,6 +482,8 @@ function NewMap() {
                 onSet={onSetCornerCoords}
                 onUndo={onRemoveMap}
                 coordsCallback={onSetCornerCoords}
+                route={route}
+                mapDataURL={mapDataURL}
               />
             </>
           )}
@@ -444,6 +492,7 @@ function NewMap() {
               mapCornersCoords={mapCornersCoords}
               mapDataURL={mapDataURL}
               onRoute={setRoute}
+              onUndo={() => onRemoveMap()}
             />
           )}
         </div>

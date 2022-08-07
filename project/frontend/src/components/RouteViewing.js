@@ -4,11 +4,13 @@ import { saveAs } from "file-saver";
 import RouteHeader from "./RouteHeader";
 import ShareModal from "./ShareModal";
 import { saveKMZ } from "../utils/fileHelpers";
+import useGlobalState from "../utils/useGlobalState";
 
 const RouteViewing = (props) => {
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
   const [name, setName] = useState();
+  const [isPrivate, setIsPrivate] = useState(props.isPrivate);
   const [togglingRoute, setTogglingRoute] = useState();
   const [togglingHeader, setTogglingHeader] = useState();
   const [zoom, setZoom] = useState(100);
@@ -16,6 +18,9 @@ const RouteViewing = (props) => {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
   let finalImage = createRef();
+
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
 
   const loadCache = async (url) => {
     return new Promise((resolve, reject) => {
@@ -39,6 +44,9 @@ const RouteViewing = (props) => {
     if (includeRoute) {
       qp.set("show_route", "1");
     }
+    if (isPrivate) {
+      qp.set("auth_token", api_token);
+    }
     const url = props.mapDataURL + "?" + qp.toString();
     setImgURL(url);
   }, [
@@ -48,6 +56,8 @@ const RouteViewing = (props) => {
     props.modificationDate,
     togglingHeader,
     togglingRoute,
+    isPrivate,
+    api_token,
   ]);
 
   useEffect(() => {
@@ -93,7 +103,7 @@ const RouteViewing = (props) => {
   };
 
   const downloadKmz = (e) => {
-    fetch(props.mapDataURL)
+    fetch(props.mapDataURL + (isPrivate ? "?auth_token=" + api_token : ""))
       .then((r) => r.blob())
       .then((blob) => {
         const newCorners = getCorners(
@@ -108,7 +118,10 @@ const RouteViewing = (props) => {
   };
 
   const downloadGPX = (ev) => {
-    saveAs(props.gpx, name + ".gpx");
+    saveAs(
+      props.gpx + (isPrivate ? "?auth_token=" + api_token : ""),
+      name + ".gpx"
+    );
   };
 
   const toggleHeader = (ev) => {
@@ -151,6 +164,9 @@ const RouteViewing = (props) => {
       const qp = new URLSearchParams();
       qp.set("m", props.modificationDate);
       qp.set("show_header", "1");
+      if (isPrivate) {
+        qp.set("auth_token", api_token);
+      }
       const url = props.mapDataURL + "?" + qp.toString();
       await loadCache(url);
     }
@@ -178,15 +194,21 @@ const RouteViewing = (props) => {
   return (
     <>
       <div className="container main-container">
-        <RouteHeader {...props} onNameChanged={setName} />
+        <RouteHeader
+          {...props}
+          onNameChanged={setName}
+          onPrivacyChanged={setIsPrivate}
+        />
         <div>
-          <button
-            style={{ marginBottom: "5px" }}
-            className="btn btn-sm btn-warning"
-            onClick={share}
-          >
-            <i className="fas fa-share"></i> Share
-          </button>
+          {!isPrivate && (
+            <button
+              style={{ marginBottom: "5px" }}
+              className="btn btn-sm btn-warning"
+              onClick={share}
+            >
+              <i className="fas fa-share"></i> Share
+            </button>
+          )}
           <br />
           <button
             style={{ marginBottom: "5px" }}

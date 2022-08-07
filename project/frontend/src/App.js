@@ -59,12 +59,12 @@ function App() {
             }}
           >
             <h1 style={{ whiteSpace: "nowrap" }}>
-              <img
+              <span style={{display: "inline-block", backgroundColor: "#bbb", width: "60px", borderRadius: "50%"}}><img
                 src="/static/logo.svg"
                 alt="logo"
                 height="60px"
-                style={{ margin: "0 -10px 0 -14px" }}
-              />{" "}
+                style={{ margin: "0" }}
+              /></span>{" "}
               <small>Mapdump.com</small>
             </h1>
             <p style={{ padding: "0 0 30px 0", margin: "-10px 0 0 0" }}>

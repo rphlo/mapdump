@@ -1,9 +1,5 @@
-all: build-and-push
+all: build push
 	@echo "All done!"
-
-build-and-push:
-	make build
-	make push
 
 build:
 	docker build -t rphl/mapdump-dev-server:latest -f docker/django.dockerfile .

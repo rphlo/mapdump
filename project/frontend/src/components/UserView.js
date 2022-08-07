@@ -8,6 +8,7 @@ import "react-calendar-heatmap/dist/styles.css";
 import LazyImage from "./LazyImage";
 import NotFound from "./NotFound";
 import { printTime, printPace } from "../utils/drawHelpers";
+import useGlobalState from "../utils/useGlobalState";
 import {
   capitalizeFirstLetter,
   displayDate,
@@ -34,6 +35,9 @@ const UserView = ({ match, history }) => {
   const [years, setYears] = React.useState([]);
   const [selectedYear, setSelectedYear] = React.useState(false);
 
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
+
   React.useEffect(() => {
     ReactTooltip.rebuild();
   });
@@ -44,8 +48,16 @@ const UserView = ({ match, history }) => {
     }
     (async () => {
       setLoading(true);
+      const headers = {};
+      if (api_token) {
+        headers.Authorization = "Token " + api_token;
+      }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + "/v1/user/" + match.params.username
+        process.env.REACT_APP_API_URL + "/v1/user/" + match.params.username,
+        {
+          credentials: "omit",
+          headers,
+        }
       );
       if (res.status === 200) {
         const rawData = await res.json();
@@ -56,7 +68,20 @@ const UserView = ({ match, history }) => {
       }
       setLoading(false);
     })();
-  }, [match.params.username]);
+  }, [match.params.username, api_token]);
+
+  React.useEffect(() => {
+    if (data?.username && match.params.username !== data?.username) {
+      let url = `/athletes/${data.username}`;
+      if (match.params.year) {
+        url += `/${match.params.year}`;
+      } else if (match.params.date) {
+        url += `/${match.params.date}`;
+      }
+      history.push(url);
+    }
+    // eslint-disable-next-line
+  }, [match.params.username, data?.username]);
 
   React.useEffect(() => {
     if (match.params.date) {
@@ -241,10 +266,10 @@ const UserView = ({ match, history }) => {
               }
               values={calendarVal}
               classForValue={(value) => {
-                if (!value) {
+                if (!value?.count) {
                   return "color-empty";
                 }
-                return `color-github-${value.count}`;
+                return "color-github-1";
               }}
               tooltipDataAttrs={(value) => {
                 return {
@@ -309,7 +334,10 @@ const UserView = ({ match, history }) => {
                   <div className="card route-card">
                     <Link to={"/routes/" + r.id}>
                       <LazyImage
-                        src={r.map_thumbnail_url}
+                        src={
+                          r.map_thumbnail_url +
+                          (r.is_private ? "?auth_token=" + api_token : "")
+                        }
                         alt="map thumbnail"
                       ></LazyImage>
                     </Link>
@@ -338,7 +366,7 @@ const UserView = ({ match, history }) => {
                             borderLeft: "1px solid #B4B4B4",
                           }}
                         >
-                          <p className="card-text">
+                          <div className="card-text">
                             <div style={{ paddingLeft: "5px" }}>
                               <div
                                 style={{
@@ -439,7 +467,7 @@ const UserView = ({ match, history }) => {
                                 )}
                               </div>
                             </div>
-                          </p>
+                          </div>
                         </div>
                       </div>
                     </div>

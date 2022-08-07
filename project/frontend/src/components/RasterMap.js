@@ -2,11 +2,15 @@ import React from "react";
 import NotFound from "./NotFound";
 import RouteViewing from "./RouteViewing";
 import RouteReplay from "./RouteReplay";
+import useGlobalState from "../utils/useGlobalState";
 
 const RasterMap = ({ match, history }) => {
   const [found, setFound] = React.useState(null);
   const [data, setData] = React.useState();
   const [showPlayer, setShowPlayer] = React.useState(false);
+
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
 
   const transformMapBounds = (v) => {
     return {
@@ -36,8 +40,16 @@ const RasterMap = ({ match, history }) => {
 
   React.useEffect(() => {
     (async () => {
+      const headers = {};
+      if (api_token) {
+        headers.Authorization = "Token " + api_token;
+      }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + "/v1/route/" + match.params.uid
+        process.env.REACT_APP_API_URL + "/v1/route/" + match.params.uid,
+        {
+          credentials: "omit",
+          headers,
+        }
       );
       if (res.status === 200) {
         const rawData = await res.json();
@@ -57,13 +69,14 @@ const RasterMap = ({ match, history }) => {
           duration: rawData.duration,
           comment: rawData.comment,
           mapSize: rawData.map_size,
+          isPrivate: rawData.is_private,
         });
         setFound(true);
       } else if (res.status === 404) {
         setFound(false);
       }
     })();
-  }, [match.params.uid]);
+  }, [match.params.uid, api_token]);
 
   const togglePlayer = () => {
     setShowPlayer(!showPlayer);

@@ -7,6 +7,7 @@ import RouteHeader from "./RouteHeader";
 import ShareModal from "./ShareModal";
 import { Position, PositionArchive } from "../utils/positions";
 import { scaleImage } from "../utils/drawHelpers";
+import useGlobalState from "../utils/useGlobalState";
 
 const RouteReplay = (props) => {
   const [playing, setPlaying] = useState(false);
@@ -21,6 +22,9 @@ const RouteReplay = (props) => {
   const [playInterval, setPlayInterval] = useState(null);
   const [isPortrait, setIsPortrait] = useState(false);
   const mapDiv = useRef(null);
+
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
 
   const FPS = 15;
   const tailLength = 60;
@@ -43,7 +47,7 @@ const RouteReplay = (props) => {
         ctx.drawImage(img, 0, 0);
       }
       // export base64
-      callback(canvas.toDataURL("image/jpeg", 0.8));
+      callback(canvas.toDataURL("image/png"), width, height);
     };
     img.src = src;
   }
@@ -63,10 +67,10 @@ const RouteReplay = (props) => {
 
   useEffect(() => {
     if (mapDiv.current) {
-      resetOrientation(props.mapDataURL, function (imgDataURI) {
-        var img = new Image();
-        img.onload = function () {
-          setMapImage(this);
+      resetOrientation(
+        props.mapDataURL + (props.isPrivate ? "?auth_token=" + api_token : ""),
+        function (imgDataURI, width, height) {
+          setMapImage({ width, height });
           const map = L.map("raster_map", {
             crs: L.CRS.Simple,
             minZoom: -5,
@@ -78,16 +82,15 @@ const RouteReplay = (props) => {
           setLeafletMap(map);
           const bounds = [
             map.unproject([0, 0]),
-            map.unproject([this.width, this.height]),
+            map.unproject([width, height]),
           ];
-          new L.imageOverlay(this.src, bounds).addTo(map);
+          new L.imageOverlay(imgDataURI, bounds).addTo(map);
           map.fitBounds(bounds);
           map.invalidateSize();
-        };
-        img.src = imgDataURI;
-      });
+        }
+      );
     }
-  }, [props.mapDataURL, mapDiv]);
+  }, [props.mapDataURL, mapDiv, props.isPrivate, api_token]);
 
   useEffect(() => {
     const getCurrentTime = () => {

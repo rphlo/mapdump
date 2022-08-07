@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import LazyImage from "./LazyImage";
 import { printPace, printTime } from "../utils/drawHelpers";
+import useGlobalState from "../utils/useGlobalState";
 import {
   capitalizeFirstLetter,
   displayDate,
@@ -12,14 +13,25 @@ import {
 const LatestRoute = () => {
   const [routes, setRoutes] = React.useState(false);
 
+  const globalState = useGlobalState();
+  const { api_token } = globalState.user;
+
   React.useEffect(() => {
     (async () => {
+      const headers = {};
+      if (api_token) {
+        headers.Authorization = "Token " + api_token;
+      }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + "/v1/latest-routes/"
+        process.env.REACT_APP_API_URL + "/v1/latest-routes/",
+        {
+          credentials: "omit",
+          headers,
+        }
       );
       setRoutes(await res.json());
     })();
-  }, []);
+  }, [api_token]);
 
   return (
     <>
@@ -53,7 +65,10 @@ const LatestRoute = () => {
                   <div className="card route-card">
                     <Link to={"/routes/" + r.id}>
                       <LazyImage
-                        src={r.map_thumbnail_url}
+                        src={
+                          r.map_thumbnail_url +
+                          (r.is_private ? "?auth_token=" + api_token : "")
+                        }
                         alt="map thumbnail"
                       ></LazyImage>
                     </Link>
@@ -82,7 +97,7 @@ const LatestRoute = () => {
                             borderLeft: "1px solid #B4B4B4",
                           }}
                         >
-                          <p className="card-text">
+                          <div className="card-text">
                             <div style={{ paddingLeft: "5px" }}>
                               <div
                                 style={{
@@ -183,7 +198,7 @@ const LatestRoute = () => {
                                 )}
                               </div>
                             </div>
-                          </p>
+                          </div>
                         </div>
                       </div>
                     </div>

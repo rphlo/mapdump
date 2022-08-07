@@ -4,6 +4,7 @@ from io import BytesIO
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from PIL import Image
@@ -129,11 +130,12 @@ class RouteSerializer(serializers.ModelSerializer):
     athlete = UserInfoSerializer(read_only=True)
     country = serializers.ReadOnlyField()
     tz = serializers.ReadOnlyField()
-    start_time = serializers.ReadOnlyField()
     modification_date = serializers.ReadOnlyField()
     distance = serializers.ReadOnlyField()
     duration = serializers.ReadOnlyField()
     map_size = serializers.ReadOnlyField(source="raster_map.size")
+    start_time = serializers.DateTimeField(required=False)
+    is_private = serializers.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -175,6 +177,9 @@ class RouteSerializer(serializers.ModelSerializer):
             if data.get("raster_map"):
                 raise ValidationError("This method does not allow to update to map")
         else:  # Method is POST
+            if data.get("start_time"):
+                if data.get("route_data", {}).get("time", [None])[0]:
+                    raise ValidationError("Route data already include time")
             if not data.get("raster_map", {}).get("uid") and not data.get(
                 "raster_map", {}
             ).get("image"):
@@ -219,6 +224,10 @@ class RouteSerializer(serializers.ModelSerializer):
             name=validated_data["name"],
             comment=validated_data["comment"],
         )
+        if validated_data.get("start_time"):
+            route.start_time = validated_data["start_time"]
+        if validated_data.get("is_private"):
+            route.is_private = True
         route.route = validated_data["route"]
         route.prefetch_route_extras()
         route.save()
@@ -245,6 +254,7 @@ class RouteSerializer(serializers.ModelSerializer):
             "map_size",
             "comment",
             "route_data",
+            "is_private",
         )
 
 
@@ -272,6 +282,7 @@ class UserRouteListSerializer(serializers.ModelSerializer):
             "duration",
             "country",
             "name",
+            "is_private",
         )
 
 
@@ -301,19 +312,26 @@ class LatestRouteListSerializer(serializers.ModelSerializer):
             "country",
             "name",
             "athlete",
+            "is_private",
         )
 
 
 class UserMainSerializer(serializers.ModelSerializer):
     # latest_routes = serializers.SerializerMethodField()
-    routes = UserRouteListSerializer(many=True)
+    # routes = UserRouteListSerializer(many=True)
+    routes = serializers.SerializerMethodField("get_public_or_own_routes")
 
     class Meta:
         model = User
         fields = ("username", "first_name", "last_name", "routes")
 
-    # def get_latest_routes(self, obj):
-    #    return UserRouteListSerializer(instance=obj.routes.all()[:5], many=True, context=self.context).data
+    def get_public_or_own_routes(self, obj):
+        filters = Q(is_private=False)
+        if self.context.get("request"):
+            filters |= Q(athlete_id=self.context["request"].user.id)
+        return UserRouteListSerializer(
+            instance=obj.routes.filter(filters), many=True, context=self.context
+        ).data
 
 
 class EmailSerializer(serializers.ModelSerializer):

@@ -17,6 +17,7 @@ const RouteHeader = (props) => {
   const [comment, setComment] = useState();
   const [nameEditing, setNameEditing] = useState(false);
   const [commentEditing, setCommentEditing] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
   const [saving, setSaving] = useState(false);
   const inputRef = React.useRef(null);
   const commentInputRef = React.useRef(null);
@@ -31,6 +32,10 @@ const RouteHeader = (props) => {
     setComment(props.comment);
   }, [props.comment]);
 
+  useEffect(() => {
+    setIsPrivate(props.isPrivate);
+  }, [props.isPrivate]);
+
   const enableNameEditing = (ev) => {
     ev.preventDefault();
     if (canEdit()) {
@@ -42,6 +47,13 @@ const RouteHeader = (props) => {
     ev.preventDefault();
     if (canEdit()) {
       setCommentEditing(true);
+    }
+  };
+
+  const togglePrivacy = async (ev) => {
+    ev.preventDefault();
+    if (canEdit()) {
+      await putPrivacy(!isPrivate);
     }
   };
 
@@ -101,6 +113,38 @@ const RouteHeader = (props) => {
         });
       }
       props.onNameChanged && props.onNameChanged(newName);
+    } catch (e) {}
+  };
+  const putPrivacy = async (newPrivacy) => {
+    if (saving) {
+      return;
+    }
+    setIsPrivate(newPrivacy);
+    const tkn = api_token;
+    setSaving(true);
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_API_URL + "/v1/route/" + props.id,
+        {
+          method: "PATCH",
+          credentials: "omit",
+          headers: {
+            Authorization: "Token " + tkn,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ is_private: newPrivacy }),
+        }
+      );
+      setSaving(false);
+      if (response.status !== 200) {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+      props.onPrivacyChanged && props.onPrivacyChanged(newPrivacy);
     } catch (e) {}
   };
   const putComment = async (newComment) => {
@@ -303,6 +347,15 @@ const RouteHeader = (props) => {
                 onClick={enableCommentEditing}
               >
                 <i className="fa fa-pen"></i> Edit description
+              </a>
+              <a
+                className={"dropdown-item"}
+                href="/#"
+                onClick={togglePrivacy}
+                data-testid="togglePrivacyBtn"
+              >
+                <i className="fa fa-lock"></i>{" "}
+                {isPrivate ? "Make Public" : "Make Private"}
               </a>
               <div className="dropdown-divider"></div>
               <a className="dropdown-item" href="/#" onClick={deleteMap}>

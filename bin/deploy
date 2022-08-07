@@ -8,11 +8,11 @@ PREV_MD5SUM="$(md5sum project/requirements.txt)"
 git fetch
 git reset origin/master --hard
 source $BASEDIR/env/bin/activate
+project/manage.py migrate --noinput
 NEW_MD5SUM="$(md5sum project/requirements.txt)"
 if [ "$PREV_MD5SUM" != "$NEW_MD5SUM" ]
 then
   pip install -U -r project/requirements.txt
 fi
-project/manage.py migrate --noinput
 project/manage.py build_frontend
 ./bin/reload

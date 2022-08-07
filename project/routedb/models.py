@@ -266,7 +266,47 @@ class RasterMap(models.Model):
         img_out.save(up_buffer, "JPEG", quality=80)
         up_buffer.seek(0)
         data_out = up_buffer.read()
-        cache.set(cache_key, data_out, 31 * 24 * 3600)
+        try:
+            cache.set(cache_key, data_out, 31 * 24 * 3600)
+        except Exception:
+            pass
+        return data_out
+
+    @property
+    def og_thumbnail(self):
+        cache_key = f"map_{self.image.name}_og_thumb"
+        cached_thumb = cache.get(cache_key)
+        if cached_thumb:
+            return cached_thumb
+        orig = self.image.storage.open(self.image.name, "rb").read()
+        img = Image.open(BytesIO(orig))
+        if img.mode != "RGBA":
+            img = img.convert("RGB")
+        img = img.transform(
+            (1200, 630),
+            Image.QUAD,
+            (
+                int(self.width) / 2 - 300,
+                int(self.height) / 2 - 158,
+                int(self.width) / 2 - 300,
+                int(self.height) / 2 + 157,
+                int(self.width) / 2 + 300,
+                int(self.height) / 2 + 157,
+                int(self.width) / 2 + 300,
+                int(self.height) / 2 - 158,
+            ),
+        )
+        img_out = Image.new("RGB", img.size, (255, 255, 255, 0))
+        img_out.paste(img, (0, 0))
+        img.close()
+        up_buffer = BytesIO()
+        img_out.save(up_buffer, "JPEG", quality=80)
+        up_buffer.seek(0)
+        data_out = up_buffer.read()
+        try:
+            cache.set(cache_key, data_out, 31 * 24 * 3600)
+        except Exception:
+            pass
         return data_out
 
     @property
@@ -295,6 +335,7 @@ class Route(models.Model):
     )
     creation_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(auto_now=True)
+    is_private = models.BooleanField(default=False)
     athlete = models.ForeignKey(User, related_name="routes", on_delete=models.CASCADE)
     name = models.CharField(max_length=52)
     route_json = models.TextField()
@@ -359,7 +400,10 @@ class Route(models.Model):
             if not header.startswith("data"):
                 return None
             data = base64.b64decode(encoded)
-            cache.set(cache_key, data, 31 * 24 * 3600)
+            try:
+                cache.set(cache_key, data, 31 * 24 * 3600)
+            except Exception:
+                pass
             return data
         return None
 
@@ -417,6 +461,7 @@ class Route(models.Model):
     @property
     def gpx(self):
         gpx = gpxpy.gpx.GPX()
+        gpx.creator = "Mapdump.com"
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx.tracks.append(gpx_track)
 
