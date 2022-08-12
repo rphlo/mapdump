@@ -262,6 +262,7 @@ const RouteDrawing = (props) => {
                 });
               } catch {}
             }
+            setSaving(false)
             setSaved(res.id);
             window.location = "/routes/" + res.id;
           } else {
