@@ -150,6 +150,15 @@ const RouteDrawing = (props) => {
     img.src = dataURL;
   };
 
+
+  useEffect(() => {
+    if(saving) {
+      window.onbeforeunload = () => true
+    } else {
+      window.onbeforeunload = undefined
+    }
+  }, [saving])
+
   const onExport = async (makePrivate) => {
     if (saving || !username) {
       return;
