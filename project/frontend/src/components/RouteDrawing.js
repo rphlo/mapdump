@@ -1,5 +1,5 @@
 import React, { useEffect, useState, createRef } from "react";
-import { Prompt } from 'react-router'
+import NavigationPrompt from "react-router-navigation-prompt";
 import Swal from "sweetalert2";
 import { saveAs } from "file-saver";
 import * as Panelbear from "@panelbear/panelbear-js";
@@ -153,11 +153,12 @@ const RouteDrawing = (props) => {
 
 
   useEffect(() => {
-    if(saving) {
-      window.onbeforeunload = () => true
+    if (saving) {
+      window.onbeforeunload = () => true;
     } else {
-      window.onbeforeunload = undefined
+      window.onbeforeunload = undefined;
     }
+    window.mapdumpSaving = saving
   }, [saving])
 
   const onExport = async (makePrivate) => {
@@ -479,10 +480,44 @@ const RouteDrawing = (props) => {
         )}
       </div>
       <ReactTooltip place="top" />
-      <Prompt
+      <NavigationPrompt
+        history={props.history}
         when={saving}
-        message='You have unsaved changes, are you sure you want to leave?'
-      />
+        afterConfirm={() => {window.onbeforeunload = undefined;return true;}}
+      >{({ onConfirm, onCancel }) => (
+        <div
+          className="modal"
+          role="dialog"
+          style={{ display: "block", zIndex: 1e19 }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-body">
+                <h3>Saving is still in progress, Are you sure you want to leave the page?</h3>
+              </div>
+              <div
+                className="modal-footer"
+                style={{ display: "block", justifyContent: "initial" }}
+              >
+                <button
+                  className="btn btn-danger btn-default pull-left"
+                  data-dismiss="modal"
+                  onClick={() => onCancel()}
+                >
+                  <i className="fas fa-times"></i> Cancel
+                </button>
+                <button
+                  className="btn btn-primary btn-default pull-left"
+                  data-dismiss="modal"
+                  onClick={() => onConfirm()}
+                >
+                  <i className="fas fa-check"></i> Ok
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}</NavigationPrompt>
     </>
   );
 };
