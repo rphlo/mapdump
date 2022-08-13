@@ -493,7 +493,7 @@ const RouteDrawing = (props) => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-body">
-                <h3>Saving is still in progress, Are you sure you want to leave the page?</h3>
+                <h3>Saving is still in progress...<br/>Are you sure you want to leave the page?</h3>
               </div>
               <div
                 className="modal-footer"
