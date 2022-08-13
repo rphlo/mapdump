@@ -1,4 +1,5 @@
 import React, { useEffect, useState, createRef } from "react";
+import { Prompt } from 'react-router'
 import Swal from "sweetalert2";
 import { saveAs } from "file-saver";
 import * as Panelbear from "@panelbear/panelbear-js";
@@ -478,6 +479,10 @@ const RouteDrawing = (props) => {
         )}
       </div>
       <ReactTooltip place="top" />
+      <Prompt
+        when={saving}
+        message='You have unsaved changes, are you sure you want to leave?'
+      />
     </>
   );
 };
