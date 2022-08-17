@@ -16,11 +16,11 @@ from django.contrib.auth.signals import user_logged_in
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from knox.models import AuthToken
 from rest_framework import generics, parsers, status
 from rest_framework.decorators import api_view
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from routedb.models import RasterMap, Route, UserSettings
 from routedb.serializers import (
@@ -109,6 +109,27 @@ class LoginView(generics.CreateAPIView):
         _, token = AuthToken.objects.create(user)
         user_logged_in.send(sender=user.__class__, request=request, user=user)
         return Response({"username": user.username, "token": token})
+
+
+class ImpersonateView(generics.RetrieveAPIView):
+    """
+    Impersonate View
+    """
+
+    throttle_classes = ()
+    permission_classes = (IsAdminUser, )
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.JSONParser,
+    )
+    serializer_class = AuthTokenSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        username = self.kwargs.get('username')
+        user = get_object_or_404(User, username=username)
+        _, token = AuthToken.objects.create(user)
+        return redirect(f"/login-as?username={user.username}&token={token}")
 
 
 class EmailsView(generics.ListCreateAPIView):
