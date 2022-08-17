@@ -66,7 +66,7 @@ const Home = () => {
           )}
           {!username && (
              <div
-             className="col-12 col-md-4"
+             className="col-12 col-md-4 offset-md-4"
              style={{ marginBottom: "15px" }}
            >
              <div style={{ textAlign: "center",fontSize: "1.7em", fontWeight: "bold"}}>
