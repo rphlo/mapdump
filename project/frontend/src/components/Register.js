@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import useGlobalState from "../utils/useGlobalState";
 
 const Register = (props) => {
@@ -48,6 +49,9 @@ const Register = (props) => {
   };
   return (
     <div className="container main-container">
+      <Helmet>
+        <title>Sign Up | Mapdump.com</title>
+      </Helmet>
       {!registered && (
         <>
           <h1>

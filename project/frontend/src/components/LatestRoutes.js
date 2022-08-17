@@ -35,8 +35,8 @@ const LatestRoute = () => {
 
   return (
     <>
-      <h3>
-        Latest Routes{" "}
+      <h3 style={{ textAlign: "center" }}>
+        Latest Routes on Mapdump.com{" "}
         <a href={process.env.REACT_APP_API_URL + "/v1/latest-routes/feed/"}>
           <i className="fa fa-rss" title="RSS"></i>
         </a>

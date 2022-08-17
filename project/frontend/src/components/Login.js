@@ -73,6 +73,12 @@ const Login = () => {
     >
       {username && (
         <div style={{ textAlign: "right" }}>
+          <Link to="/new">
+            <button className="btn btn-secondary btn-sm">
+              <i className="fas fa-plus"></i> New Route
+            </button>
+          </Link>
+          &nbsp;
           <Link to="/settings">
             <button className="btn btn-primary btn-sm">
               <i className="fas fa-user-cog"></i> Settings
@@ -88,6 +94,7 @@ const Login = () => {
       {!username && (
         <div style={{ textAlign: "right" }}>
           <button
+            id="loginBtn"
             data-testid="loginBtn"
             onClick={() => setWantLogin(true)}
             className="btn btn-primary btn-sm"

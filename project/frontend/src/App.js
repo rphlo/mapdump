@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import RasterMap from "./components/RasterMap";
 import RasterMapRedirect from "./components/RasterMapRedirect";
+import LoginPage from "./components/LoginPage";
 import UserView from "./components/UserView";
 import NewMap from "./components/NewMap";
 import NotFound from "./components/NotFound";
@@ -94,6 +95,7 @@ function App() {
           <Route exact path="/map" component={BrowseMap} />
           <Route exact path="/tos" component={TOS} />
           <Route exact path="/privacy-policy" component={PrivacyPolicy} />
+          <Route exact path="/login" component={LoginPage} />
           <Route exact path="/sign-up" component={Register} />
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/password-reset" component={PasswordReset} />
