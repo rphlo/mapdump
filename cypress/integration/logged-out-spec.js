@@ -3,7 +3,7 @@ describe("The Home Page", function () {
     cy.visit("/");
     cy.wait(1000);
     cy.contains("Login");
-    cy.contains("Create New Route");
+    cy.contains("Test without Registering");
     cy.contains("No routes have been yet uploaded...");
   });
 });
