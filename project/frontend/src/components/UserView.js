@@ -206,7 +206,7 @@ const UserView = ({ match, history }) => {
           <div style={{ display: "flex", justifyContent: "flex-start" }}>
             <div style={{ marginRight: "15px" }}>
               <img
-                src={`/athletes/${data.username}.png`}
+                src={`${process.env.REACT_APP_AVATAR_ROOT}/athletes/${data.username}.png`}
                 alt="avatar"
                 style={{ borderRadius: "50%" }}
                 height="75px"
@@ -347,7 +347,7 @@ const UserView = ({ match, history }) => {
                           style={{ marginRight: "10px", textAlign: "center" }}
                         >
                           <img
-                            src={"/athletes/" + data.username + ".png"}
+                            src={process.env.REACT_APP_AVATAR_ROOT + "/athletes/" + data.username + ".png"}
                             alt="profile"
                             style={{ borderRadius: "50%", width: "40px" }}
                           ></img>

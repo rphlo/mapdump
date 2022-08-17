@@ -78,7 +78,7 @@ const LatestRoute = () => {
                           style={{ marginRight: "10px", textAlign: "center" }}
                         >
                           <img
-                            src={"/athletes/" + r.athlete.username + ".png"}
+                            src={process.env.REACT_APP_AVATAR_ROOT + "/athletes/" + r.athlete.username + ".png"}
                             alt="profile"
                             style={{ borderRadius: "50%", width: "40px" }}
                           ></img>

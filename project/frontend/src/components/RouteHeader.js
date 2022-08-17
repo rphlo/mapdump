@@ -227,7 +227,7 @@ const RouteHeader = (props) => {
         >
           <div style={{ marginRight: "10px", textAlign: "center" }}>
             <img
-              src={"/athletes/" + props.athlete.username + ".png"}
+              src={process.env.REACT_APP_AVATAR_ROOT + "/athletes/" + props.athlete.username + ".png"}
               alt="profile"
               style={{ borderRadius: "50%", width: "80px" }}
             ></img>

@@ -125,7 +125,7 @@ const Avatar = () => {
               <AvatarUploader
                 onImageChange={onAvatar}
                 size={150}
-                defaultImg={`/athletes/${_username}.png`}
+                defaultImg={`${process.env.REACT_APP_AVATAR_ROOT}/athletes/${_username}.png`}
                 currentImage={avatar}
                 fileType={"image/*"}
               ></AvatarUploader>

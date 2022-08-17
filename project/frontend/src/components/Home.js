@@ -42,27 +42,27 @@ const Home = () => {
       </Helmet>
       <div className="container" style={{ textAlign: "center" }}>
           {username && userData && (
-                <div
-                className="col-12 col-md-4"
-                style={{ marginBottom: "15px" }}
-              >
-                <div style={{ textAlign: "center"}}>
-                <div style={{ marginRight: "10px", textAlign: "center" }}>
-                  <img
-                    src={"/athletes/" + username + ".png"}
-                    alt="profile"
-                    style={{ borderRadius: "50%", width: "80px" }}
-                  ></img>
-                </div>
-                <Link to={"/athletes/" + username} style={{fontSize: "1.7em", fontWeight: "bold"}}>
-                  {capitalizeFirstLetter(userData.first_name)}{" "}
-                  {capitalizeFirstLetter(userData.last_name)}
-                </Link>
-                </div>
-                <hr/>
-                <div>
-                <Link to={"/athletes/" + username}>Your Activities</Link> - <Link to="/new">Upload New Route</Link><br/><Link to="/map">Browse Maps</Link></div>
+            <div
+              className="col-12 col-md-4 offset-md-4"
+              style={{ marginBottom: "15px", zIndex: 100}}
+            >
+              <div style={{ textAlign: "center"}}>
+              <div style={{ marginRight: "10px", textAlign: "center" }}>
+                <img
+                  src={process.env.REACT_APP_AVATAR_ROOT + "/athletes/" + username + ".png"}
+                  alt="profile"
+                  style={{ borderRadius: "50%", width: "80px" }}
+                ></img>
               </div>
+              <Link to={"/athletes/" + username} style={{color: "black", fontSize: "1.7em", fontWeight: "bold"}}>
+                {capitalizeFirstLetter(userData.first_name)}{" "}
+                {capitalizeFirstLetter(userData.last_name)}
+              </Link>
+              </div>
+              <hr/>
+              <div>
+              <Link to={"/athletes/" + username}>Your Activities</Link> - <Link to="/new">Upload New Route</Link><br/><Link to="/map">Browse Maps</Link></div>
+            </div>
           )}
           {!username && (
              <div
