@@ -19,7 +19,11 @@ from django.views.generic import TemplateView
 from routedb import views
 
 urlpatterns = [
-    re_path(r"admin/impersonate/(?P<username>[a-zA-Z0-9_-]+)/?$", views.ImpersonateView.as_view(), name="impersonate"),
+    re_path(
+        r"admin/impersonate/(?P<username>[a-zA-Z0-9_-]+)/?$",
+        views.ImpersonateView.as_view(),
+        name="impersonate",
+    ),
     path("admin/", admin.site.urls),
     path("drf-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("api/v1/", include("routedb.urls")),

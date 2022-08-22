@@ -41,16 +41,18 @@ const LoginPage = (props) => {
         <title>Login | Mapdump.com</title>
       </Helmet>
       <>
-        <h1><i className="fas fa-sign-in-alt"></i> Login</h1>
-        <hr/>
+        <h1>
+          <i className="fas fa-sign-in-alt"></i> Login
+        </h1>
+        <hr />
         {errors.non_field_errors &&
           errors.non_field_errors.map((e) => (
-          <div
-            className="alert alert-danger"
-            role="alert"
-            dangerouslySetInnerHTML={{ __html: e }}
-          ></div>
-        ))}
+            <div
+              className="alert alert-danger"
+              role="alert"
+              dangerouslySetInnerHTML={{ __html: e }}
+            ></div>
+          ))}
         <form onSubmit={onLogin}>
           <div className="form-group">
             <label htmlFor="username">
@@ -91,21 +93,12 @@ const LoginPage = (props) => {
           </button>
         </form>
       </>
-      <div
-        style={{ display: "block", justifyContent: "initial" }}
-      >
+      <div style={{ display: "block", justifyContent: "initial" }}>
         <div className="float-right">
           <p>
-            Not a member?{" "}
-            <Link to="/sign-up">
-              Sign Up
-            </Link>
+            Not a member? <Link to="/sign-up">Sign Up</Link>
             <br />
-            <Link
-              to="/password-reset"
-            >
-              Forgot Password?
-            </Link>
+            <Link to="/password-reset">Forgot Password?</Link>
           </p>
         </div>
       </div>

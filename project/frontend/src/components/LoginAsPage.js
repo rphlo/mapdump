@@ -7,9 +7,9 @@ const LoginAsPage = (props) => {
   React.useEffect(() => {
     (async () => {
       const qs = new URLSearchParams(window.location.search);
-      const api_token = qs.get('token');
+      const api_token = qs.get("token");
       if (api_token) {
-        console.log(api_token)
+        console.log(api_token);
         const res = await fetch(
           process.env.REACT_APP_API_URL + "/v1/auth/user/",
           {
@@ -24,16 +24,14 @@ const LoginAsPage = (props) => {
           const json = await res.json();
           globalState.setUser({ username: json.username, api_token });
         } else {
-          globalState.setUser(null);  
+          globalState.setUser(null);
         }
         props.history.push("/");
       }
     })();
   }, [props.history, globalState]);
 
-  return (
-    <div className="container main-container">Please wait...</div>
-  );
+  return <div className="container main-container">Please wait...</div>;
 };
 
 export default LoginAsPage;

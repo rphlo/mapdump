@@ -151,15 +151,14 @@ const RouteDrawing = (props) => {
     img.src = dataURL;
   };
 
-
   useEffect(() => {
     if (saving) {
       window.onbeforeunload = () => true;
     } else {
       window.onbeforeunload = undefined;
     }
-    window.mapdumpSaving = saving
-  }, [saving])
+    window.mapdumpSaving = saving;
+  }, [saving]);
 
   const onExport = async (makePrivate) => {
     if (saving || !username) {
@@ -264,7 +263,7 @@ const RouteDrawing = (props) => {
                 });
               } catch {}
             }
-            setSaving(false)
+            setSaving(false);
             setSaved(res.id);
             window.location = "/routes/" + res.id;
           } else {
@@ -483,41 +482,50 @@ const RouteDrawing = (props) => {
       <NavigationPrompt
         history={props.history}
         when={saving}
-        afterConfirm={() => {window.onbeforeunload = undefined;return true;}}
-      >{({ onConfirm, onCancel }) => (
-        <div
-          className="modal"
-          role="dialog"
-          style={{ display: "block", zIndex: 1e19 }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-body">
-                <h3>Saving is still in progress...<br/>Are you sure you want to leave the page?</h3>
-              </div>
-              <div
-                className="modal-footer"
-                style={{ display: "block", justifyContent: "initial" }}
-              >
-                <button
-                  className="btn btn-danger btn-default pull-left"
-                  data-dismiss="modal"
-                  onClick={() => onCancel()}
+        afterConfirm={() => {
+          window.onbeforeunload = undefined;
+          return true;
+        }}
+      >
+        {({ onConfirm, onCancel }) => (
+          <div
+            className="modal"
+            role="dialog"
+            style={{ display: "block", zIndex: 1e19 }}
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-body">
+                  <h3>
+                    Saving is still in progress...
+                    <br />
+                    Are you sure you want to leave the page?
+                  </h3>
+                </div>
+                <div
+                  className="modal-footer"
+                  style={{ display: "block", justifyContent: "initial" }}
                 >
-                  <i className="fas fa-times"></i> Cancel
-                </button>
-                <button
-                  className="btn btn-primary btn-default pull-left"
-                  data-dismiss="modal"
-                  onClick={() => onConfirm()}
-                >
-                  <i className="fas fa-check"></i> Ok
-                </button>
+                  <button
+                    className="btn btn-danger btn-default pull-left"
+                    data-dismiss="modal"
+                    onClick={() => onCancel()}
+                  >
+                    <i className="fas fa-times"></i> Cancel
+                  </button>
+                  <button
+                    className="btn btn-primary btn-default pull-left"
+                    data-dismiss="modal"
+                    onClick={() => onConfirm()}
+                  >
+                    <i className="fas fa-check"></i> Ok
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}</NavigationPrompt>
+        )}
+      </NavigationPrompt>
     </>
   );
 };
