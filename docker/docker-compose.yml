@@ -40,7 +40,7 @@ services:
       - "1025"
   django:
     container_name: md_django
-    image: rphl/mapdump-dev-server
+    image: rphlo/mapdump-dev-server
     stop_signal: SIGINT
     volumes:
       - ../:/app/:rw
