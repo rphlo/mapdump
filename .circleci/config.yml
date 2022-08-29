@@ -53,7 +53,7 @@ jobs:
     - run:
         name: Deploy
         command: |
-          ssh root@mapdump.com 'sudo -u apps /apps/mapdump/bin/deploy'
+          ssh rphlo@mapdump.com 'sudo -u apps /apps/mapdump/bin/deploy'
 
 workflows:
   version: 2
