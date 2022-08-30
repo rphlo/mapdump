@@ -84,10 +84,19 @@ const BrowseMap = () => {
   }, []);
 
   return (
-    <div className="container-fluid" style={{ margin: "-23px 0 0 0", padding: "0"}}>
+    <div
+      className="container-fluid"
+      style={{ margin: "-23px 0 0 0", padding: "0" }}
+    >
       <div
         id="map"
-        style={{ margin: "0 0 -30em 0", padding: "0px", height: "calc(100vh - 276px)", width: "100%", borderTop: "1px solid #b4b4b4"}}
+        style={{
+          margin: "0 0 -30em 0",
+          padding: "0px",
+          height: "calc(100vh - 276px)",
+          width: "100%",
+          borderTop: "1px solid #b4b4b4",
+        }}
       ></div>
     </div>
   );

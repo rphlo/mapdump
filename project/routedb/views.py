@@ -16,11 +16,11 @@ from django.contrib.auth.signals import user_logged_in
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from knox.models import AuthToken
 from rest_framework import generics, parsers, status
 from rest_framework.decorators import api_view
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import SAFE_METHODS, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from routedb.models import RasterMap, Route, UserSettings
 from routedb.serializers import (
@@ -117,7 +117,7 @@ class ImpersonateView(generics.RetrieveAPIView):
     """
 
     throttle_classes = ()
-    permission_classes = (IsAdminUser, )
+    permission_classes = (IsAdminUser,)
     parser_classes = (
         parsers.FormParser,
         parsers.MultiPartParser,
@@ -126,7 +126,7 @@ class ImpersonateView(generics.RetrieveAPIView):
     serializer_class = AuthTokenSerializer
 
     def retrieve(self, request, *args, **kwargs):
-        username = self.kwargs.get('username')
+        username = self.kwargs.get("username")
         user = get_object_or_404(User, username=username)
         _, token = AuthToken.objects.create(user)
         return redirect(f"/login-as?username={user.username}&token={token}")
