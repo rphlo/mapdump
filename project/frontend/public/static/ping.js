@@ -26,8 +26,8 @@
       if ("true" == w) return s("localStorage flag");
       var n = {};
       (n.n = t),
-        (n.u = e.u || r.href),
-        (n.d = e.d || o.getAttribute("data-domain")),
+        (n.u = (e && e.u) || r.href),
+        (n.d = (e && e.d) || o.getAttribute("data-domain")),
         (n.r = a.referrer || null),
         (n.w = window.innerWidth),
         e && e.meta && (n.m = JSON.stringify(e.meta)),
