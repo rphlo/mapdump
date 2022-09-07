@@ -23,7 +23,6 @@ import { GlobalStateProvider } from "./utils/useGlobalState";
 window.drawmyroute = {};
 
 function App() {
-
   const onClickHome = (e) => {
     if (window.location.pathname === "/") {
       e.preventDefault();

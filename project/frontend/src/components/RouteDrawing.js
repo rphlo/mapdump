@@ -36,7 +36,7 @@ const RouteDrawing = (props) => {
   const { username, api_token } = globalState.user;
 
   useEffect(() => {
-    window.plausible('Map Created');
+    window.plausible("Map Created");
   }, []);
 
   useEffect(() => {
