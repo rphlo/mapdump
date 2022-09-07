@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
-import * as Panelbear from "@panelbear/panelbear-js";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import RasterMap from "./components/RasterMap";
@@ -24,9 +23,6 @@ import { GlobalStateProvider } from "./utils/useGlobalState";
 window.drawmyroute = {};
 
 function App() {
-  useEffect(() => {
-    Panelbear.load(process.env.REACT_APP_PANELBEAR_ID);
-  }, []);
 
   const onClickHome = (e) => {
     if (window.location.pathname === "/") {
@@ -84,12 +80,7 @@ function App() {
           </Link>
         </div>
         <Login />
-        <Route
-          path="/"
-          render={() => {
-            Panelbear.trackPageview();
-          }}
-        />
+        <Route path="/" />
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/new" component={NewMap} />

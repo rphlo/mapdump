@@ -2,7 +2,6 @@ import React, { useEffect, useState, createRef } from "react";
 import NavigationPrompt from "react-router-navigation-prompt";
 import Swal from "sweetalert2";
 import { saveAs } from "file-saver";
-import * as Panelbear from "@panelbear/panelbear-js";
 import {
   drawRoute,
   drawOriginalMap,
@@ -37,7 +36,7 @@ const RouteDrawing = (props) => {
   const { username, api_token } = globalState.user;
 
   useEffect(() => {
-    Panelbear.track("map_generated");
+    window.plausible('Map Created');
   }, []);
 
   useEffect(() => {
