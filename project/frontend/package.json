@@ -13,7 +13,7 @@
     "file-saver": "^2.0.2",
     "fit-file-parser": "^1.9.3",
     "flag-icon-css": "^3.4.5",
-    "jszip": "^3.5.0",
+    "jszip": "^3.7.0",
     "leaflet": "^1.7.1",
     "luxon": "^1.25.0",
     "prop-types": "^15.8.1",
