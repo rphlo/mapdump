@@ -40,7 +40,7 @@ const Home = () => {
       <div className="container" style={{ textAlign: "center" }}>
         {username && userData && (
           <div
-            className="col-12 col-md-4 offset-md-4"
+            className="col-12 col-md-6 offset-md-3"
             style={{ marginBottom: "15px", zIndex: 100 }}
           >
             <div style={{ textAlign: "center" }}>
