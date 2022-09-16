@@ -29,7 +29,7 @@ const PathDrawing = (props) => {
 
   useEffect(() => {
     resetOrientation(props.mapDataURL, function (imgDataURI, width, height) {
-      setMapImage({width, height});
+      setMapImage({ width, height });
       const map = L.map("rasterMap", {
         crs: L.CRS.Simple,
         minZoom: -5,
