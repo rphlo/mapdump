@@ -87,7 +87,6 @@ const Home = () => {
                 textAlign: "center",
                 fontSize: "1.7em",
                 fontWeight: "bold",
-                whiteSpace: "nowrap",
               }}
             >
               You are not logged in...
