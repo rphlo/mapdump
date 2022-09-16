@@ -91,6 +91,7 @@ const Home = () => {
               }}
             >
               You are not logged in...
+              <br />
               <Link to={"/sign-up"}>
                 <button className="btn btn-primary btn-success">Sign Up</button>
               </Link>
