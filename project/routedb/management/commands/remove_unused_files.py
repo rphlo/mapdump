@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from utils.s3 import s3_delete_key
+from utils.s3 import get_s3_client, s3_delete_key
 
 
 class Command(BaseCommand):
@@ -24,6 +24,7 @@ class Command(BaseCommand):
                 yield key
 
     def handle(self, *args, **options):
+        self.s3 = get_s3_client()
         for filename in self.scan_map_directory():
             s3_delete_key(filename, settings.AWS_S3_BUCKET)
         self.stdout.write(self.style.SUCCESS("Done"))
