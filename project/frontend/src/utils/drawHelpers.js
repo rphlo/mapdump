@@ -1,6 +1,6 @@
 import {
-  Point,
   LatLon,
+  Point,
   cornerCalTransform,
   cornerBackTransform,
   getResolution,

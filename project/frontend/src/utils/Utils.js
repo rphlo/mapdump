@@ -9,26 +9,20 @@ const Point = (() => {
 })();
 
 const LatLon = (() => {
-  const p = "prototype",
-    m = Math,
-    mcos = m.cos,
-    msin = m.sin,
-    mpow = m.pow,
-    msqr = m.sqrt;
   function L(lat, lon) {
     this.lat = lat;
     this.lon = lon;
   }
-  L[p].distance = function (latlon) {
-    const C = m.PI / 180,
+  L.prototype.distance = function (latlon) {
+    const C = Math.PI / 180,
       dlat = this.lat - latlon.lat,
       dlon = this.lon - latlon.lon,
       a =
-        mpow(msin((C * dlat) / 2), 2) +
-        mcos(C * this.lat) *
-          mcos(C * latlon.lat) *
-          mpow(msin((C * dlon) / 2), 2);
-    return 12756274 * m.atan2(msqr(a), msqr(1 - a));
+        Math.pow(Math.sin((C * dlat) / 2), 2) +
+        Math.cos(C * this.lat) *
+          Math.cos(C * latlon.lat) *
+          Math.pow(Math.sin((C * dlon) / 2), 2);
+    return 12756274 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
   return L;
 })();
@@ -307,13 +301,13 @@ const displayDate = (date) => {
 
 const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 
-function getFlagEmoji(countryCode) {
+const getFlagEmoji = (countryCode) => {
   const codePoints = countryCode
     .toUpperCase()
     .split("")
     .map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
-}
+  return String.fromCodePoint(codePoints[0], codePoints[1]);
+};
 
 module.exports = {
   Point,
@@ -325,6 +319,6 @@ module.exports = {
   getResolution,
   capitalizeFirstLetter,
   displayDate,
-  getFlagEmoji,
   regionNames,
+  getFlagEmoji,
 };
