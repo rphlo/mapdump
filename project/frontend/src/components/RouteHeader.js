@@ -9,6 +9,7 @@ import {
   capitalizeFirstLetter,
   displayDate,
   regionNames,
+  getFlagEmoji,
 } from "../utils/Utils";
 import { LinkItUrl } from "react-linkify-it";
 
@@ -239,11 +240,11 @@ const RouteHeader = (props) => {
             <br />
             <span
               title={regionNames.of(props.country)}
-              className={
-                "fa-2x flag-icon flag-icon-" + props.country.toLowerCase()
-              }
+              className={"fa-2x"}
               style={{ marginTop: "15px" }}
-            ></span>
+            >
+              {getFlagEmoji(props.country)}
+            </span>
           </div>
           <div style={{ borderLeft: "1px solid #B4B4B4", width: "100%" }}>
             <h2>

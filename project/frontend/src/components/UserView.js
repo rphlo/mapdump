@@ -13,6 +13,7 @@ import {
   capitalizeFirstLetter,
   displayDate,
   regionNames,
+  getFlagEmoji,
 } from "../utils/Utils";
 
 const urls = [
@@ -307,11 +308,8 @@ const UserView = ({ match, history }) => {
           )}
           {getCountryStats()
             .map((c) => (
-              <span key={c.country}>
-                <span
-                  className={"flag-icon flag-icon-" + c.country.toLowerCase()}
-                ></span>{" "}
-                {c.count}
+              <span key={c.country} title={regionNames.of(c.country)}>
+                {getFlagEmoji(c.country)} {c.count}
               </span>
             ))
             .reduce((accu, elem, idx) => {
@@ -360,10 +358,9 @@ const UserView = ({ match, history }) => {
                           <span
                             title={regionNames.of(r.country)}
                             style={{ fontSize: "1.5em", margin: "5px" }}
-                            className={
-                              "flag-icon flag-icon-" + r.country.toLowerCase()
-                            }
-                          ></span>
+                          >
+                            {getFlagEmoji(r.country)}
+                          </span>
                         </div>
                         <div
                           style={{

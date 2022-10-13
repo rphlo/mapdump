@@ -8,6 +8,7 @@ import {
   capitalizeFirstLetter,
   displayDate,
   regionNames,
+  getFlagEmoji,
 } from "../utils/Utils";
 
 const LatestRoute = () => {
@@ -91,10 +92,9 @@ const LatestRoute = () => {
                           <span
                             title={regionNames.of(r.country)}
                             style={{ fontSize: "1.5em", margin: "5px" }}
-                            className={
-                              "flag-icon flag-icon-" + r.country.toLowerCase()
-                            }
-                          ></span>
+                          >
+                            {getFlagEmoji(r.country)}
+                          </span>
                         </div>
                         <div
                           style={{
