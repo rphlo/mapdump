@@ -79,10 +79,10 @@ const RouteDrawing = (props) => {
 
   const formatMapBounds = (b) => {
     return JSON.stringify({
-      top_left: [b.top_left.lat, b.top_left.lon],
-      top_right: [b.top_right.lat, b.top_right.lon],
-      bottom_right: [b.bottom_right.lat, b.bottom_right.lon],
-      bottom_left: [b.bottom_left.lat, b.bottom_left.lon],
+      top_left: [b.top_left.lat, b.top_left.lng],
+      top_right: [b.top_right.lat, b.top_right.lng],
+      bottom_right: [b.bottom_right.lat, b.bottom_right.lng],
+      bottom_left: [b.bottom_left.lat, b.bottom_left.lng],
     });
   };
   const formatRoute = (r) => {
@@ -98,19 +98,19 @@ const RouteDrawing = (props) => {
       "" +
       round5(corners_coords.top_left.lat) +
       separator +
-      round5(corners_coords.top_left.lon) +
+      round5(corners_coords.top_left.lng) +
       separator +
       round5(corners_coords.top_right.lat) +
       separator +
-      round5(corners_coords.top_right.lon) +
+      round5(corners_coords.top_right.lng) +
       separator +
       round5(corners_coords.bottom_right.lat) +
       separator +
-      round5(corners_coords.bottom_right.lon) +
+      round5(corners_coords.bottom_right.lng) +
       separator +
       round5(corners_coords.bottom_left.lat) +
       separator +
-      round5(corners_coords.bottom_left.lon)
+      round5(corners_coords.bottom_left.lng)
     );
   };
 

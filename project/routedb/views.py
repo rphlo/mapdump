@@ -38,6 +38,10 @@ from stravalib import Client as StravaClient
 from utils.s3 import s3_object_url
 
 
+def encode_filename(name):
+    return name.replace("\\", "_").replace('"', '\\"')
+
+
 def x_accel_redirect(request, path, filename="", mime="application/force-download"):
     if settings.DEBUG:
         import os.path
@@ -55,9 +59,12 @@ def x_accel_redirect(request, path, filename="", mime="application/force-downloa
         response["X-Accel-Buffering"] = "no"
         response["Accept-Ranges"] = "bytes"
     response["Content-Type"] = mime
-    response["Content-Disposition"] = 'attachment; filename="{}"'.format(
-        filename.replace("\\", "_").replace('"', '\\"')
-    )
+    if filename:
+        response[
+            "Content-Disposition"
+        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
+            "utf-8"
+        )
     return response
 
 
@@ -80,9 +87,11 @@ def serve_from_s3(
     response["Accept-Ranges"] = "bytes"
     response["Content-Type"] = mime
     if filename:
-        response["Content-Disposition"] = 'attachment; filename="{}"'.format(
-            filename.replace("\\", "_").replace('"', '\\"')
-        ).encode("utf-8")
+        response[
+            "Content-Disposition"
+        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
+            "utf-8"
+        )
     return response
 
 
@@ -314,17 +323,21 @@ def map_download(request, uid, *args, **kwargs):
         img = route.route_image(show_header, show_route)
         filename = f"{basename}{mime_type[6:]}"
         r = HttpResponse(img, content_type=mime_type)
-        r["Content-Disposition"] = 'attachment; filename="{}"'.format(
-            filename.replace("\\", "_").replace('"', '\\"')
-        ).encode("utf-8")
+        r[
+            "Content-Disposition"
+        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
+            "utf-8"
+        )
         return r
     elif out_bounds:
         img = route.route_image(False, False)
         filename = f"{basename}{mime_type[6:]}"
         r = HttpResponse(img, content_type=mime_type)
-        r["Content-Disposition"] = 'attachment; filename="{}"'.format(
-            filename.replace("\\", "_").replace('"', '\\"')
-        ).encode("utf-8")
+        r[
+            "Content-Disposition"
+        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
+            "utf-8"
+        )
         return r
     file_path = route.raster_map.path
     mime_type = route.raster_map.mime_type
@@ -369,8 +382,10 @@ def gpx_download(request, uid, *args, **kwargs):
     )
     gpx_data = route.gpx
     response = HttpResponse(gpx_data, content_type="application/gpx+xml")
-    response["Content-Disposition"] = 'attachment; filename="{}.gpx"'.format(
-        route.name.replace("\\", "_").replace('"', '\\"')
+    response[
+        "Content-Disposition"
+    ] = f'attachment; charset=utf-8; filename="{encode_filename(route.name)}"'.encode(
+        "utf-8"
     )
     return response
 

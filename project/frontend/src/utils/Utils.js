@@ -9,14 +9,14 @@ const Point = (() => {
 })();
 
 const LatLon = (() => {
-  function L(lat, lon) {
+  function L(lat, lng) {
     this.lat = lat;
-    this.lon = lon;
+    this.lng = lng;
   }
   L.prototype.distance = function (latlon) {
     const C = Math.PI / 180,
       dlat = this.lat - latlon.lat,
-      dlon = this.lon - latlon.lon,
+      dlon = this.lng - latlon.lng,
       a =
         Math.pow(Math.sin((C * dlat) / 2), 2) +
         Math.cos(C * this.lat) *
@@ -28,37 +28,41 @@ const LatLon = (() => {
 })();
 
 const SpheroidProjection = (() => {
-  const p = "prototype",
-    m = Math,
-    pi = m.PI,
-    _180 = 180.0,
+  const pi = Math.PI,
+    float180 = 180.0,
     rad = 6378137,
     originShift = pi * rad,
-    pi_180 = pi / _180;
+    piOver180 = pi / float180;
+
   function S() {}
-  S[p].LatLonToMeters = function (latlon) {
+
+  S.prototype.latlngToMeters = function (latlng) {
     return new Point(
-      latlon.lon * rad * pi_180,
-      m.log(m.tan(((90 + latlon.lat) * pi_180) / 2)) * rad
+      latlng.lng * rad * piOver180,
+      Math.log(Math.tan(((90 + latlng.lat) * piOver180) / 2)) * rad
     );
   };
-  S[p].MetersToLatLon = function (mxy) {
+
+  S.prototype.metersToLatLng = function (mxy) {
     return new LatLon(
-      (2 * m.atan(m.exp(mxy.y / rad)) - pi / 2) / pi_180,
-      mxy.x / rad / pi_180
+      (2 * Math.atan(Math.exp(mxy.y / rad)) - pi / 2) / piOver180,
+      mxy.x / rad / piOver180
     );
   };
-  S[p].resolution = function (zoom) {
-    return (2 * originShift) / (256 * m.pow(2, zoom));
+
+  S.prototype.resolution = function (zoom) {
+    return (2 * originShift) / (256 * Math.pow(2, zoom));
   };
-  S[p].zoomForPixelSize = function (pixelSize) {
+
+  S.prototype.zoomForPixelSize = function (pixelSize) {
     for (let i = 0; i < 30; i++) {
       if (pixelSize > this.resolution(i)) {
-        return m.max(i - 1, 0);
+        return Math.max(i - 1, 0);
       }
     }
   };
-  S[p].pixelsToMeters = function (px, py, zoom) {
+
+  S.prototype.pixelsToMeters = function (px, py, zoom) {
     const res = this.resolution(zoom),
       mx = px * res - originShift,
       my = py * res - originShift;
@@ -103,33 +107,18 @@ function multmv(m, v) {
     m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
   ];
 }
-function basisToPoints(x1, y1, x2, y2, x3, y3, x4, y4) {
-  var m = [x1, x2, x3, y1, y2, y3, 1, 1, 1];
-  var v = multmv(adj(m), [x4, y4, 1]);
+function basisToPoints(a, b, c, d) {
+  var m = [a.x, b.x, c.x, a.y, b.y, c.y, 1, 1, 1];
+  var v = multmv(adj(m), [d.x, d.y, 1]);
   return multmm(m, [v[0], 0, 0, 0, v[1], 0, 0, 0, v[2]]);
 }
-function general2DProjection(
-  x1s,
-  y1s,
-  x1d,
-  y1d,
-  x2s,
-  y2s,
-  x2d,
-  y2d,
-  x3s,
-  y3s,
-  x3d,
-  y3d,
-  x4s,
-  y4s,
-  x4d,
-  y4d
-) {
-  var s = basisToPoints(x1s, y1s, x2s, y2s, x3s, y3s, x4s, y4s);
-  var d = basisToPoints(x1d, y1d, x2d, y2d, x3d, y3d, x4d, y4d);
+
+function general2DProjection(as, ad, bs, bd, cs, cd, ds, dd) {
+  var s = basisToPoints(as, bs, cs, ds);
+  var d = basisToPoints(ad, bd, cd, dd);
   return multmm(d, adj(s));
 }
+
 function project(m, x, y) {
   var v = multmv(m, [x, y, 1]);
   return [v[0] / v[2], v[1] / v[2]];
@@ -138,37 +127,29 @@ function project(m, x, y) {
 function cornerCalTransform(
   width,
   height,
-  top_left_latlon,
-  top_right_latlon,
-  bottom_right_latlon,
-  bottom_left_latlon,
+  topLeftLatLng,
+  topRightLatLng,
+  bottomRightLatLng,
+  bottomLeftLatLng,
   hOffset = 0
 ) {
   var proj = new SpheroidProjection();
-  var top_left_meters = proj.LatLonToMeters(top_left_latlon);
-  var top_right_meters = proj.LatLonToMeters(top_right_latlon);
-  var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);
-  var bottom_left_meters = proj.LatLonToMeters(bottom_left_latlon);
+  var topLeftMeters = proj.latlngToMeters(topLeftLatLng);
+  var topRightMeters = proj.latlngToMeters(topRightLatLng);
+  var bottomRightMeters = proj.latlngToMeters(bottomRightLatLng);
+  var bottomLeftMeters = proj.latlngToMeters(bottomLeftLatLng);
   var matrix3d = general2DProjection(
-    top_left_meters.x,
-    top_left_meters.y,
-    0,
-    hOffset,
-    top_right_meters.x,
-    top_right_meters.y,
-    width,
-    hOffset,
-    bottom_right_meters.x,
-    bottom_right_meters.y,
-    width,
-    height + hOffset,
-    bottom_left_meters.x,
-    bottom_left_meters.y,
-    0,
-    height + hOffset
+    topLeftMeters,
+    new Point(0, hOffset),
+    topRightMeters,
+    new Point(width, hOffset),
+    bottomRightMeters,
+    new Point(width, height + hOffset),
+    bottomLeftMeters,
+    new Point(0, height + hOffset)
   );
   return function (latLon) {
-    var meters = proj.LatLonToMeters(latLon);
+    var meters = proj.latlngToMeters(latLon);
     var xy = project(matrix3d, meters.x, meters.y);
     return new Point(xy[0], xy[1]);
   };
@@ -177,33 +158,33 @@ function cornerCalTransform(
 function getResolution(
   width,
   height,
-  top_left_latlon,
-  top_right_latlon,
-  bottom_right_latlon,
-  bottom_left_latlon
+  topLeftLatLng,
+  topRightLatLng,
+  bottomRightLatLng,
+  bottomLeftLatLng
 ) {
   const transform = cornerCalTransform(
     width,
     height,
-    top_left_latlon,
-    top_right_latlon,
-    bottom_right_latlon,
-    bottom_left_latlon
+    topLeftLatLng,
+    topRightLatLng,
+    bottomRightLatLng,
+    bottomLeftLatLng
   );
-  const topLeftMapXY = transform(top_left_latlon);
-  const topRightMapXY = transform(top_right_latlon);
-  const bottomRightMapXY = transform(bottom_right_latlon);
-  const bottomLeftMapXY = transform(bottom_left_latlon);
+  const topLeftMapXY = transform(topLeftLatLng);
+  const topRightMapXY = transform(topRightLatLng);
+  const bottomRightMapXY = transform(bottomRightLatLng);
+  const bottomLeftMapXY = transform(bottomLeftLatLng);
   var proj = new SpheroidProjection();
-  var top_left_meters = proj.LatLonToMeters(top_left_latlon);
-  var top_right_meters = proj.LatLonToMeters(top_right_latlon);
-  var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);
-  var bottom_left_meters = proj.LatLonToMeters(bottom_left_latlon);
+  var topLeftMeters = proj.latlngToMeters(topLeftLatLng);
+  var topRightMeters = proj.latlngToMeters(topRightLatLng);
+  var bottomRightMeters = proj.latlngToMeters(bottomRightLatLng);
+  var bottomLeftMeters = proj.latlngToMeters(bottomLeftLatLng);
 
   const resA =
     Math.sqrt(
-      Math.pow(top_left_meters.x - bottom_right_meters.x, 2) +
-        Math.pow(top_left_meters.y - bottom_right_meters.y, 2)
+      Math.pow(topLeftMeters.x - bottomRightMeters.x, 2) +
+        Math.pow(topLeftMeters.y - bottomRightMeters.y, 2)
     ) /
     Math.sqrt(
       Math.pow(topLeftMapXY.x - bottomRightMapXY.x, 2) +
@@ -211,8 +192,8 @@ function getResolution(
     );
   const resB =
     Math.sqrt(
-      Math.pow(top_right_meters.x - bottom_left_meters.x, 2) +
-        Math.pow(top_right_meters.y - bottom_left_meters.y, 2)
+      Math.pow(topRightMeters.x - bottomLeftMeters.x, 2) +
+        Math.pow(topRightMeters.y - bottomLeftMeters.y, 2)
     ) /
     Math.sqrt(
       Math.pow(topRightMapXY.x - bottomLeftMapXY.x, 2) +
@@ -224,38 +205,30 @@ function getResolution(
 function cornerBackTransform(
   width,
   height,
-  top_left_latlon,
-  top_right_latlon,
-  bottom_right_latlon,
-  bottom_left_latlon,
+  topLeftLatLng,
+  topRightLatLng,
+  bottomRightLatLng,
+  bottomLeftLatLng,
   hOffset = 0
 ) {
   var proj = new SpheroidProjection();
-  var top_left_meters = proj.LatLonToMeters(top_left_latlon);
-  var top_right_meters = proj.LatLonToMeters(top_right_latlon);
-  var bottom_right_meters = proj.LatLonToMeters(bottom_right_latlon);
-  var bottom_left_meters = proj.LatLonToMeters(bottom_left_latlon);
+  var topLeftMeters = proj.latlngToMeters(topLeftLatLng);
+  var topRightMeters = proj.latlngToMeters(topRightLatLng);
+  var bottomRightMeters = proj.latlngToMeters(bottomRightLatLng);
+  var bottomLeftMeters = proj.latlngToMeters(bottomLeftLatLng);
   var matrix3d = general2DProjection(
-    0,
-    hOffset,
-    top_left_meters.x,
-    top_left_meters.y,
-    width,
-    hOffset,
-    top_right_meters.x,
-    top_right_meters.y,
-    width,
-    height + hOffset,
-    bottom_right_meters.x,
-    bottom_right_meters.y,
-    0,
-    height + hOffset,
-    bottom_left_meters.x,
-    bottom_left_meters.y
+    new Point(0, hOffset),
+    topLeftMeters,
+    new Point(width, hOffset),
+    topRightMeters,
+    new Point(width, height + hOffset),
+    bottomRightMeters,
+    new Point(0, height + hOffset),
+    bottomLeftMeters
   );
   return function (coords) {
     var xy = project(matrix3d, coords.x, coords.y);
-    return proj.MetersToLatLon(new Point(xy[0], xy[1]));
+    return proj.metersToLatLng(new Point(xy[0], xy[1]));
   };
 }
 

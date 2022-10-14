@@ -7,6 +7,7 @@ import {
   general2DProjection,
   SpheroidProjection,
   project,
+  Point,
 } from "../utils/Utils";
 
 const resetOrientation = (src, callback) => {
@@ -116,33 +117,24 @@ const CalibrationTool = (props) => {
   const [imgHeight, setImgHeight] = useState(0);
 
   function getCornerCoordinates() {
-    const xyA = [];
-    const xyB = [];
+    const RasterXY = [];
+    const WorldXY = [];
     const proj = new SpheroidProjection();
     for (let i = 0; i < markersRaster.length; i++) {
-      xyA[i] = mapRaster.project(markersRaster[i].getLatLng(), 0);
+      RasterXY[i] = mapRaster.project(markersRaster[i].getLatLng(), 0);
     }
     for (let i = 0; i < markersWorld.length; i++) {
-      const pt = markersWorld[i].getLatLng();
-      xyB[i] = proj.LatLonToMeters({ lat: pt.lat, lon: pt.lng });
+      WorldXY[i] = proj.latlngToMeters(markersWorld[i].getLatLng());
     }
     const matrix3d = general2DProjection(
-      xyA[0].x,
-      xyA[0].y,
-      xyB[0].x,
-      xyB[0].y,
-      xyA[1].x,
-      xyA[1].y,
-      xyB[1].x,
-      xyB[1].y,
-      xyA[2].x,
-      xyA[2].y,
-      xyB[2].x,
-      xyB[2].y,
-      xyA[3].x,
-      xyA[3].y,
-      xyB[3].x,
-      xyB[3].y
+      RasterXY[0],
+      WorldXY[0],
+      RasterXY[1],
+      WorldXY[1],
+      RasterXY[2],
+      WorldXY[2],
+      RasterXY[3],
+      WorldXY[3]
     );
     const corners = [
       project(matrix3d, 0, 0),
@@ -152,10 +144,9 @@ const CalibrationTool = (props) => {
     ];
     const cornersLatlng = [];
     for (let i = 0; i < corners.length; i++) {
-      cornersLatlng[i] = proj.MetersToLatLon({
-        x: corners[i][0],
-        y: corners[i][1],
-      });
+      cornersLatlng[i] = proj.metersToLatLng(
+        new Point(corners[i][0], corners[i][1])
+      );
     }
     return cornersLatlng;
   }

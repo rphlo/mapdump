@@ -81,7 +81,7 @@ const PathDrawing = (props) => {
     );
     const out = route.map((ll) => {
       const p = transform(new Point(ll.lng, -ll.lat));
-      return { latLon: [p.lat, p.lon] };
+      return { latLon: [p.lat, p.lng] };
     });
     props.onRoute(out);
   };

@@ -71,13 +71,13 @@ const RouteViewing = (props) => {
   const printCornersCoords = (corners_coords, separator) => {
     return [
       corners_coords.top_left.lat,
-      corners_coords.top_left.lon,
+      corners_coords.top_left.lng,
       corners_coords.top_right.lat,
-      corners_coords.top_right.lon,
+      corners_coords.top_right.lng,
       corners_coords.bottom_right.lat,
-      corners_coords.bottom_right.lon,
+      corners_coords.bottom_right.lng,
       corners_coords.bottom_left.lat,
-      corners_coords.bottom_left.lon,
+      corners_coords.bottom_left.lng,
     ]
       .map((c) => round5(c))
       .join(separator);

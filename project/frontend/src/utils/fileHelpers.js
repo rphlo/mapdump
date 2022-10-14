@@ -43,7 +43,7 @@ const getKml = (name, corners_coords) => {
         <altitudeMode>clampToGround</altitudeMode>
         <gx:LatLonQuad>
           <coordinates>
-            ${corners_coords.bottom_left.lon},${corners_coords.bottom_left.lat} ${corners_coords.bottom_right.lon},${corners_coords.bottom_right.lat} ${corners_coords.top_right.lon},${corners_coords.top_right.lat} ${corners_coords.top_left.lon},${corners_coords.top_left.lat}
+            ${corners_coords.bottom_left.lng},${corners_coords.bottom_left.lat} ${corners_coords.bottom_right.lng},${corners_coords.bottom_right.lat} ${corners_coords.top_right.lng},${corners_coords.top_right.lat} ${corners_coords.top_left.lng},${corners_coords.top_left.lat}
           </coordinates>
         </gx:LatLonQuad>
       </GroundOverlay>
