@@ -13,14 +13,14 @@ const LatLng = (() => {
     this.lat = lat;
     this.lng = lng;
   }
-  L.prototype.distance = function (latlon) {
+  L.prototype.distance = function (latlng) {
     const C = Math.PI / 180,
-      dlat = this.lat - latlon.lat,
-      dlon = this.lng - latlon.lng,
+      dlat = this.lat - latlng.lat,
+      dlon = this.lng - latlng.lng,
       a =
         Math.pow(Math.sin((C * dlat) / 2), 2) +
         Math.cos(C * this.lat) *
-          Math.cos(C * latlon.lat) *
+          Math.cos(C * latlng.lat) *
           Math.pow(Math.sin((C * dlon) / 2), 2);
     return 12756274 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
