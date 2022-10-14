@@ -4,6 +4,7 @@ import JSZip from "jszip";
 import useGlobalState from "../utils/useGlobalState";
 import { getCorners } from "../utils/drawHelpers";
 import { getKMZ } from "../utils/fileHelpers";
+import { LatLng } from "../utils/Utils";
 
 const DownloadOwnDataBtn = () => {
   const [dl, setDl] = React.useState(null);
@@ -14,22 +15,22 @@ const DownloadOwnDataBtn = () => {
 
   const transformMapBounds = (v) => {
     return {
-      top_left: {
-        lat: parseFloat(v.top_left[0]),
-        lon: parseFloat(v.top_left[1]),
-      },
-      top_right: {
-        lat: parseFloat(v.top_right[0]),
-        lon: parseFloat(v.top_right[1]),
-      },
-      bottom_right: {
-        lat: parseFloat(v.bottom_right[0]),
-        lon: parseFloat(v.bottom_right[1]),
-      },
-      bottom_left: {
-        lat: parseFloat(v.bottom_left[0]),
-        lon: parseFloat(v.bottom_left[1]),
-      },
+      top_left: new LatLng(
+        parseFloat(v.top_left[0]),
+        parseFloat(v.top_left[1])
+      ),
+      top_right: new LatLng(
+        parseFloat(v.top_right[0]),
+        parseFloat(v.top_right[1])
+      ),
+      bottom_right: new LatLng(
+        parseFloat(v.bottom_right[0]),
+        parseFloat(v.bottom_right[1])
+      ),
+      bottom_left: new LatLng(
+        parseFloat(v.bottom_left[0]),
+        parseFloat(v.bottom_left[1])
+      ),
     };
   };
 

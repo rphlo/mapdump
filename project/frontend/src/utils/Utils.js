@@ -8,7 +8,7 @@ const Point = (() => {
   return P;
 })();
 
-const LatLon = (() => {
+const LatLng = (() => {
   function L(lat, lng) {
     this.lat = lat;
     this.lng = lng;
@@ -44,7 +44,7 @@ const SpheroidProjection = (() => {
   };
 
   S.prototype.metersToLatLng = function (mxy) {
-    return new LatLon(
+    return new LatLng(
       (2 * Math.atan(Math.exp(mxy.y / rad)) - pi / 2) / piOver180,
       mxy.x / rad / piOver180
     );
@@ -284,7 +284,7 @@ const getFlagEmoji = (countryCode) => {
 
 module.exports = {
   Point,
-  LatLon,
+  LatLng,
   SpheroidProjection,
   cornerCalTransform,
   cornerBackTransform,

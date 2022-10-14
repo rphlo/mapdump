@@ -3,6 +3,7 @@ import NotFound from "./NotFound";
 import RouteViewing from "./RouteViewing";
 import RouteReplay from "./RouteReplay";
 import useGlobalState from "../utils/useGlobalState";
+import { LatLng } from "../utils/Utils";
 
 const RasterMap = ({ match, history }) => {
   const [found, setFound] = React.useState(null);
@@ -14,22 +15,22 @@ const RasterMap = ({ match, history }) => {
 
   const transformMapBounds = (v) => {
     return {
-      top_left: {
-        lat: parseFloat(v.top_left[0]),
-        lon: parseFloat(v.top_left[1]),
-      },
-      top_right: {
-        lat: parseFloat(v.top_right[0]),
-        lon: parseFloat(v.top_right[1]),
-      },
-      bottom_right: {
-        lat: parseFloat(v.bottom_right[0]),
-        lon: parseFloat(v.bottom_right[1]),
-      },
-      bottom_left: {
-        lat: parseFloat(v.bottom_left[0]),
-        lon: parseFloat(v.bottom_left[1]),
-      },
+      top_left: new LatLng(
+        parseFloat(v.top_left[0]),
+        parseFloat(v.top_left[1])
+      ),
+      top_right: new LatLng(
+        parseFloat(v.top_right[0]),
+        parseFloat(v.top_right[1])
+      ),
+      bottom_right: new LatLng(
+        parseFloat(v.bottom_right[0]),
+        parseFloat(v.bottom_right[1])
+      ),
+      bottom_left: new LatLng(
+        parseFloat(v.bottom_left[0]),
+        parseFloat(v.bottom_left[1])
+      ),
     };
   };
   const transformRoute = (v) => {

@@ -1,5 +1,5 @@
 import {
-  LatLon,
+  LatLng,
   Point,
   cornerCalTransform,
   cornerBackTransform,
@@ -16,8 +16,8 @@ const extractSpeed = (route) => {
     const partial = route.slice(minIdx, maxIdx);
     let d = 0;
     for (let j = 0; j < partial.length - 1; j++) {
-      const a = new LatLon(partial[j].latLon[0], partial[j].latLon[1]);
-      const b = new LatLon(partial[j + 1].latLon[0], partial[j + 1].latLon[1]);
+      const a = new LatLng(partial[j].latLon[0], partial[j].latLon[1]);
+      const b = new LatLng(partial[j + 1].latLon[0], partial[j + 1].latLon[1]);
       d += a.distance(b);
     }
     let speed = (d / (route[maxIdx].time - route[minIdx].time)) * 3600;
@@ -33,8 +33,8 @@ const extractSpeed = (route) => {
 const extractDistance = (route) => {
   let d = 0;
   for (let i = 0; i < route.length - 1; i++) {
-    const a = new LatLon(route[i].latLon[0], route[i].latLon[1]);
-    const b = new LatLon(route[i + 1].latLon[0], route[i + 1].latLon[1]);
+    const a = new LatLng(route[i].latLon[0], route[i].latLon[1]);
+    const b = new LatLng(route[i + 1].latLon[0], route[i + 1].latLon[1]);
     d += a.distance(b);
   }
   return d;
@@ -55,7 +55,7 @@ const extractBounds = function (img, corners_coords, route, hOffset = 0) {
   let minY = hOffset;
   let maxY = img.height + hOffset;
   for (let i = 0; i < route.length; i++) {
-    const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
+    const pt = transform(new LatLng(route[i].latLon[0], route[i].latLon[1]));
     minX = pt.x < minX ? pt.x : minX;
     maxX = pt.x > maxX ? pt.x : maxX;
     minY = pt.y < minY ? pt.y : minY;
@@ -261,7 +261,7 @@ export const drawRoute = (
     ctx3.beginPath();
     let prevPt = null;
     for (let i = 0; i < route.length; i++) {
-      const pt = transform(new LatLon(route[i].latLon[0], route[i].latLon[1]));
+      const pt = transform(new LatLng(route[i].latLon[0], route[i].latLon[1]));
       if (
         !prevPt ||
         Math.sqrt(
@@ -287,10 +287,10 @@ export const drawRoute = (
     let prevIdx = 0;
     for (let j = 1; j < route.length; j++) {
       const pointStart = transform(
-        new LatLon(route[prevIdx].latLon[0], route[prevIdx].latLon[1])
+        new LatLng(route[prevIdx].latLon[0], route[prevIdx].latLon[1])
       );
       const pointEnd = transform(
-        new LatLon(route[j].latLon[0], route[j].latLon[1])
+        new LatLng(route[j].latLon[0], route[j].latLon[1])
       );
       /*if (Math.sqrt(Math.pow(Math.round(pointEnd.x) - Math.round(pointStart.x), 2) + Math.pow(Math.round(pointEnd.y) - Math.round(pointStart.y), 2)) < 2) {
         continue;
@@ -330,7 +330,7 @@ export const drawRoute = (
       for (let j = 0; j < route.length; j++) {
         if (+route[j].time >= +prevT + 10e3) {
           const point = transform(
-            new LatLon(route[j].latLon[0], route[j].latLon[1])
+            new LatLng(route[j].latLon[0], route[j].latLon[1])
           );
           ctx3.beginPath();
           ctx3.arc(

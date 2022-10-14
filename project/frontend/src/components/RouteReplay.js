@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { LatLon, cornerCalTransform } from "../utils/Utils";
+import { LatLng, cornerCalTransform } from "../utils/Utils";
 import * as L from "leaflet";
 import Slider from "react-input-slider";
 import "../utils/Leaflet.SmoothWheelZoom";
@@ -121,7 +121,7 @@ const RouteReplay = (props) => {
       setLeafletMarker(null);
     } else if (currentPos && !isNaN(currentPos.coords.latitude)) {
       const pt = transform(
-        new LatLon(currentPos.coords.latitude, currentPos.coords.longitude)
+        new LatLng(currentPos.coords.latitude, currentPos.coords.longitude)
       );
       if (!leafletMarker) {
         var svgRect =
@@ -162,7 +162,7 @@ const RouteReplay = (props) => {
       tailPts.getArray().forEach(function (pos) {
         if (!isNaN(pos.coords.latitude)) {
           const pt = transform(
-            new LatLon(pos.coords.latitude, pos.coords.longitude)
+            new LatLng(pos.coords.latitude, pos.coords.longitude)
           );
           tailLatLng.push([-pt.y, pt.x]);
         }

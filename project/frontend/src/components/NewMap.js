@@ -17,7 +17,7 @@ import {
   extractCornersCoordsFromFilename,
   validateCornersCoords,
 } from "../utils/fileHelpers";
-import { LatLon } from "../utils/Utils";
+import { LatLng } from "../utils/Utils";
 import { parseTCXString } from "../utils/tcxParser";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
@@ -269,10 +269,10 @@ function NewMap() {
         return {
           name: nameEl,
           bounds: {
-            top_left: new LatLon(bounds[0][0], bounds[0][1]),
-            top_right: new LatLon(bounds[1][0], bounds[1][1]),
-            bottom_right: new LatLon(bounds[2][0], bounds[2][1]),
-            bottom_left: new LatLon(bounds[3][0], bounds[3][1]),
+            top_left: new LatLng(bounds[0][0], bounds[0][1]),
+            top_right: new LatLng(bounds[1][0], bounds[1][1]),
+            bottom_right: new LatLng(bounds[2][0], bounds[2][1]),
+            bottom_left: new LatLng(bounds[3][0], bounds[3][1]),
           },
           imageDataURI,
         };
@@ -359,10 +359,10 @@ function NewMap() {
           return parseFloat(c);
         });
         setMapCornersCoords({
-          top_left: new LatLon(c[0], c[1]),
-          top_right: new LatLon(c[2], c[3]),
-          bottom_right: new LatLon(c[4], c[5]),
-          bottom_left: new LatLon(c[6], c[7]),
+          top_left: new LatLng(c[0], c[1]),
+          top_right: new LatLng(c[2], c[3]),
+          bottom_right: new LatLng(c[4], c[5]),
+          bottom_left: new LatLng(c[6], c[7]),
         });
       }
     } else if (filename.toLowerCase().endsWith(".kmz")) {
@@ -386,10 +386,10 @@ function NewMap() {
         return parseFloat(c);
       });
       setMapCornersCoords({
-        top_left: new LatLon(c[0], c[1]),
-        top_right: new LatLon(c[2], c[3]),
-        bottom_right: new LatLon(c[4], c[5]),
-        bottom_left: new LatLon(c[6], c[7]),
+        top_left: new LatLng(c[0], c[1]),
+        top_right: new LatLng(c[2], c[3]),
+        bottom_right: new LatLng(c[4], c[5]),
+        bottom_left: new LatLng(c[6], c[7]),
       });
     }
   };
