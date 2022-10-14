@@ -72,6 +72,7 @@ const CornersCoordsInput = (props) => {
               e.preventDefault();
               setCalibrationToolOpen(true);
             }}
+            data-testid="to-calib-tool-link"
           >
             Use online calibration tool
           </Link>

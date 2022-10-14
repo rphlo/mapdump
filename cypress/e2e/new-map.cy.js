@@ -144,4 +144,58 @@ describe("Create a new map", function () {
       });
     });
   });
+  it("successfully create a new map with calibration tool", function () {
+    cy.visit("/new");
+    const fileName = "Jukola_1st_leg.gpx";
+    cy.fixture(fileName).then((fileContent) => {
+      cy.get('[data-testid="dropzone"]').attachFile(
+        {
+          fileContent,
+          fileName,
+          mimeType: "application/xml",
+          encoding: "utf-8",
+        },
+        {
+          subjectType: "drag-n-drop",
+          force: true,
+          events: ["dragenter", "drop"],
+        }
+      );
+      cy.contains("Map Image File");
+      const mapFileName =
+        "Jukola_1st_leg_blank_61.45075_24.18994_61.44656_24.24721_61.42094_24.23851_61.42533_24.18156_.jpg";
+      cy.fixture(mapFileName, "base64").then((mapFileContent) => {
+        cy.get('[data-testid="dropzoneImg"]').attachFile(
+          {
+            fileContent: mapFileContent,
+            fileName: "Jukola_1st_leg_blank.jpg",
+            mimeType: "image/png",
+            encoding: "base64",
+          },
+          { subjectType: "drag-n-drop", events: ["dragenter", "drop"] }
+        );
+        cy.contains("Calibration");
+        cy.contains("Corners Coordinates");
+        cy.get('[data-testid="to-calib-tool-link"]').click();
+        cy.get("#mapRaster")
+          .click(10, 10)
+          .click(200, 10)
+          .click(200, 200)
+          .click(10, 200);
+        cy.get("#mapWorld")
+          .click(10, 10)
+          .click(200, 10)
+          .click(200, 200)
+          .click(10, 200);
+        cy.get('[data-testid="to-validation"]').click();
+        cy.get('[data-testid="validate-button"]').click();
+        cy.get('input[data-testid="nameInput"]').should(
+          "have.value",
+          "Jukola_1st_leg"
+        );
+        cy.contains("JPEG");
+        cy.get(".final-image");
+      });
+    });
+  });
 });

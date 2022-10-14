@@ -315,6 +315,7 @@ const CalibrationTool = (props) => {
             &nbsp;
             <button
               className="btn btn-primary"
+              data-testid="to-validation"
               disabled={!isReady}
               onClick={() => setPreviewOpen(true)}
             >
