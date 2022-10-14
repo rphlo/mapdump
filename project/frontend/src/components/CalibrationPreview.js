@@ -64,7 +64,7 @@ function round5(x) {
 function getCalibrationString(c) {
   var parts = [];
   for (var i = 0; i < c.length; i++) {
-    parts.push(round5(c[i].lat) + "," + round5(c[i].lng));
+    parts.push(round5(c[i].lat) + "," + round5(c[i].lon));
   }
   return parts.join(",");
 }

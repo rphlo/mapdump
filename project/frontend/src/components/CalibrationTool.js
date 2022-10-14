@@ -123,7 +123,8 @@ const CalibrationTool = (props) => {
       xyA[i] = mapRaster.project(markersRaster[i].getLatLng(), 0);
     }
     for (let i = 0; i < markersWorld.length; i++) {
-      xyB[i] = proj.latlngToMeters(markersWorld[i].getLatLng());
+      const pt = markersWorld[i].getLatLng();
+      xyB[i] = proj.LatLonToMeters({ lat: pt.lat, lon: pt.lng });
     }
     const matrix3d = general2DProjection(
       xyA[0].x,
@@ -151,7 +152,7 @@ const CalibrationTool = (props) => {
     ];
     const cornersLatlng = [];
     for (let i = 0; i < corners.length; i++) {
-      cornersLatlng[i] = proj.metersToLatlng({
+      cornersLatlng[i] = proj.MetersToLatLon({
         x: corners[i][0],
         y: corners[i][1],
       });

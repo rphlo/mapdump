@@ -316,6 +316,8 @@ module.exports = {
   cornerCalTransform,
   cornerBackTransform,
   dataURItoBlob,
+  general2DProjection,
+  project,
   getResolution,
   capitalizeFirstLetter,
   displayDate,
