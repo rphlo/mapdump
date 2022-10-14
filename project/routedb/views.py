@@ -384,7 +384,7 @@ def gpx_download(request, uid, *args, **kwargs):
     response = HttpResponse(gpx_data, content_type="application/gpx+xml")
     response[
         "Content-Disposition"
-    ] = f'attachment; charset=utf-8; filename="{encode_filename(route.name)}"'.encode(
+    ] = f'attachment; charset=utf-8; filename="{encode_filename(route.name)}.gpx"'.encode(
         "utf-8"
     )
     return response
