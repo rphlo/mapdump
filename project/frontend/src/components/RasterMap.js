@@ -33,9 +33,10 @@ const RasterMap = ({ match, history }) => {
       ),
     };
   };
+
   const transformRoute = (v) => {
     return v.map((p) => {
-      return { time: p.time * 1e3, latLon: p.latlon.slice() };
+      return { time: p.time * 1e3, latlng: p.latlon.slice() };
     });
   };
 

@@ -223,7 +223,7 @@ const CalibrationTool = (props) => {
       scrollWheelZoom: false,
       smoothWheelZoom: true,
     });
-    const latlngs = routeData.map((pt) => [pt.latLon[0], pt.latLon[1]]);
+    const latlngs = routeData.map((pt) => pt.latlng.slice(0, 2));
     const polyline = L.polyline(latlngs, { color: "red" }).addTo(tmpMapWorld);
     if (routeData.length > 1) {
       tmpMapWorld.fitBounds(polyline.getBounds());

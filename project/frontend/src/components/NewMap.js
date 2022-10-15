@@ -82,7 +82,7 @@ function NewMap() {
     for (let i = 0; i < parsedGpx.segments[0].length; i++) {
       const pos = parsedGpx.segments[0][i];
       if (pos.loc[0]) {
-        newRoute.push({ time: pos.time, latLon: [pos.loc[0], pos.loc[1]] });
+        newRoute.push({ time: pos.time, latlng: pos.loc.slice(0, 2) });
       }
     }
     onRouteLoaded(newRoute);
@@ -104,7 +104,7 @@ function NewMap() {
         if (pos.latitude) {
           newRoute.push({
             time: +pos.datetime,
-            latLon: [pos.latitude, pos.longitude],
+            latlng: [pos.latitude, pos.longitude],
           });
         }
       });
@@ -149,7 +149,7 @@ function NewMap() {
           if (rec.position_lat) {
             newRoute.push({
               time: +rec.timestamp,
-              latLon: [rec.position_lat, rec.position_long],
+              latlng: [rec.position_lat, rec.position_long],
             });
           }
         });

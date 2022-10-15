@@ -122,7 +122,7 @@ const Settings = (props) => {
       const startTime = +new Date(a.start_date);
       const route = [];
       latlngs.forEach((pos, i) => {
-        route.push({ time: startTime + ~~times[i] * 1e3, latLon: pos });
+        route.push({ time: startTime + ~~times[i] * 1e3, latlng: pos });
       });
       props.onRouteDownloaded(a.name, route, {
         client,

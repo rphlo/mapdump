@@ -80,8 +80,7 @@ const PathDrawing = (props) => {
       props.mapCornersCoords.bottom_left
     );
     const out = route.map((ll) => {
-      const p = transform(new Point(ll.lng, -ll.lat));
-      return { latLon: [p.lat, p.lng] };
+      return { latlng: transform(new Point(ll.lng, -ll.lat)) };
     });
     props.onRoute(out);
   };

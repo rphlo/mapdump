@@ -58,7 +58,7 @@ const RouteReplay = (props) => {
       arch.add(
         new Position({
           timestamp: p.time,
-          coords: { latitude: p.latLon[0], longitude: p.latLon[1] },
+          coords: { latitude: p.latlng[0], longitude: p.latlng[1] },
         })
       )
     );

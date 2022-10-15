@@ -88,7 +88,7 @@ const RouteDrawing = (props) => {
   const formatRoute = (r) => {
     return JSON.stringify(
       r.map((p) => {
-        return { time: +p.time / 1e3, latlon: p.latLon };
+        return { time: +p.time / 1e3, latlon: p.latlng };
       })
     );
   };

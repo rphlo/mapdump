@@ -90,7 +90,7 @@ const CalibrationPreview = (props) => {
       opacity: 0.7,
     });
     transformedImage.addTo(tmpMapPreview);
-    const latlngs = routeData.map((pt) => [pt.latLon[0], pt.latLon[1]]);
+    const latlngs = routeData.map((pt) => pt.latlng.slice(0, 2));
     L.polyline(latlngs, { color: "red" }).addTo(tmpMapPreview);
 
     const baseLayers = {};

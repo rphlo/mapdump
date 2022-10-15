@@ -148,8 +148,8 @@ function cornerCalTransform(
     bottomLeftMeters,
     new Point(0, height + hOffset)
   );
-  return function (latLon) {
-    var meters = proj.latlngToMeters(latLon);
+  return function (latlng) {
+    var meters = proj.latlngToMeters(latlng);
     var xy = project(matrix3d, meters.x, meters.y);
     return new Point(xy[0], xy[1]);
   };
