@@ -107,9 +107,16 @@ const CalibrationPreview = (props) => {
     baseLayers["Topo World (ArcGIS)"] = new L.TileLayer["world-topo-alt"]();
 
     tmpMapPreview.addLayer(defaultLayer);
-    tmpMapPreview.addControl(
-      new L.Control.Layers(baseLayers, { Map: transformedImage })
-    );
+
+    const controlLayers = new L.Control.Layers(baseLayers, {
+      Map: transformedImage,
+    });
+    tmpMapPreview.addControl(controlLayers);
+    if (L.Browser.touch && L.Browser.mobile) {
+      tmpMapPreview.on("baselayerchange", function (e) {
+        controlLayers.collapse();
+      });
+    }
     setMapPreview(tmpMapPreview);
     // eslint-disable-next-line
   }, []);

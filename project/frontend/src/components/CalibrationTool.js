@@ -245,7 +245,13 @@ const CalibrationTool = (props) => {
     baseLayers["Topo World (ArcGIS)"] = new L.TileLayer["world-topo-alt"]();
 
     tmpMapWorld.addLayer(defaultLayer);
-    tmpMapWorld.addControl(new L.Control.Layers(baseLayers));
+    const controlLayers = new L.Control.Layers(baseLayers);
+    tmpMapWorld.addControl(controlLayers);
+    if (L.Browser.touch && L.Browser.mobile) {
+      tmpMapWorld.on("baselayerchange", function (e) {
+        controlLayers.collapse();
+      });
+    }
     setMapWorld(tmpMapWorld);
     // eslint-disable-next-line
   }, []);
