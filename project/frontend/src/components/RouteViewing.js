@@ -223,6 +223,7 @@ const RouteViewing = (props) => {
             style={{ marginBottom: "5px" }}
             className="btn btn-sm btn-success"
             onClick={downloadKmz}
+            data-testid="dl-kmz"
           >
             <i className="fas fa-download"></i> KMZ (Map)
           </button>

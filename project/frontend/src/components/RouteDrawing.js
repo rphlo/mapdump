@@ -381,6 +381,7 @@ const RouteDrawing = (props) => {
           <button
             style={{ marginBottom: "5px" }}
             className="btn btn-sm btn-success"
+            data-testid="dl-kmz"
             onClick={downloadKmz}
           >
             <i className="fas fa-download"></i> KMZ (Map)

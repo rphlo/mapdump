@@ -151,7 +151,7 @@ describe("Create a new map", function () {
       cy.get('[data-testid="dropzone"]').attachFile(
         {
           fileContent,
-          fileName,
+          fileName: "🌓 Jukola 1st Leg.gpx",
           mimeType: "application/xml",
           encoding: "utf-8",
         },
@@ -191,10 +191,12 @@ describe("Create a new map", function () {
         cy.get('[data-testid="validate-button"]').click();
         cy.get('input[data-testid="nameInput"]').should(
           "have.value",
-          "Jukola_1st_leg"
+          "🌓 Jukola 1st Leg"
         );
         cy.contains("JPEG");
         cy.get(".final-image");
+        cy.get('[data-testid="dl-kmz"]').click();
+        cy.verifyDownload("🌓 Jukola 1st Leg_blank.kmz");
       });
     });
   });
