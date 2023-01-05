@@ -71,8 +71,7 @@ const SpheroidProjection = (() => {
   return S;
 })();
 
-function adj(m) {
-  // Compute the adjugate of m
+function adjugateMatrix(m) {
   return [
     m[4] * m[8] - m[5] * m[7],
     m[2] * m[7] - m[1] * m[8],
@@ -85,8 +84,8 @@ function adj(m) {
     m[0] * m[4] - m[1] * m[3],
   ];
 }
-function multmm(a, b) {
-  // multiply two matrices
+
+function multiplyMatrices(a, b) {
   var c = Array(9);
   for (var i = 0; i !== 3; ++i) {
     for (var j = 0; j !== 3; ++j) {
@@ -99,29 +98,39 @@ function multmm(a, b) {
   }
   return c;
 }
-function multmv(m, v) {
-  // multiply matrix and vector
+
+function multiplyMatrixByVector(m, v) {
   return [
     m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
     m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
     m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
   ];
 }
+
 function basisToPoints(a, b, c, d) {
   var m = [a.x, b.x, c.x, a.y, b.y, c.y, 1, 1, 1];
-  var v = multmv(adj(m), [d.x, d.y, 1]);
-  return multmm(m, [v[0], 0, 0, 0, v[1], 0, 0, 0, v[2]]);
+  var v = multiplyMatrixByVector(adjugateMatrix(m), [d.x, d.y, 1]);
+  return multiplyMatrices(m, [v[0], 0, 0, 0, v[1], 0, 0, 0, v[2]]);
 }
 
-function general2DProjection(as, ad, bs, bd, cs, cd, ds, dd) {
-  var s = basisToPoints(as, bs, cs, ds);
-  var d = basisToPoints(ad, bd, cd, dd);
-  return multmm(d, adj(s));
+function general2DProjection(
+  pt1RefA,
+  pt1RefB,
+  pt2RefA,
+  pt2RefB,
+  pt3RefA,
+  pt3RefB,
+  pt4RefA,
+  pt4RefB
+) {
+  var refAMatrix = basisToPoints(pt1RefA, pt2RefA, pt3RefA, pt4RefA);
+  var refBMatrix = basisToPoints(pt1RefB, pt2RefB, pt3RefB, pt4RefB);
+  return multiplyMatrices(refBMatrix, adjugateMatrix(refAMatrix));
 }
 
-function project(m, x, y) {
-  var v = multmv(m, [x, y, 1]);
-  return [v[0] / v[2], v[1] / v[2]];
+function project(matrix, x, y) {
+  var val = multiplyMatrixByVector(matrix, [x, y, 1]);
+  return [val[0] / val[2], val[1] / val[2]];
 }
 
 function cornerCalTransform(
