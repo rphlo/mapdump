@@ -1,4 +1,26 @@
-version: 2
+version: 2.1
+commands:
+  setup-docker:
+    steps:
+      - run:
+          name: Setup buildx and qemu
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y qemu-user-static
+            sudo apt-get install -y binfmt-support
+      - run:
+          name: Check versions
+          command: |
+            qemu-aarch64-static --version
+            update-binfmts --version
+      - run:
+          name: Create builder
+          command: |
+            export DOCKER_CLI_EXPERIMENTAL=enabled
+            docker buildx create --name arm-builder
+            docker buildx use arm-builder
+            docker buildx inspect --bootstrap
+
 jobs:
   build-and-test:
     # to speed up Dockers builds turn on layer caching
@@ -56,6 +78,22 @@ jobs:
         command: |
           ssh rphlo@mapdump.com 'sudo -u apps /apps/mapdump/bin/deploy'
 
+  build-docker:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    steps:
+      - checkout
+      - setup-docker
+      - run:
+          name: Connect account
+          command: |
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+      - run:
+          name: Build docker images
+          command: |
+            DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform linux/amd64 --push -t rphlo/mapdump-dev-server:latest -f docker/django.dockerfile .
+
 workflows:
   version: 2
   build_test_and_deploy:
@@ -68,3 +106,11 @@ workflows:
             branches:
               only:
                 - master
+  build_image:
+    jobs:
+      - build-docker:
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
