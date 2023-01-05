@@ -6,7 +6,7 @@ django-cors-headers
 requests
 djangorestframework
 uwsgi
-psycopg2-binary
+psycopg2
 raven
 django-rest-knox
 timezonefinder

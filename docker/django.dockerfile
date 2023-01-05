@@ -1,4 +1,4 @@
-FROM python:3.10-buster
+FROM python:3.11
 
 # Copy in your requirements file
 ADD project/requirements.txt /requirements.txt

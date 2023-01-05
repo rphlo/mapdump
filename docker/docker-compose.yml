@@ -57,4 +57,4 @@ services:
       - minio
       - db
       - smtp
-    command: ['/venv/bin/python3.10', './project/manage.py', 'runserver', '0.0.0.0:8000']
+    command: ['/venv/bin/python3', './project/manage.py', 'runserver', '0.0.0.0:8000']
