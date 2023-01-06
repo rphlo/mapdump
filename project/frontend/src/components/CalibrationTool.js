@@ -115,24 +115,18 @@ const CalibrationTool = (props) => {
   const [imgHeight, setImgHeight] = useState(0);
 
   function getCornerCoordinates() {
-    const RasterXY = [];
-    const WorldXY = [];
+    const rasterXY = [];
+    const worldXY = [];
     const proj = new SpheroidProjection();
-    for (let i = 0; i < markersRaster.length; i++) {
-      RasterXY[i] = mapRaster.project(markersRaster[i].getLatLng(), 0);
-    }
-    for (let i = 0; i < markersWorld.length; i++) {
-      WorldXY[i] = proj.latlngToMeters(markersWorld[i].getLatLng());
+    for (let i = 0; i < 4; i++) {
+      rasterXY[i] = mapRaster.project(markersRaster[i].getLatLng(), 0);
+      worldXY[i] = proj.latlngToMeters(markersWorld[i].getLatLng());
     }
     const matrix3d = general2DProjection(
-      RasterXY[0],
-      WorldXY[0],
-      RasterXY[1],
-      WorldXY[1],
-      RasterXY[2],
-      WorldXY[2],
-      RasterXY[3],
-      WorldXY[3]
+      rasterXY[0], worldXY[0],
+      rasterXY[1], worldXY[1],
+      rasterXY[2], worldXY[2],
+      rasterXY[3], worldXY[3],
     );
     const corners = [
       project(matrix3d, 0, 0),
