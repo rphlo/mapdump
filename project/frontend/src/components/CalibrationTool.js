@@ -123,10 +123,14 @@ const CalibrationTool = (props) => {
       worldXY[i] = proj.latlngToMeters(markersWorld[i].getLatLng());
     }
     const matrix3d = general2DProjection(
-      rasterXY[0], worldXY[0],
-      rasterXY[1], worldXY[1],
-      rasterXY[2], worldXY[2],
-      rasterXY[3], worldXY[3],
+      rasterXY[0],
+      worldXY[0],
+      rasterXY[1],
+      worldXY[1],
+      rasterXY[2],
+      worldXY[2],
+      rasterXY[3],
+      worldXY[3]
     );
     const corners = [
       project(matrix3d, 0, 0),
