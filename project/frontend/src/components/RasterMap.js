@@ -3,7 +3,7 @@ import NotFound from "./NotFound";
 import RouteViewing from "./RouteViewing";
 import RouteReplay from "./RouteReplay";
 import useGlobalState from "../utils/useGlobalState";
-import { LatLng } from "../utils/Utils";
+import { LatLng } from "../utils";
 
 const RasterMap = ({ match, history }) => {
   const [found, setFound] = React.useState(null);

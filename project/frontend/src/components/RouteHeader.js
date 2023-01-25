@@ -10,7 +10,7 @@ import {
   displayDate,
   regionNames,
   getFlagEmoji,
-} from "../utils/Utils";
+} from "../utils";
 import { LinkItUrl } from "react-linkify-it";
 
 const RouteHeader = (props) => {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { LatLng, cornerCalTransform } from "../utils/Utils";
 import * as L from "leaflet";
 import Slider from "react-input-slider";
 import RouteHeader from "./RouteHeader";
 import ShareModal from "./ShareModal";
+import { LatLng, cornerCalTransform } from "../utils";
 import { Position, PositionArchive } from "../utils/positions";
 import { scaleImage } from "../utils/drawHelpers";
 import useGlobalState from "../utils/useGlobalState";

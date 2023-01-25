@@ -14,7 +14,7 @@ import {
   displayDate,
   regionNames,
   getFlagEmoji,
-} from "../utils/Utils";
+} from "../utils";
 
 const urls = [
   "new",
