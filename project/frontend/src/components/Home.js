@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 
 import { Link } from "react-router-dom";
 import useGlobalState from "../utils/useGlobalState";
-import { capitalizeFirstLetter } from "../utils/Utils";
+import { capitalizeFirstLetter } from "../utils";
 
 const Home = () => {
   const [userData, setUserData] = React.useState(null);

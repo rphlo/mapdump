@@ -9,7 +9,7 @@ import {
   displayDate,
   regionNames,
   getFlagEmoji,
-} from "../utils/Utils";
+} from "../utils";
 
 const LatestRoute = () => {
   const [routes, setRoutes] = React.useState(false);

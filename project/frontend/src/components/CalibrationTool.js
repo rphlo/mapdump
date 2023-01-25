@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import * as L from "leaflet";
 import CalibrationPreview from "./CalibrationPreview";
-import "../utils/Leaflet.SmoothWheelZoom";
 import "../utils/Leaflet.ImageTransform";
 import {
   general2DProjection,
   SpheroidProjection,
   project,
   Point,
-} from "../utils/Utils";
+} from "../utils";
 
 const resetOrientation = (src, callback) => {
   var img = new Image();
@@ -197,8 +196,7 @@ const CalibrationTool = (props) => {
         minZoom: -5,
         maxZoom: 2,
         zoomSnap: 0,
-        scrollWheelZoom: false,
-        smoothWheelZoom: true,
+        scrollWheelZoom: true,
       });
       const boundsRaster = [
         tmpMapRaster.unproject([0, 0]),
@@ -212,8 +210,7 @@ const CalibrationTool = (props) => {
     const routeData = route || [];
     const tmpMapWorld = L.map("mapWorld", {
       zoomSnap: 0,
-      scrollWheelZoom: false,
-      smoothWheelZoom: true,
+      scrollWheelZoom: true,
     });
     const latlngs = routeData.map((pt) => pt.latlng.slice(0, 2));
     const polyline = L.polyline(latlngs, { color: "red" }).addTo(tmpMapWorld);

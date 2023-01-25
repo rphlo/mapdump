@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import * as L from "leaflet";
-import "../utils/Leaflet.SmoothWheelZoom";
 import "../utils/Leaflet.ImageTransform";
 
 L.TileLayer.Common = L.TileLayer.extend({
@@ -81,8 +80,7 @@ const CalibrationPreview = (props) => {
     }
     const tmpMapPreview = L.map("mapPreview", {
       zoomSnap: 0,
-      scrollWheelZoom: false,
-      smoothWheelZoom: true,
+      scrollWheelZoom: true,
     }).fitBounds(cornersCoordinates);
     const transformedImage = L.imageTransform(imgDataURI, cornersCoordinates, {
       opacity: 0.7,

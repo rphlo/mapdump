@@ -4,7 +4,7 @@ import {
   cornerCalTransform,
   cornerBackTransform,
   getResolution,
-} from "./Utils";
+} from "./index.js";
 
 const extractSpeed = (route) => {
   const speeds = [];
@@ -29,6 +29,7 @@ const extractSpeed = (route) => {
   }
   return speeds;
 };
+
 const extractDistance = (route) => {
   let d = 0;
   for (let i = 0; i < route.length - 1; i++) {
@@ -67,6 +68,7 @@ const extractBounds = function (img, corners_coords, route, hOffset = 0) {
     maxY: Math.ceil(maxY),
   };
 };
+
 export const getCorners = function (
   img,
   corners_coords,

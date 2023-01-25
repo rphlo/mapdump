@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { LatLng, cornerCalTransform } from "../utils/Utils";
 import * as L from "leaflet";
 import Slider from "react-input-slider";
-import "../utils/Leaflet.SmoothWheelZoom";
 import RouteHeader from "./RouteHeader";
 import ShareModal from "./ShareModal";
 import { Position, PositionArchive } from "../utils/positions";
@@ -76,8 +75,7 @@ const RouteReplay = (props) => {
             minZoom: -5,
             maxZoom: 2,
             zoomSnap: 0,
-            scrollWheelZoom: false,
-            smoothWheelZoom: true,
+            scrollWheelZoom: true,
           });
           setLeafletMap(map);
           const bounds = [

@@ -4,7 +4,7 @@ import { pdfjs as pdfjsLib } from "react-pdf";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import Swal from "sweetalert2";
 import FitParser from "fit-file-parser";
-
+import gpxParser from "gpxparser";
 import GPXDropzone from "./GPXDrop";
 import ImageDropzone from "./ImgDrop";
 import RouteDrawing from "./RouteDrawing";
@@ -13,12 +13,11 @@ import StravaPicker from "./StravaPicker";
 import CornerCoordsInput from "./CornerCoordsInput";
 import useGlobalState from "../utils/useGlobalState";
 import {
-  parseGpx,
   extractCornersCoordsFromFilename,
   validateCornersCoords,
 } from "../utils/fileHelpers";
-import { LatLng } from "../utils/Utils";
 import { parseTCXString } from "../utils/tcxParser";
+import { LatLng } from "../utils";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -62,9 +61,10 @@ function NewMap() {
 
   const onGPXLoaded = (e) => {
     const xml = e.target.result;
-    let parsedGpx;
+    let gpx;
     try {
-      parsedGpx = parseGpx(xml);
+      gpx = new gpxParser();
+      gpx.parse(xml);
     } catch (e) {
       Swal.fire({
         title: "Error!",
@@ -75,14 +75,9 @@ function NewMap() {
       return;
     }
     const newRoute = [];
-    if (parsedGpx.segments.length === 0) {
-      onRouteLoaded(newRoute);
-      return;
-    }
-    for (let i = 0; i < parsedGpx.segments[0].length; i++) {
-      const pos = parsedGpx.segments[0][i];
-      if (pos.loc[0]) {
-        newRoute.push({ time: pos.time, latlng: pos.loc.slice(0, 2) });
+    for (const pos of gpx.tracks[0].points) {
+      if (pos.lat) {
+        newRoute.push({ time: pos.time, latlng: [pos.lat, pos.lon] });
       }
     }
     onRouteLoaded(newRoute);

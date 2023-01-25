@@ -4,7 +4,7 @@ import JSZip from "jszip";
 import useGlobalState from "../utils/useGlobalState";
 import { getCorners } from "../utils/drawHelpers";
 import { getKMZ } from "../utils/fileHelpers";
-import { LatLng } from "../utils/Utils";
+import { LatLng } from "../utils";
 
 const DownloadOwnDataBtn = () => {
   const [dl, setDl] = React.useState(null);

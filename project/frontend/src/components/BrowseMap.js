@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import * as L from "leaflet";
-import "../utils/Leaflet.SmoothWheelZoom";
 
 const BrowseMap = () => {
   const onClickLayer = (e, map, m) => {
@@ -42,8 +41,7 @@ const BrowseMap = () => {
       minZoom: 0,
       maxZoom: 18,
       zoomSnap: 0,
-      scrollWheelZoom: false,
-      smoothWheelZoom: true,
+      scrollWheelZoom: true,
     });
     L.TileLayer.Common = L.TileLayer.extend({
       initialize: function (options) {

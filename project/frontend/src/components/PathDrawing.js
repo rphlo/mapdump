@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Point, cornerBackTransform } from "../utils/Utils";
+import { Point, cornerBackTransform } from "../utils";
 import * as L from "leaflet";
-import "../utils/Leaflet.SmoothWheelZoom";
 
 const PathDrawing = (props) => {
   const [mapImage, setMapImage] = useState(false);
@@ -35,8 +34,7 @@ const PathDrawing = (props) => {
         minZoom: -5,
         maxZoom: 2,
         zoomSnap: 0,
-        scrollWheelZoom: false,
-        smoothWheelZoom: true,
+        scrollWheelZoom: true,
       });
       setLeafletMap(map);
       const bounds = [map.unproject([0, 0]), map.unproject([width, height])];
