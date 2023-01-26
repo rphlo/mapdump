@@ -15,7 +15,7 @@
     "gpxparser": "^3.0.8",
     "jszip": "^3.7.0",
     "leaflet": "^1.7.1",
-    "luxon": "^1.25.0",
+    "luxon": "^2.5.2",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-avatar-uploader": "https://github.com/rphlo/react-avatar-uploader",
