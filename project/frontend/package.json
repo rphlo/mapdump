@@ -13,7 +13,7 @@
     "file-saver": "^2.0.2",
     "fit-file-parser": "^1.9.3",
     "gpxparser": "^3.0.8",
-    "jszip": "^3.7.0",
+    "jszip": "^3.8.0",
     "leaflet": "^1.7.1",
     "luxon": "^2.5.2",
     "prop-types": "^15.8.1",
