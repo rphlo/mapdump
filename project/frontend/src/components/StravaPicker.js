@@ -142,7 +142,7 @@ const Settings = (props) => {
 
   return (
     <>
-      <img height="50px" src={logo} alt="With strava" style={{ mixBlendMode: "multiply"}} className="me-5"/>
+      <img height="50px" src={logo} alt="With strava" style={{ mixBlendMode: "multiply"}} className="mr-5"/>
       <button className="btn btn-danger" onClick={disconnect}>
         disconnect
       </button>
