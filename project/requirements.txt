@@ -38,7 +38,7 @@ s3transfer==0.6.0
 scipy==1.10.0
 six==1.16.0
 soupsieve==2.3.2.post1
-sqlparse==0.4.2
+sqlparse==0.4.4
 stravalib==0.10.4
 timezonefinder==6.1.9
 units==0.7
