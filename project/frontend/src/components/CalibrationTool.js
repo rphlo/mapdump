@@ -47,11 +47,10 @@ const icons = [
   colorIcon("green"),
   colorIcon("orange"),
 ];
-
 var backdropMaps = {
   osm: L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
-      'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery Â© <a href="http://mapbox.com">Mapbox</a>',
+      'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     className: "wms256",
   }),
   "gmap-street": L.tileLayer("https://mt0.google.com/vt/x={x}&y={y}&z={z}", {
@@ -104,8 +103,15 @@ var backdropMaps = {
     attribution: "&copy; MapAnt.no",
     className: "wms256",
   }),
-  "mapant-sv": L.tileLayer(
-    "https://gokartor-proxy.routechoices.com/{z}/{x}/{y}.jpg",
+  "mapant-ch": L.tileLayer(
+    "https://tile-proxy.routechoices.com/ch/{z}/{x}/{y}.jpg",
+    {
+      attribution: "&copy; MapAnt.ch",
+      className: "wms256",
+    }
+  ),
+  "mapant-se": L.tileLayer(
+    "/https://tile-proxy.routechoices.com/se/{z}/{x}/{y}.jpg",
     {
       attribution: "&copy; gokartor.se",
       className: "wms256",
@@ -233,7 +239,8 @@ function getBaseLayers() {
     "Mapant Finland": cloneLayer(backdropMaps["mapant-fi"]),
     "Mapant Norway": cloneLayer(backdropMaps["mapant-no"]),
     "Mapant Spain": cloneLayer(backdropMaps["mapant-es"]),
-    "Mapant Sweden": cloneLayer(backdropMaps["mapant-sv"]),
+    "Mapant Sweden": cloneLayer(backdropMaps["mapant-se"]),
+    "Mapant Switzerland": cloneLayer(backdropMaps["mapant-ch"]),
     "Topo Finland": cloneLayer(backdropMaps["topo-fi"]),
     "Topo France": cloneLayer(backdropMaps["topo-fr"]),
     "Topo Norway": cloneLayer(backdropMaps["topo-no"]),
