@@ -368,7 +368,7 @@ const CalibrationTool = (props) => {
     }
 
     const baseLayers = getBaseLayers();
-    const defaultLayer = baseLayers["Open Street Map"]
+    const defaultLayer = baseLayers["Open Street Map"];
 
     tmpMapWorld.addLayer(defaultLayer);
     const controlLayers = new L.Control.Layers(baseLayers);
