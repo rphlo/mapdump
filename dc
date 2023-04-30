@@ -36,9 +36,9 @@ elif [ "$1" = 'pipcompile' ]; then
 elif [ "$1" = 'pipinstall' ]; then
     echo "Updating pip env..."
     docker exec -u root -i md_django \
-        /venv/bin/pip --no-cache-dir install -U pip && \
+        /venv/bin/pip3 --no-cache-dir install -U pip && \
      docker exec -u root -i md_django \
-        /venv/bin/pip --no-cache-dir install -r project/requirements.txt
+        /venv/bin/pip3 --no-cache-dir install -r project/requirements.txt
     exit 0
 elif [ "$1" = 'test' ]; then
     shift
