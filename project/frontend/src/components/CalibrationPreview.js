@@ -205,7 +205,6 @@ function getBaseLayers() {
   };
 }
 
-
 function round5(x) {
   return Math.round(x * 1e5) / 1e5;
 }
