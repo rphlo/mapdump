@@ -14,7 +14,7 @@
     "fit-file-parser": "^1.9.3",
     "gpxparser": "^3.0.8",
     "jszip": "^3.8.0",
-    "leaflet": "^1.7.1",
+    "leaflet": "^1.9.4",
     "luxon": "^2.5.2",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
