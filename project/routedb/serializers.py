@@ -1,6 +1,6 @@
 import base64
 from io import BytesIO
-
+import re
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -11,11 +11,14 @@ from PIL import Image
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from routedb.models import RasterMap, Route, UserSettings
+from tagging.models import Tag
 from utils.validators import (
     custom_username_validators,
     validate_latitude,
     validate_longitude,
 )
+
+HASHTAG_REGEX = re.compile(r"(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)")
 
 
 class AuthTokenSerializer(serializers.Serializer):
@@ -232,7 +235,16 @@ class RouteSerializer(serializers.ModelSerializer):
         route.prefetch_route_extras()
         route.save()
         return route
+    
+    def save(self):
+        super().save()
+        instance = self.instance
+        comment = instance.comment
+        instance.tags = ", ".join(
+            hashtag_match.group(1).lower() for hashtag_match in re.finditer(HASHTAG_REGEX, comment)
+        )
 
+        
     class Meta:
         model = Route
         fields = (

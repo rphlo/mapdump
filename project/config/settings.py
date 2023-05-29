@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "routedb",
+    "tagging",
     "django.contrib.admin",
     "corsheaders",
     "rest_framework",
@@ -88,7 +89,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
+FORCE_LOWERCASE_TAGS = True
+MAX_TAG_LENGTH=30
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 

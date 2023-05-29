@@ -46,6 +46,6 @@ timezonefinder==6.2.0
 typing-extensions==4.6.0
 urllib3==1.26.15
 uwsgi==2.0.21
-
+django-tagging @ git+https://github.com/rphlo/django-tagging
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
