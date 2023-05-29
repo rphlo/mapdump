@@ -11,7 +11,7 @@ import {
   getFlagEmoji,
 } from "../utils";
 
-const LatestRoute = ({props}) => {
+const LatestRoute = (props) => {
   const [routes, setRoutes] = React.useState(false);
 
   const globalState = useGlobalState();
