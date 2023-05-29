@@ -198,7 +198,7 @@ class RoutesForTagList(generics.ListAPIView):
         qs = Route.objects.filter(
             Q(athlete_id=self.request.user.id) | Q(is_private=False)
         ).select_related("athlete")
-        tag = self.kwargs["tag"]
+        tag = self.kwargs["tag"].lower()
         tag_instance = get_tag(tag)
         if tag_instance is None:
             raise Http404(f'No Tag found matching "{tag}".')
