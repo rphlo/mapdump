@@ -11,7 +11,7 @@ import {
   getFlagEmoji,
 } from "../utils";
 
-const LatestRoute = () => {
+const LatestRoute = ({props}) => {
   const [routes, setRoutes] = React.useState(false);
 
   const globalState = useGlobalState();
@@ -24,7 +24,7 @@ const LatestRoute = () => {
         headers.Authorization = "Token " + api_token;
       }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + "/v1/latest-routes/",
+        process.env.REACT_APP_API_URL + (props?.tag ? ("v1/routes-by-tag/" + props.tag) : "/v1/latest-routes/"),
         {
           credentials: "omit",
           headers,
@@ -37,10 +37,11 @@ const LatestRoute = () => {
   return (
     <>
       <h3 style={{ textAlign: "center" }}>
-        Latest Routes on Mapdump.com{" "}
-        <a href={process.env.REACT_APP_API_URL + "/v1/latest-routes/feed/"}>
+        {props?.tag ? ('Routes tagged "' + props.tag + '"') : "Latest Routes on Mapdump.com "}
+        {!props?.tag && <a href={process.env.REACT_APP_API_URL + "/v1/latest-routes/feed/"}>
           <i className="fa fa-rss" title="RSS"></i>
         </a>
+      }
       </h3>
       <div className="container" style={{ textAlign: "left" }}>
         {routes === false && (
@@ -53,7 +54,7 @@ const LatestRoute = () => {
         {routes &&
           (!routes.length ? (
             <div style={{ textAlign: "center" }}>
-              <span>No routes have been yet uploaded...</span>
+              <span>{props?.tag ? ('No routes tagged "' + props.tag + '"...') : "No routes have been yet uploaded..."}</span>
             </div>
           ) : (
             <div className="row">

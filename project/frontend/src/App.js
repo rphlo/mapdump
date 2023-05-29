@@ -16,6 +16,7 @@ import VerifyEmail from "./components/VerifyEmail";
 import PasswordReset from "./components/PasswordReset";
 import Settings from "./components/Settings";
 import BrowseMap from "./components/BrowseMap";
+import RoutesForTag from "./components/RoutesForTag";
 import PasswordResetConfirmation from "./components/PasswordResetConfirmation";
 import UserDeletionConfirmation from "./components/UserDeletionConfirmation";
 import { GlobalStateProvider } from "./utils/useGlobalState";
@@ -82,6 +83,7 @@ function App() {
         <Route path="/" />
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/routes/tag/:tag" component={RoutesForTag} />
           <Route exact path="/new" component={NewMap} />
           <Route exact path="/map" component={BrowseMap} />
           <Route exact path="/tos" component={TOS} />
