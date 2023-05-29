@@ -11,7 +11,10 @@ import {
   regionNames,
   getFlagEmoji,
 } from "../utils";
-import { LinkItUrl } from "react-linkify-it";
+import { LinkItUrl, LinkIt } from "react-linkify-it";
+
+
+hashtagRegex = /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/
 
 const RouteHeader = (props) => {
   const [name, setName] = useState();
@@ -375,7 +378,7 @@ const RouteHeader = (props) => {
         {(!canEdit() || !commentEditing) && (
           <blockquote style={{ whiteSpace: "pre-wrap" }}>
             <p>
-              <LinkItUrl>{comment}</LinkItUrl>
+              <LinkItUrl><LinkIt regex={hashtagRegex} component={(match, key) => <a href={'routes/tag/' + match.slice(1)} key={key}>{match}</a>}>{comment}</LinkIt></LinkItUrl>
             </p>
           </blockquote>
         )}
