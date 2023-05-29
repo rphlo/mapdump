@@ -18,7 +18,7 @@ from utils.validators import (
     validate_longitude,
 )
 
-HASHTAG_REGEX = re.compile(r"(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_-]{1,30})(\b|\r)")
+HASHTAG_REGEX = re.compile(r"(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)")
 
 
 class AuthTokenSerializer(serializers.Serializer):
