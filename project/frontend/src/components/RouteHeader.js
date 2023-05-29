@@ -378,7 +378,7 @@ const RouteHeader = (props) => {
         {(!canEdit() || !commentEditing) && (
           <blockquote style={{ whiteSpace: "pre-wrap" }}>
             <p>
-              <LinkItUrl><LinkIt regex={hashtagRegex} component={(match, key) => <a href={'routes/tag/' + match.slice(1)} key={key}>{match}</a>}>{comment}</LinkIt></LinkItUrl>
+              <LinkItUrl><LinkIt regex={hashtagRegex} component={(match, key) => <a href={'/routes/tag/' + match.slice(1)} key={key}>{match}</a>}>{comment}</LinkIt></LinkItUrl>
             </p>
           </blockquote>
         )}
