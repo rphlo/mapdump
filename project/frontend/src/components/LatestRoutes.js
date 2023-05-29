@@ -24,7 +24,7 @@ const LatestRoute = (props) => {
         headers.Authorization = "Token " + api_token;
       }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + (props?.tag ? ("v1/routes-by-tag/" + props.tag) : "/v1/latest-routes/"),
+        process.env.REACT_APP_API_URL + (props?.tag ? ("/v1/routes-by-tag/" + props.tag) : "/v1/latest-routes/"),
         {
           credentials: "omit",
           headers,
