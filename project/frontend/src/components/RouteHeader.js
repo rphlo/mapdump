@@ -14,7 +14,7 @@ import {
 import { LinkItUrl, LinkIt } from "react-linkify-it";
 
 
-hashtagRegex = /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/
+const hashtagRegex = /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/
 
 const RouteHeader = (props) => {
   const [name, setName] = useState();
