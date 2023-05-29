@@ -9,7 +9,7 @@ const RoutesForTags = ({ match }) => {
         <title>Mapdump.com</title>
       </Helmet>
       <div className="container main-container">
-        <LatestRoutes tag={match.params.uid} />
+        <LatestRoutes tag={match.params.tag} />
       </div>
     </>
   );
