@@ -18,7 +18,7 @@ from utils.validators import (
     validate_longitude,
 )
 
-HASHTAG_REGEX = re.compile(r"(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)")
+HASHTAG_REGEX = re.compile(r"(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_-]{1,30})(\b|\r)")
 
 
 class AuthTokenSerializer(serializers.Serializer):
@@ -241,7 +241,7 @@ class RouteSerializer(serializers.ModelSerializer):
         instance = self.instance
         comment = instance.comment
         instance.tags = ", ".join(
-            hashtag_match.group(1).lower() for hashtag_match in re.finditer(HASHTAG_REGEX, comment)
+            hashtag_match.group(2).lower() for hashtag_match in re.finditer(HASHTAG_REGEX, comment)
         )
 
         
