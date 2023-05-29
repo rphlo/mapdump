@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from knox.models import AuthToken
 from rest_framework import generics, parsers, status
@@ -34,6 +34,8 @@ from routedb.serializers import (
     UserMainSerializer,
     UserSettingsSerializer,
 )
+from tagging.models import TaggedItem
+from tagging.utils import get_tag
 from stravalib import Client as StravaClient
 from utils.s3 import s3_object_url
 
@@ -187,6 +189,20 @@ class LatestRoutesList(generics.ListAPIView):
         return Route.objects.filter(
             Q(athlete_id=self.request.user.id) | Q(is_private=False)
         ).select_related("athlete")[:24]
+
+
+class RoutesForTagList(generics.ListAPIView):
+    serializer_class = LatestRouteListSerializer
+
+    def get_queryset(self):
+        qs = Route.objects.filter(
+            Q(athlete_id=self.request.user.id) | Q(is_private=False)
+        ).select_related("athlete")
+        tag = self.kwargs["tag"]
+        tag_instance = get_tag(tag)
+        if tag_instance is None:
+            raise Http404(f'No Tag found matching "{tag}".')
+        return TaggedItem.objects.get_by_model(qs, tag_instance)
 
 
 class MapsList(generics.ListAPIView):
