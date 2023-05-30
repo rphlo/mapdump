@@ -177,16 +177,14 @@ describe("Create a new map", function () {
         cy.contains("Calibration");
         cy.contains("Corners Coordinates");
         cy.get('[data-testid="to-calib-tool-link"]').click();
-        cy.get("#mapRaster")
-          .click(10, 10)
-          .click(200, 10)
-          .click(200, 200)
-          .click(10, 200);
-        cy.get("#mapWorld")
-          .click(10, 10)
-          .click(200, 10)
-          .click(200, 200)
-          .click(10, 200);
+        cy.get("#mapRaster").click(10, 10);
+        cy.get("#mapWorld").click(10, 10);
+        cy.get("#mapRaster").click(200, 10);
+        cy.get("#mapWorld").click(200, 10);
+        cy.get("#mapRaster").click(200, 200);
+        cy.get("#mapWorld").click(200, 200);
+        cy.get("#mapRaster").click(10, 200);
+        cy.get("#mapWorld").click(10, 200);
         cy.get('[data-testid="to-validation"]').click();
         cy.get('[data-testid="validate-button"]').click();
         cy.get('input[data-testid="nameInput"]').should(
