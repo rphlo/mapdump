@@ -378,7 +378,7 @@ const UserView = ({ match, history }) => {
                                   textOverflow: "ellipsis",
                                 }}
                               >
-                                <Link to={"/athletes/" + data.username}>
+                                <Link  style={{zIndex: 2, position: "relative"}} to={"/athletes/" + data.username}>
                                   {capitalizeFirstLetter(data.first_name)}{" "}
                                   {capitalizeFirstLetter(data.last_name)}
                                 </Link>
@@ -407,6 +407,7 @@ const UserView = ({ match, history }) => {
                                       textOverflow: "ellipsis",
                                     }}
                                     to={"/routes/" + r.id}
+                                    className={"stretched-link"}
                                   >
                                     {r.name}
                                   </Link>

@@ -32,7 +32,7 @@ const LatestRoute = (props) => {
       );
       setRoutes(await res.json());
     })();
-  }, [api_token]);
+  }, [api_token, props.tag]);
 
   return (
     <>
@@ -113,7 +113,7 @@ const LatestRoute = (props) => {
                                   textOverflow: "ellipsis",
                                 }}
                               >
-                                <Link to={"/athletes/" + r.athlete.username}>
+                                <Link style={{zIndex: 2, position: "relative"}} to={"/athletes/" + r.athlete.username}>
                                   {capitalizeFirstLetter(r.athlete.first_name)}{" "}
                                   {capitalizeFirstLetter(r.athlete.last_name)}
                                 </Link>
@@ -142,6 +142,7 @@ const LatestRoute = (props) => {
                                       textOverflow: "ellipsis",
                                     }}
                                     to={"/routes/" + r.id}
+                                    className={"stretched-link"}
                                   >
                                     {r.name}
                                   </Link>
