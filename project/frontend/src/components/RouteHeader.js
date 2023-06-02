@@ -13,8 +13,7 @@ import {
 } from "../utils";
 import { LinkItUrl, LinkIt } from "react-linkify-it";
 
-
-const hashtagRegex = /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/
+const hashtagRegex = /(^|\B)#(?![0-9_]+\b)([a-zA-Z0-9_]{1,30})(\b|\r)/;
 
 const RouteHeader = (props) => {
   const [name, setName] = useState();
@@ -378,7 +377,18 @@ const RouteHeader = (props) => {
         {(!canEdit() || !commentEditing) && (
           <blockquote style={{ whiteSpace: "pre-wrap" }}>
             <p>
-              <LinkItUrl><LinkIt regex={hashtagRegex} component={(match, key) => <a href={'/routes/tag/' + match.slice(1)} key={key}>{match}</a>}>{comment}</LinkIt></LinkItUrl>
+              <LinkItUrl>
+                <LinkIt
+                  regex={hashtagRegex}
+                  component={(match, key) => (
+                    <a href={"/routes/tag/" + match.slice(1)} key={key}>
+                      {match}
+                    </a>
+                  )}
+                >
+                  {comment}
+                </LinkIt>
+              </LinkItUrl>
             </p>
           </blockquote>
         )}

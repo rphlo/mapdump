@@ -90,7 +90,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 FORCE_LOWERCASE_TAGS = True
-MAX_TAG_LENGTH=30
+MAX_TAG_LENGTH = 30
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 

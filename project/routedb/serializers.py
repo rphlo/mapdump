@@ -1,6 +1,7 @@
 import base64
-from io import BytesIO
 import re
+from io import BytesIO
+
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -235,16 +236,16 @@ class RouteSerializer(serializers.ModelSerializer):
         route.prefetch_route_extras()
         route.save()
         return route
-    
+
     def save(self):
         super().save()
         instance = self.instance
         comment = instance.comment
         instance.tags = ", ".join(
-            hashtag_match.group(2).lower() for hashtag_match in re.finditer(HASHTAG_REGEX, comment)
+            hashtag_match.group(2).lower()
+            for hashtag_match in re.finditer(HASHTAG_REGEX, comment)
         )
 
-        
     class Meta:
         model = Route
         fields = (

@@ -24,7 +24,10 @@ const LatestRoute = (props) => {
         headers.Authorization = "Token " + api_token;
       }
       const res = await fetch(
-        process.env.REACT_APP_API_URL + (props?.tag ? ("/v1/routes-by-tag/" + props.tag) : "/v1/latest-routes/"),
+        process.env.REACT_APP_API_URL +
+          (props?.tag
+            ? "/v1/routes-by-tag/" + props.tag
+            : "/v1/latest-routes/"),
         {
           credentials: "omit",
           headers,
@@ -37,11 +40,14 @@ const LatestRoute = (props) => {
   return (
     <>
       <h3 style={{ textAlign: "center" }}>
-        {props?.tag ? ('Routes tagged "' + props.tag + '"') : "Latest Routes on Mapdump.com "}
-        {!props?.tag && <a href={process.env.REACT_APP_API_URL + "/v1/latest-routes/feed/"}>
-          <i className="fa fa-rss" title="RSS"></i>
-        </a>
-      }
+        {props?.tag
+          ? 'Routes tagged "' + props.tag + '"'
+          : "Latest Routes on Mapdump.com "}
+        {!props?.tag && (
+          <a href={process.env.REACT_APP_API_URL + "/v1/latest-routes/feed/"}>
+            <i className="fa fa-rss" title="RSS"></i>
+          </a>
+        )}
       </h3>
       <div className="container" style={{ textAlign: "left" }}>
         {routes === false && (
@@ -54,7 +60,11 @@ const LatestRoute = (props) => {
         {routes &&
           (!routes.length ? (
             <div style={{ textAlign: "center" }}>
-              <span>{props?.tag ? ('No routes tagged "' + props.tag + '"...') : "No routes have been yet uploaded..."}</span>
+              <span>
+                {props?.tag
+                  ? 'No routes tagged "' + props.tag + '"...'
+                  : "No routes have been yet uploaded..."}
+              </span>
             </div>
           ) : (
             <div className="row">
@@ -113,7 +123,10 @@ const LatestRoute = (props) => {
                                   textOverflow: "ellipsis",
                                 }}
                               >
-                                <Link style={{zIndex: 2, position: "relative"}} to={"/athletes/" + r.athlete.username}>
+                                <Link
+                                  style={{ zIndex: 2, position: "relative" }}
+                                  to={"/athletes/" + r.athlete.username}
+                                >
                                   {capitalizeFirstLetter(r.athlete.first_name)}{" "}
                                   {capitalizeFirstLetter(r.athlete.last_name)}
                                 </Link>
