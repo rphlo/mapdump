@@ -7,7 +7,7 @@ bs4==0.0.1
 certifi==2023.5.7
 cffi==1.15.1
 charset-normalizer==3.1.0
-cryptography==40.0.2
+cryptography==41.0.0
 defusedxml==0.7.1
 diskcache==5.6.1
 dj-rest-auth[with_social]==4.0.1
@@ -16,6 +16,7 @@ django-allauth==0.54.0
 django-cors-headers==4.0.0
 django-rest-knox==4.2.0
 django-s3-storage==0.14.0
+django-tagging @ git+https://github.com/rphlo/django-tagging
 djangorestframework==3.14.0
 gpxpy==1.5.0
 h3==3.7.6
@@ -46,6 +47,6 @@ timezonefinder==6.2.0
 typing-extensions==4.6.0
 urllib3==1.26.15
 uwsgi==2.0.21
-django-tagging @ git+https://github.com/rphlo/django-tagging
+
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
