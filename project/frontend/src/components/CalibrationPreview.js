@@ -182,7 +182,9 @@ function cloneLayer(layer) {
   if (layer instanceof L.LayerGroup) {
     return L.layerGroup(cloneInnerLayers(layer));
   }
-  throw Error("Unknown layer, cannot clone this layer. Leaflet-version: " + L.version);
+  throw Error(
+    "Unknown layer, cannot clone this layer. Leaflet-version: " + L.version
+  );
 }
 
 function getBaseLayers() {
