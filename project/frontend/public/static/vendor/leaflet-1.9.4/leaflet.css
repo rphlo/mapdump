@@ -408,6 +408,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
   display: block;
   font-size: 13px;
   font-size: 1.08333em;
+  margin-bottom: 0;
 }
 .leaflet-control-layers-separator {
   height: 0;

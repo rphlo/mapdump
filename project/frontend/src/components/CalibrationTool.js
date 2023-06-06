@@ -33,7 +33,7 @@ const colorIcon = (color) => {
       "/static/vendor/leaflet-color-markers-1.0.0/img/marker-icon-2x-" +
       color +
       ".png",
-    shadowUrl: "/static/vendor/leaflet-1.7.1/images/marker-shadow.png",
+    shadowUrl: "/static/vendor/leaflet-1.9.4/images/marker-shadow.png",
     iconSize: [25 * iconScale, 41 * iconScale],
     iconAnchor: [12 * iconScale, 41 * iconScale],
     popupAnchor: [1 * iconScale, -34 * iconScale],
