@@ -408,7 +408,7 @@ const CalibrationTool = (props) => {
           <div className="col-md-6">
             <div id="mapRaster" className="leaflet_map"></div>
             <button
-              className="btn btn-danger"
+              className="btn btn-danger mb-3"
               onClick={() => {
                 for (let i = 0; i < markersRaster.length; i++) {
                   markersRaster[i].remove();
@@ -422,7 +422,7 @@ const CalibrationTool = (props) => {
           <div className="col-md-6">
             <div id="mapWorld" className="leaflet_map"></div>
             <button
-              className="btn btn-danger"
+              className="btn btn-danger mb-3"
               onClick={() => {
                 for (let i = 0; i < markersWorld.length; i++) {
                   markersWorld[i].remove();
@@ -434,7 +434,7 @@ const CalibrationTool = (props) => {
             </button>
           </div>
         </div>
-        <div className="row" style={{ marginTop: "10px" }}>
+        <div className="row">
           <div className="col-md-12">
             <button
               className="btn btn-danger"
