@@ -385,7 +385,7 @@ class Route(models.Model):
             route_file.flush()
             data_uri = subprocess.check_output(
                 [
-                    "node",
+                    settings.NODEJS_PATH,
                     "generate_map.js",
                     img_file.name,
                     route_file.name,
