@@ -22,8 +22,8 @@ class Command(BaseCommand):
             return
 
         self.stdout.write("Building client app ...")
-        subprocess.check_output(["yarn", "install"], cwd=client_dir)
-        subprocess.check_output(["yarn", "build", "--production"], cwd=client_dir)
+        subprocess.check_output([settings.YARN_PATH, "install"], cwd=client_dir)
+        subprocess.check_output([settings.YARN_PATH, "build", "--production"], cwd=client_dir)
 
         self.stdout.write("Collecting static files ...")
         call_command("collectstatic", interactive=False, clear=True, verbosity=0)
