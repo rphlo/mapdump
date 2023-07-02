@@ -5,8 +5,40 @@ import RouteHeader from "./RouteHeader";
 import ShareModal from "./ShareModal";
 import { saveKMZ } from "../utils/fileHelpers";
 import useGlobalState from "../utils/useGlobalState";
+import * as L from "leaflet";
+import RangeSlider from 'react-range-slider-input';
+import 'react-range-slider-input/dist/style.css';
+import { LatLng, cornerCalTransform } from "../utils";
+import { Position, PositionArchive } from "../utils/positions";
+import { scaleImage } from "../utils/drawHelpers";
+import Swal from "sweetalert2";
+
+function resetOrientation(src, callback) {
+  var img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = function () {
+    var width = img.width,
+      height = img.height;
+    const MAX = 3000;
+    let canvas = null;
+    if (height > MAX || width > MAX) {
+      canvas = scaleImage(img, MAX / Math.max(height, width));
+    } else {
+      canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0);
+    }
+    // export base64
+    callback(canvas.toDataURL("image/png"), width, height);
+  };
+  img.src = src;
+}
 
 const RouteViewing = (props) => {
+  const [mapImage, setMapImage] = useState(false);
+  const [route, setRoute] = useState(false);
   const [includeHeader, setIncludeHeader] = useState(true);
   const [includeRoute, setIncludeRoute] = useState(true);
   const [name, setName] = useState();
@@ -17,6 +49,10 @@ const RouteViewing = (props) => {
   const [imgURL, setImgURL] = useState(null);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [cropping, setCropping] = useState(false);
+  const [leafletRoute, setLeafletRoute] = useState(null);
+  const [croppingRange, setCroppingRange] = useState([0, 100])
+  const [savingCrop, setSavingCrop] = useState(false)
   let finalImage = createRef();
 
   const globalState = useGlobalState();
@@ -31,6 +67,19 @@ const RouteViewing = (props) => {
       img.src = url;
     });
   };
+
+  useEffect(() => {
+    const arch = new PositionArchive();
+    props.route.forEach((p) =>
+      arch.add(
+        new Position({
+          timestamp: p.time,
+          coords: { latitude: p.latlng[0], longitude: p.latlng[1] },
+        })
+      )
+    );
+    setRoute(arch);
+  }, [props.route]);
 
   useEffect(() => {
     const qp = new URLSearchParams();
@@ -191,6 +240,117 @@ const RouteViewing = (props) => {
     }
   };
 
+  const cropRoute = () => {
+    setCropping(true);
+    resetOrientation(
+      props.mapDataURL + (props.isPrivate ? "?auth_token=" + api_token : ""),
+      function (imgDataURI, width, height) {
+        setMapImage({ width, height });
+        const map = L.map("croppingMap", {
+          crs: L.CRS.Simple,
+          minZoom: -5,
+          maxZoom: 2,
+          zoomSnap: 0,
+          scrollWheelZoom: true,
+        });
+        const bounds = [
+          map.unproject([0, 0]),
+          map.unproject([width, height]),
+        ];
+        new L.imageOverlay(imgDataURI, bounds).addTo(map);
+        map.fitBounds(bounds);
+        map.invalidateSize();
+
+        const transform = cornerCalTransform(
+          width,
+          height,
+          props.mapCornersCoords.top_left,
+          props.mapCornersCoords.top_right,
+          props.mapCornersCoords.bottom_right,
+          props.mapCornersCoords.bottom_left
+        );
+        const routeLatLng = [];
+        route.getArray().forEach(function (pos) {
+          if (!isNaN(pos.coords.latitude)) {
+            const pt = transform(
+              new LatLng(pos.coords.latitude, pos.coords.longitude)
+            );
+            routeLatLng.push([-pt.y, pt.x]);
+          }
+        });
+        const t = L.polyline(routeLatLng, {
+          color: "red",
+          opacity: 0.75,
+          weight: 5,
+        });
+        t.addTo(map);
+        setLeafletRoute(t);
+      }
+    );
+  }
+
+
+  const onCropChange = (range) => {
+    setCroppingRange(range)
+    const arr = route.getArray()
+    const minIdx = Math.floor(range[0] * arr.length / 100)
+    const maxIdx = Math.ceil(range[1] * arr.length / 100)
+    const arr2 = arr.slice(minIdx, maxIdx)
+
+    const transform = cornerCalTransform(
+      mapImage.width,
+      mapImage.height,
+      props.mapCornersCoords.top_left,
+      props.mapCornersCoords.top_right,
+      props.mapCornersCoords.bottom_right,
+      props.mapCornersCoords.bottom_left
+    );
+    const routeLatLng = [];
+    arr2.forEach(function (pos) {
+      if (!isNaN(pos.coords.latitude)) {
+        const pt = transform(
+          new LatLng(pos.coords.latitude, pos.coords.longitude)
+        );
+        routeLatLng.push([-pt.y, pt.x]);
+      }
+    });
+    leafletRoute.setLatLngs(routeLatLng)
+  }
+
+  const saveCropping = async () => {
+    const arr = route.getArray()
+    const minIdx = Math.floor(croppingRange[0] * arr.length / 100)
+    const maxIdx = Math.ceil(croppingRange[1] * arr.length / 100)
+    const arr2 = arr.slice(minIdx, maxIdx)
+
+    setSavingCrop(true);
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_API_URL + "/v1/route/" + props.id,
+        {
+          method: "PATCH",
+          credentials: "omit",
+          headers: {
+            Authorization: "Token " + api_token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ route_data: arr2.map(p => {return {time: p.timestamp / 1e3, latlon: [p.coords.latitude, p.coords.longitude]}}) }),
+        }
+      );
+      setSavingCrop(false);
+      if (response.status !== 200) {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return
+      }
+      window.location.reload()
+    } catch (e) {}
+  }
+
   return (
     <>
       <div className="container main-container">
@@ -199,6 +359,7 @@ const RouteViewing = (props) => {
           onNameChanged={setName}
           onPrivacyChanged={setIsPrivate}
         />
+        {!cropping && (<>
         <div>
           {!isPrivate && (
             <button
@@ -235,6 +396,14 @@ const RouteViewing = (props) => {
           >
             <i className="fas fa-download"></i> GPX (Route)
           </button>
+          &nbsp;
+          <button
+              style={{ marginBottom: "5px" }}
+              className="btn btn-sm btn-primary"
+              onClick={cropRoute}
+            >
+              <i className="fas fa-cut"></i> Crop GPS
+          </button>
           {hasRouteTime() && (
             <button
               style={{ marginBottom: "5px" }}
@@ -245,50 +414,57 @@ const RouteViewing = (props) => {
             </button>
           )}
         </div>
-        <button
-          className="btn btn-sm btn-default"
-          onClick={zoomIn}
-          aria-label="Zoom in"
-        >
-          <i className={"fa fa-plus"}></i>
-        </button>
-        &nbsp;
-        <button
-          className="btn btn-sm btn-default"
-          onClick={zoomOut}
-          aria-label="Zoom out"
-        >
-          <i className={"fa fa-minus"}></i>
-        </button>
-        &nbsp;
-        <button className="btn btn-sm btn-default" onClick={toggleHeader}>
-          <i
-            className={
-              togglingHeader
-                ? "fa fa-spinner fa-spin"
-                : "fa fa-toggle-" + (includeHeader ? "on" : "off")
-            }
-            style={includeHeader ? { color: "#3c2" } : {}}
-          ></i>{" "}
-          Header
-        </button>
-        &nbsp;
-        <button className="btn btn-sm btn-default" onClick={toggleRoute}>
-          <i
-            className={
-              togglingRoute
-                ? "fa fa-spinner fa-spin"
-                : "fa fa-toggle-" + (includeRoute ? "on" : "off")
-            }
-            style={includeRoute ? { color: "#3c2" } : {}}
-          ></i>{" "}
-          Route
-        </button>
-        &nbsp;
+        <div>
+          <button
+            className="btn btn-sm btn-default"
+            onClick={zoomIn}
+            aria-label="Zoom in"
+          >
+            <i className={"fa fa-plus"}></i>
+          </button>
+          &nbsp;
+          <button
+            className="btn btn-sm btn-default"
+            onClick={zoomOut}
+            aria-label="Zoom out"
+          >
+            <i className={"fa fa-minus"}></i>
+          </button>
+          &nbsp;
+          <button className="btn btn-sm btn-default" onClick={toggleHeader}>
+            <i
+              className={
+                togglingHeader
+                  ? "fa fa-spinner fa-spin"
+                  : "fa fa-toggle-" + (includeHeader ? "on" : "off")
+              }
+              style={includeHeader ? { color: "#3c2" } : {}}
+            ></i>{" "}
+            Header
+          </button>
+          &nbsp;
+          <button className="btn btn-sm btn-default" onClick={toggleRoute}>
+            <i
+              className={
+                togglingRoute
+                  ? "fa fa-spinner fa-spin"
+                  : "fa fa-toggle-" + (includeRoute ? "on" : "off")
+              }
+              style={includeRoute ? { color: "#3c2" } : {}}
+            ></i>{" "}
+            Route
+          </button>
+        </div>
+      </>)}
       </div>
       <div className="container-fluid">
         <div>
-          {imgURL && (
+          {cropping && (<div className="container">
+            <button className="btn btn-primary mb-3" onClick={saveCropping} disabled={savingCrop}><i className="fas fa-save"></i> Save</button>
+            <RangeSlider className={"mb-3"} defaultValue={[0, 100]} step={0.001} onInput={onCropChange}/>
+            <div id="croppingMap" style={{height: "500px"}}></div>
+          </div>)}
+          {!cropping && imgURL && (
             <center>
               <img
                 ref={finalImage}
@@ -302,7 +478,7 @@ const RouteViewing = (props) => {
               />
             </center>
           )}
-          {!imgLoaded && (
+          {!cropping && !imgLoaded && (
             <div>
               <h3>
                 <i className="fa fa-spin fa-spinner"></i> Loading...
