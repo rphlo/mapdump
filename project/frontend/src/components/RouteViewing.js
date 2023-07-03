@@ -460,7 +460,8 @@ const RouteViewing = (props) => {
       <div className="container-fluid">
         <div>
           {cropping && (<div className="container">
-            <button className="btn btn-primary mb-3" onClick={saveCropping} disabled={savingCrop}><i className="fas fa-save"></i> Save</button>
+            <h3>Crop GPS</h3>
+            <button className="btn btn-primary mb-3 mr-1" onClick={saveCropping} disabled={savingCrop}><i className="fas fa-save"></i> Save</button><button className="btn btn-danger mb-3" onClick={() => window.location.reload()} disabled={savingCrop}><i className="fas fa-times"></i> Cancel</button>
             <RangeSlider className={"mb-3"} defaultValue={[0, 100]} step={0.001} onInput={onCropChange}/>
             <div id="croppingMap" style={{height: "500px"}}></div>
           </div>)}
