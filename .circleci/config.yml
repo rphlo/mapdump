@@ -76,7 +76,7 @@ jobs:
     - run:
         name: Deploy
         command: |
-          ssh rphlo@mapdump.com 'sudo -u apps /apps/mapdump/bin/deploy'
+          ssh rphlo@mapdump.com 'sudo -u apps NODE_OPTIONS=--openssl-legacy-provider /apps/mapdump/bin/deploy'
 
   build-docker:
     machine:
