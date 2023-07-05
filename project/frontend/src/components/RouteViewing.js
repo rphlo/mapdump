@@ -6,8 +6,8 @@ import ShareModal from "./ShareModal";
 import { saveKMZ } from "../utils/fileHelpers";
 import useGlobalState from "../utils/useGlobalState";
 import * as L from "leaflet";
-import RangeSlider from 'react-range-slider-input';
-import 'react-range-slider-input/dist/style.css';
+import RangeSlider from "react-range-slider-input";
+import "react-range-slider-input/dist/style.css";
 import { LatLng, cornerCalTransform } from "../utils";
 import { Position, PositionArchive } from "../utils/positions";
 import { scaleImage } from "../utils/drawHelpers";
@@ -51,8 +51,8 @@ const RouteViewing = (props) => {
   const [firstLoad, setFirstLoad] = useState(true);
   const [cropping, setCropping] = useState(false);
   const [leafletRoute, setLeafletRoute] = useState(null);
-  const [croppingRange, setCroppingRange] = useState([0, 100])
-  const [savingCrop, setSavingCrop] = useState(false)
+  const [croppingRange, setCroppingRange] = useState([0, 100]);
+  const [savingCrop, setSavingCrop] = useState(false);
   let finalImage = createRef();
 
   const globalState = useGlobalState();
@@ -253,10 +253,7 @@ const RouteViewing = (props) => {
           zoomSnap: 0,
           scrollWheelZoom: true,
         });
-        const bounds = [
-          map.unproject([0, 0]),
-          map.unproject([width, height]),
-        ];
+        const bounds = [map.unproject([0, 0]), map.unproject([width, height])];
         new L.imageOverlay(imgDataURI, bounds).addTo(map);
         map.fitBounds(bounds);
         map.invalidateSize();
@@ -287,15 +284,14 @@ const RouteViewing = (props) => {
         setLeafletRoute(t);
       }
     );
-  }
-
+  };
 
   const onCropChange = (range) => {
-    setCroppingRange(range)
-    const arr = route.getArray()
-    const minIdx = Math.floor(range[0] * arr.length / 100)
-    const maxIdx = Math.ceil(range[1] * arr.length / 100)
-    const arr2 = arr.slice(minIdx, maxIdx)
+    setCroppingRange(range);
+    const arr = route.getArray();
+    const minIdx = Math.floor((range[0] * arr.length) / 100);
+    const maxIdx = Math.ceil((range[1] * arr.length) / 100);
+    const arr2 = arr.slice(minIdx, maxIdx);
 
     const transform = cornerCalTransform(
       mapImage.width,
@@ -314,14 +310,14 @@ const RouteViewing = (props) => {
         routeLatLng.push([-pt.y, pt.x]);
       }
     });
-    leafletRoute.setLatLngs(routeLatLng)
-  }
+    leafletRoute.setLatLngs(routeLatLng);
+  };
 
   const saveCropping = async () => {
-    const arr = route.getArray()
-    const minIdx = Math.floor(croppingRange[0] * arr.length / 100)
-    const maxIdx = Math.ceil(croppingRange[1] * arr.length / 100)
-    const arr2 = arr.slice(minIdx, maxIdx)
+    const arr = route.getArray();
+    const minIdx = Math.floor((croppingRange[0] * arr.length) / 100);
+    const maxIdx = Math.ceil((croppingRange[1] * arr.length) / 100);
+    const arr2 = arr.slice(minIdx, maxIdx);
 
     setSavingCrop(true);
     try {
@@ -334,7 +330,14 @@ const RouteViewing = (props) => {
             Authorization: "Token " + api_token,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ route_data: arr2.map(p => {return {time: p.timestamp / 1e3, latlon: [p.coords.latitude, p.coords.longitude]}}) }),
+          body: JSON.stringify({
+            route_data: arr2.map((p) => {
+              return {
+                time: p.timestamp / 1e3,
+                latlon: [p.coords.latitude, p.coords.longitude],
+              };
+            }),
+          }),
         }
       );
       setSavingCrop(false);
@@ -345,11 +348,11 @@ const RouteViewing = (props) => {
           icon: "error",
           confirmButtonText: "OK",
         });
-        return
+        return;
       }
-      window.location.reload()
+      window.location.reload();
     } catch (e) {}
-  }
+  };
 
   return (
     <>
@@ -359,112 +362,134 @@ const RouteViewing = (props) => {
           onNameChanged={setName}
           onPrivacyChanged={setIsPrivate}
         />
-        {!cropping && (<>
-        <div>
-          {!isPrivate && (
-            <button
-              style={{ marginBottom: "5px" }}
-              className="btn btn-sm btn-warning"
-              onClick={share}
-            >
-              <i className="fas fa-share"></i> Share
-            </button>
-          )}
-          <br />
-          <button
-            style={{ marginBottom: "5px" }}
-            className="btn btn-sm btn-success"
-            onClick={downloadMap}
-          >
-            <i className="fas fa-download"></i> JPEG{" "}
-            {`(Map${includeRoute ? " w/ Route" : ""})`}
-          </button>
-          &nbsp;
-          <button
-            style={{ marginBottom: "5px" }}
-            className="btn btn-sm btn-success"
-            onClick={downloadKmz}
-            data-testid="dl-kmz"
-          >
-            <i className="fas fa-download"></i> KMZ (Map)
-          </button>
-          &nbsp;
-          <button
-            style={{ marginBottom: "5px" }}
-            className="btn btn-sm btn-success"
-            onClick={downloadGPX}
-          >
-            <i className="fas fa-download"></i> GPX (Route)
-          </button>
-          &nbsp;
-          <button
-              style={{ marginBottom: "5px" }}
-              className="btn btn-sm btn-primary"
-              onClick={cropRoute}
-            >
-              <i className="fas fa-cut"></i> Crop GPS
-          </button>
-          {hasRouteTime() && (
-            <button
-              style={{ marginBottom: "5px" }}
-              className="btn btn-sm btn-primary float-right"
-              onClick={props.togglePlayer}
-            >
-              <i className="fas fa-play"></i> View animation
-            </button>
-          )}
-        </div>
-        <div>
-          <button
-            className="btn btn-sm btn-default"
-            onClick={zoomIn}
-            aria-label="Zoom in"
-          >
-            <i className={"fa fa-plus"}></i>
-          </button>
-          &nbsp;
-          <button
-            className="btn btn-sm btn-default"
-            onClick={zoomOut}
-            aria-label="Zoom out"
-          >
-            <i className={"fa fa-minus"}></i>
-          </button>
-          &nbsp;
-          <button className="btn btn-sm btn-default" onClick={toggleHeader}>
-            <i
-              className={
-                togglingHeader
-                  ? "fa fa-spinner fa-spin"
-                  : "fa fa-toggle-" + (includeHeader ? "on" : "off")
-              }
-              style={includeHeader ? { color: "#3c2" } : {}}
-            ></i>{" "}
-            Header
-          </button>
-          &nbsp;
-          <button className="btn btn-sm btn-default" onClick={toggleRoute}>
-            <i
-              className={
-                togglingRoute
-                  ? "fa fa-spinner fa-spin"
-                  : "fa fa-toggle-" + (includeRoute ? "on" : "off")
-              }
-              style={includeRoute ? { color: "#3c2" } : {}}
-            ></i>{" "}
-            Route
-          </button>
-        </div>
-      </>)}
+        {!cropping && (
+          <>
+            <div>
+              {!isPrivate && (
+                <button
+                  style={{ marginBottom: "5px" }}
+                  className="btn btn-sm btn-warning"
+                  onClick={share}
+                >
+                  <i className="fas fa-share"></i> Share
+                </button>
+              )}
+              <br />
+              <button
+                style={{ marginBottom: "5px" }}
+                className="btn btn-sm btn-success"
+                onClick={downloadMap}
+              >
+                <i className="fas fa-download"></i> JPEG{" "}
+                {`(Map${includeRoute ? " w/ Route" : ""})`}
+              </button>
+              &nbsp;
+              <button
+                style={{ marginBottom: "5px" }}
+                className="btn btn-sm btn-success"
+                onClick={downloadKmz}
+                data-testid="dl-kmz"
+              >
+                <i className="fas fa-download"></i> KMZ (Map)
+              </button>
+              &nbsp;
+              <button
+                style={{ marginBottom: "5px" }}
+                className="btn btn-sm btn-success"
+                onClick={downloadGPX}
+              >
+                <i className="fas fa-download"></i> GPX (Route)
+              </button>
+              &nbsp;
+              <button
+                style={{ marginBottom: "5px" }}
+                className="btn btn-sm btn-primary"
+                onClick={cropRoute}
+              >
+                <i className="fas fa-cut"></i> Crop GPS
+              </button>
+              {hasRouteTime() && (
+                <button
+                  style={{ marginBottom: "5px" }}
+                  className="btn btn-sm btn-primary float-right"
+                  onClick={props.togglePlayer}
+                >
+                  <i className="fas fa-play"></i> View animation
+                </button>
+              )}
+            </div>
+            <div>
+              <button
+                className="btn btn-sm btn-default"
+                onClick={zoomIn}
+                aria-label="Zoom in"
+              >
+                <i className={"fa fa-plus"}></i>
+              </button>
+              &nbsp;
+              <button
+                className="btn btn-sm btn-default"
+                onClick={zoomOut}
+                aria-label="Zoom out"
+              >
+                <i className={"fa fa-minus"}></i>
+              </button>
+              &nbsp;
+              <button className="btn btn-sm btn-default" onClick={toggleHeader}>
+                <i
+                  className={
+                    togglingHeader
+                      ? "fa fa-spinner fa-spin"
+                      : "fa fa-toggle-" + (includeHeader ? "on" : "off")
+                  }
+                  style={includeHeader ? { color: "#3c2" } : {}}
+                ></i>{" "}
+                Header
+              </button>
+              &nbsp;
+              <button className="btn btn-sm btn-default" onClick={toggleRoute}>
+                <i
+                  className={
+                    togglingRoute
+                      ? "fa fa-spinner fa-spin"
+                      : "fa fa-toggle-" + (includeRoute ? "on" : "off")
+                  }
+                  style={includeRoute ? { color: "#3c2" } : {}}
+                ></i>{" "}
+                Route
+              </button>
+            </div>
+          </>
+        )}
       </div>
       <div className="container-fluid">
         <div>
-          {cropping && (<div className="container">
-            <h3>Crop GPS</h3>
-            <button className="btn btn-primary mb-3 mr-1" onClick={saveCropping} disabled={savingCrop}><i className="fas fa-save"></i> Save</button><button className="btn btn-danger mb-3" onClick={() => window.location.reload()} disabled={savingCrop}><i className="fas fa-times"></i> Cancel</button>
-            <RangeSlider className={"mb-3"} defaultValue={[0, 100]} step={0.001} onInput={onCropChange}/>
-            <div id="croppingMap" style={{height: "500px"}}></div>
-          </div>)}
+          {cropping && (
+            <div className="container">
+              <h3>Crop GPS</h3>
+              <button
+                className="btn btn-primary mb-3 mr-1"
+                onClick={saveCropping}
+                disabled={savingCrop}
+              >
+                <i className="fas fa-save"></i> Save
+              </button>
+              <button
+                className="btn btn-danger mb-3"
+                onClick={() => window.location.reload()}
+                disabled={savingCrop}
+              >
+                <i className="fas fa-times"></i> Cancel
+              </button>
+              <RangeSlider
+                className={"mb-3"}
+                defaultValue={[0, 100]}
+                step={0.001}
+                onInput={onCropChange}
+              />
+              <div id="croppingMap" style={{ height: "500px" }}></div>
+            </div>
+          )}
           {!cropping && imgURL && (
             <center>
               <img
