@@ -293,10 +293,8 @@ export const drawRoute = (
       const pointEnd = transform(
         new LatLng(route[j].latlng[0], route[j].latlng[1])
       );
-      /*if (Math.sqrt(Math.pow(Math.round(pointEnd.x) - Math.round(pointStart.x), 2) + Math.pow(Math.round(pointEnd.y) - Math.round(pointStart.y), 2)) < 2) {
-        continue;
-      }*/
       // Create a gradient for each segment, pick start end end colors from palette gradient
+      console.log(route, pointStart, bounds)
       const gradient = ctx2.createLinearGradient(
         Math.round(pointStart.x - bounds.minX),
         Math.round(pointStart.y - bounds.minY),
