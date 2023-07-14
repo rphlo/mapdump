@@ -9,7 +9,6 @@ import * as L from "leaflet";
 import RangeSlider from "react-range-slider-input";
 import "react-range-slider-input/dist/style.css";
 import { LatLng, cornerCalTransform } from "../utils";
-import { Position, PositionArchive } from "../utils/positions";
 import { scaleImage } from "../utils/drawHelpers";
 import Swal from "sweetalert2";
 
@@ -56,7 +55,7 @@ const RouteViewing = (props) => {
   let finalImage = createRef();
 
   const globalState = useGlobalState();
-  const { api_token } = globalState.user;
+  const { api_token, username } = globalState.user;
 
   const loadCache = async (url) => {
     return new Promise((resolve, reject) => {
@@ -69,17 +68,21 @@ const RouteViewing = (props) => {
   };
 
   useEffect(() => {
-    const arch = new PositionArchive();
+    const arch = [];
     props.route.forEach((p) =>
-      arch.add(
-        new Position({
-          timestamp: p.time,
+      arch.push(
+        {
+          timestamp: p?.time,
           coords: { latitude: p.latlng[0], longitude: p.latlng[1] },
-        })
+        }
       )
     );
     setRoute(arch);
   }, [props.route]);
+
+  const canEdit = () => {
+    return username === props.athlete.username;
+  };
 
   useEffect(() => {
     const qp = new URLSearchParams();
@@ -267,7 +270,7 @@ const RouteViewing = (props) => {
           props.mapCornersCoords.bottom_left
         );
         const routeLatLng = [];
-        route.getArray().forEach(function (pos) {
+        route.forEach(function (pos) {
           if (!isNaN(pos.coords.latitude)) {
             const pt = transform(
               new LatLng(pos.coords.latitude, pos.coords.longitude)
@@ -288,10 +291,9 @@ const RouteViewing = (props) => {
 
   const onCropChange = (range) => {
     setCroppingRange(range);
-    const arr = route.getArray();
-    const minIdx = Math.floor((range[0] * arr.length) / 100);
-    const maxIdx = Math.ceil((range[1] * arr.length) / 100);
-    const arr2 = arr.slice(minIdx, maxIdx);
+    const minIdx = Math.floor((range[0] * route.length) / 100);
+    const maxIdx = Math.ceil((range[1] * route.length) / 100);
+    const arr = route.slice(minIdx, maxIdx);
 
     const transform = cornerCalTransform(
       mapImage.width,
@@ -302,7 +304,7 @@ const RouteViewing = (props) => {
       props.mapCornersCoords.bottom_left
     );
     const routeLatLng = [];
-    arr2.forEach(function (pos) {
+    arr.forEach(function (pos) {
       if (!isNaN(pos.coords.latitude)) {
         const pt = transform(
           new LatLng(pos.coords.latitude, pos.coords.longitude)
@@ -314,10 +316,9 @@ const RouteViewing = (props) => {
   };
 
   const saveCropping = async () => {
-    const arr = route.getArray();
-    const minIdx = Math.floor((croppingRange[0] * arr.length) / 100);
-    const maxIdx = Math.ceil((croppingRange[1] * arr.length) / 100);
-    const arr2 = arr.slice(minIdx, maxIdx);
+    const minIdx = Math.floor((croppingRange[0] * route.length) / 100);
+    const maxIdx = Math.ceil((croppingRange[1] * route.length) / 100);
+    const arr = route.slice(minIdx, maxIdx);
 
     setSavingCrop(true);
     try {
@@ -331,11 +332,12 @@ const RouteViewing = (props) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            route_data: arr2.map((p) => {
-              return {
-                time: p.timestamp / 1e3,
-                latlon: [p.coords.latitude, p.coords.longitude],
-              };
+            route_data: arr.map((p) => {
+              var pt = {latlon: [p.coords.latitude, p.coords.longitude]}
+              if (p.timestamp) {
+                pt.time = p.timestamp / 1e3;
+              }
+              return pt;
             }),
           }),
         }
@@ -400,14 +402,14 @@ const RouteViewing = (props) => {
               >
                 <i className="fas fa-download"></i> GPX (Route)
               </button>
-              &nbsp;
+              {canEdit() && (<>&nbsp;
               <button
                 style={{ marginBottom: "5px" }}
                 className="btn btn-sm btn-primary"
                 onClick={cropRoute}
               >
                 <i className="fas fa-cut"></i> Crop GPS
-              </button>
+              </button></>)}
               {hasRouteTime() && (
                 <button
                   style={{ marginBottom: "5px" }}
