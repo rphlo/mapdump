@@ -44,7 +44,7 @@ RUN apt-get -y install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev
 # get install script and pass it to execute:
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
 # and install node
-RUN apt-get -y install nodejs npm
+RUN apt-get -y install nodejs
 RUN node --version
 RUN npm --version
 RUN npm add yarn -g
