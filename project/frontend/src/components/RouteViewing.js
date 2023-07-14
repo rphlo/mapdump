@@ -333,7 +333,7 @@ const RouteViewing = (props) => {
           },
           body: JSON.stringify({
             route_data: arr.map((p) => {
-              var pt = {latlon: [p.coords.latitude, p.coords.longitude]}
+              var pt = {latlon: [p.coords.latitude, p.coords.longitude], time: null}
               if (p.timestamp) {
                 pt.time = p.timestamp / 1e3;
               }
