@@ -80,6 +80,7 @@ const Register = (props) => {
                 id="username"
                 name="username"
                 placeholder="Username"
+                required
               />
               {errors.username && (
                 <div className="invalid-feedback">{errors.username}</div>
@@ -98,6 +99,7 @@ const Register = (props) => {
                 id="email"
                 name="email"
                 placeholder="Email"
+                required
               />
               {errors.email && (
                 <div className="invalid-feedback">{errors.email}</div>
@@ -118,6 +120,7 @@ const Register = (props) => {
                 id="firstName"
                 name="firstName"
                 placeholder="First Name"
+                required
               />
               {errors.first_name && (
                 <div className="invalid-feedback">{errors.first_name}</div>
@@ -138,6 +141,7 @@ const Register = (props) => {
                 id="lastName"
                 name="lastName"
                 placeholder="Last Name"
+                required
               />
               {errors.last_name && (
                 <div className="invalid-feedback">{errors.last_name}</div>
@@ -158,6 +162,7 @@ const Register = (props) => {
                 id="password"
                 name="password"
                 placeholder="Password"
+                required
               />
               {errors.password1 && (
                 <div className="invalid-feedback">{errors.password1}</div>
@@ -178,6 +183,7 @@ const Register = (props) => {
                 id="passwordRepeat"
                 name="passwordRepeat"
                 placeholder="Password Confirmation"
+                required
               />
               {errors.password2 && (
                 <div className="invalid-feedback">{errors.password2}</div>
