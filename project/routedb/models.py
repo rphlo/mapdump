@@ -372,7 +372,7 @@ class Route(models.Model):
     def route_image(self, header=True, route=True):
         arg = "_h" if header else ""
         arg += "_r" if route else ""
-        cache_key = f"route_{self.images_path}_{arg}"
+        cache_key = f"route_{self.images_path}{arg}"
         cached = cache.get(cache_key)
         if cached:
             return cached
