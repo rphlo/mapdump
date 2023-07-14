@@ -89,6 +89,7 @@ const UserSettings = () => {
                 id="username"
                 name="username"
                 placeholder="Username"
+                required
               />
               {errors.username && (
                 <div className="invalid-feedback">{errors.username}</div>
@@ -110,6 +111,7 @@ const UserSettings = () => {
                 id="firstName"
                 name="firstName"
                 placeholder="First Name"
+                required
               />
               {errors.first_name && (
                 <div className="invalid-feedback">{errors.first_name}</div>
@@ -131,6 +133,7 @@ const UserSettings = () => {
                 id="lastName"
                 name="lastName"
                 placeholder="Last Name"
+                required
               />
               {errors.last_name && (
                 <div className="invalid-feedback">{errors.last_name}</div>
