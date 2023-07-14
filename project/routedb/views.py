@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.cache import cache
 from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -296,6 +297,14 @@ class RouteDetail(generics.RetrieveUpdateDestroyAPIView):
             .get_queryset()
             .filter(Q(athlete_id=self.request.user.id) | Q(is_private=False))
         )
+
+    def update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        cache.delete(f"route_{obj.images_path}_h")
+        cache.delete(f"route_{obj.images_path}_r")
+        cache.delete(f"route_{obj.images_path}_h_r")
+        cache.delete(f"route_{obj.images_path}")
+        return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         obj = self.get_object()
