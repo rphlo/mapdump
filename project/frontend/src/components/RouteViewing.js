@@ -70,12 +70,10 @@ const RouteViewing = (props) => {
   useEffect(() => {
     const arch = [];
     props.route.forEach((p) =>
-      arch.push(
-        {
-          timestamp: p?.time,
-          coords: { latitude: p.latlng[0], longitude: p.latlng[1] },
-        }
-      )
+      arch.push({
+        timestamp: p?.time,
+        coords: { latitude: p.latlng[0], longitude: p.latlng[1] },
+      })
     );
     setRoute(arch);
   }, [props.route]);
@@ -333,7 +331,10 @@ const RouteViewing = (props) => {
           },
           body: JSON.stringify({
             route_data: arr.map((p) => {
-              var pt = {latlon: [p.coords.latitude, p.coords.longitude], time: null}
+              var pt = {
+                latlon: [p.coords.latitude, p.coords.longitude],
+                time: null,
+              };
               if (p.timestamp) {
                 pt.time = p.timestamp / 1e3;
               }
@@ -402,14 +403,18 @@ const RouteViewing = (props) => {
               >
                 <i className="fas fa-download"></i> GPX (Route)
               </button>
-              {canEdit() && (<>&nbsp;
-              <button
-                style={{ marginBottom: "5px" }}
-                className="btn btn-sm btn-primary"
-                onClick={cropRoute}
-              >
-                <i className="fas fa-cut"></i> Crop GPS
-              </button></>)}
+              {canEdit() && (
+                <>
+                  &nbsp;
+                  <button
+                    style={{ marginBottom: "5px" }}
+                    className="btn btn-sm btn-primary"
+                    onClick={cropRoute}
+                  >
+                    <i className="fas fa-cut"></i> Crop GPS
+                  </button>
+                </>
+              )}
               {hasRouteTime() && (
                 <button
                   style={{ marginBottom: "5px" }}
