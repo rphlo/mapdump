@@ -38,9 +38,7 @@ const ImageDropzone = (props) => {
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    onDrop,
-    accept: 
-      "*,.pdf,.kmz,.jpg,.jpeg,.png,.webp,.gif,.avif,.heic",
+    onDrop
   });
 
   const style = useMemo(
@@ -54,17 +52,19 @@ const ImageDropzone = (props) => {
   );
 
   return (
-    <div data-testid="dropzoneImg" {...getRootProps({ style })}>
-      <input {...getInputProps()} multiple={false} />
-      {isDragActive ? (
-        <p>Drop the map here...</p>
-      ) : (
-        <p>
-          Drag 'n' drop an image, a kmz, or a pdf file here, or click to select
-          a file...
-        </p>
-      )}
-    </div>
+    <form enctype="multipart/form-data" method="post">
+      <div data-testid="dropzoneImg" {...getRootProps({ style })}>
+          <input {...getInputProps()} multiple={false} />
+          {isDragActive ? (
+            <p>Drop the map here...</p>
+          ) : (
+            <p>
+              Drag 'n' drop an image, a kmz, or a pdf file here, or click to select
+              a file.
+            </p>
+          )}
+      </div>
+    </form>
   );
 };
 
