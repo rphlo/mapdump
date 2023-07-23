@@ -40,7 +40,7 @@ const ImageDropzone = (props) => {
   } = useDropzone({
     onDrop,
     accept: 
-      ".pdf,.kmz,.jpg,.jpeg,.png,.webp,.gif,.avif,.heic",
+      "*,.pdf,.kmz,.jpg,.jpeg,.png,.webp,.gif,.avif,.heic",
   });
 
   const style = useMemo(
