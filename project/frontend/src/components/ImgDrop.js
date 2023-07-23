@@ -60,7 +60,7 @@ const ImageDropzone = (props) => {
           ) : (
             <p>
               Drag 'n' drop an image, a kmz, or a pdf file here, or click to select
-              a file.
+              a file
             </p>
           )}
       </div>
