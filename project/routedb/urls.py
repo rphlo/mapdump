@@ -1,5 +1,5 @@
 from django.urls import include, path, re_path
-from allauth.views import PasswordConfirmView
+
 from . import feeds, views
 
 urlpatterns = [
