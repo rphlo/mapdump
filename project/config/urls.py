@@ -28,9 +28,10 @@ urlpatterns = [
     path("drf-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("api/v1/", include("routedb.urls")),
     path("", views.index_view, name="index"),
-    re_path(r'^password-reset-confirmation/(?P<uidb64>[0-9A-Za-z_\-]+):(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$',
+    re_path(
+        r"^password-reset-confirmation/(?P<uidb64>[0-9A-Za-z_\-]+):(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,32})/$",
         TemplateView.as_view(template_name="base.html"),
-        name='password_reset_confirm'
+        name="password_reset_confirm",
     ),
     re_path(
         r"routes/(?P<route_id>[a-zA-Z0-9_-]{11})/?$",
