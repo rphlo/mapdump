@@ -41,8 +41,8 @@ from tagging.utils import get_tag
 from utils.s3 import s3_object_url
 
 
-def encode_filename(name):
-    return name.replace("\\", "_").replace('"', '\\"')
+def encode_filename(filename):
+    return urllib.parse.quote(filename, safe='')
 
 
 def x_accel_redirect(request, path, filename="", mime="application/force-download"):
@@ -65,9 +65,7 @@ def x_accel_redirect(request, path, filename="", mime="application/force-downloa
     if filename:
         response[
             "Content-Disposition"
-        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
-            "utf-8"
-        )
+        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
     return response
 
 
@@ -92,9 +90,7 @@ def serve_from_s3(
     if filename:
         response[
             "Content-Disposition"
-        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
-            "utf-8"
-        )
+        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
     return response
 
 
@@ -350,9 +346,7 @@ def map_download(request, uid, *args, **kwargs):
         r = HttpResponse(img, content_type=mime_type)
         r[
             "Content-Disposition"
-        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
-            "utf-8"
-        )
+        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
         return r
     elif out_bounds:
         img = route.route_image(False, False)
@@ -360,9 +354,7 @@ def map_download(request, uid, *args, **kwargs):
         r = HttpResponse(img, content_type=mime_type)
         r[
             "Content-Disposition"
-        ] = f'attachment; charset=utf-8; filename="{encode_filename(filename)}"'.encode(
-            "utf-8"
-        )
+        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
         return r
     file_path = route.raster_map.path
     mime_type = route.raster_map.mime_type
@@ -409,9 +401,7 @@ def gpx_download(request, uid, *args, **kwargs):
     response = HttpResponse(gpx_data, content_type="application/gpx+xml")
     response[
         "Content-Disposition"
-    ] = f'attachment; charset=utf-8; filename="{encode_filename(route.name)}.gpx"'.encode(
-        "utf-8"
-    )
+    ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
     return response
 
 
