@@ -42,11 +42,10 @@ jobs:
         command: |
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-          nvm install v14 && nvm use v14 && nvm alias default v14
+          nvm install v20 && nvm use v20 && nvm alias default v20
           node -v
           curl -o- -L https://yarnpkg.com/install.sh | bash
           cd project/frontend/
-          ~/.yarn/bin/yarn add react-scripts@4.0.3
     - run: ./da build_frontend
     - run: ./dc restart django
     - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do sleep 5; done' || false
@@ -56,7 +55,7 @@ jobs:
         command: |
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-          nvm install v14 && nvm use v14 && nvm alias default v14
+          nvm install v20 && nvm use v20 && nvm alias default v20
           sudo apt-get update
           sudo apt-get install -y libgbm-dev
           node -v
