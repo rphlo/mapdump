@@ -21,10 +21,18 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR("No client directory found"))
             return
 
+        env = dict(os.environ, NODE_OPTIONS="--openssl-legacy-provider")
         self.stdout.write("Building client app ...")
-        subprocess.check_output([settings.YARN_PATH, "install"], cwd=client_dir)
         subprocess.check_output(
-            [settings.YARN_PATH, "build", "--production"], cwd=client_dir, env=dict(os.environ, NODE_OPTIONS="--openssl-legacy-provider")
+            [settings.YARN_PATH, "install"],
+            cwd=client_dir,
+            env=env
+        )
+        
+        subprocess.check_output(
+            [settings.YARN_PATH, "build", "--production"],
+            cwd=client_dir,
+            env=env
         )
 
         self.stdout.write("Collecting static files ...")
