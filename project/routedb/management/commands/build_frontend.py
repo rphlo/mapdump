@@ -24,7 +24,7 @@ class Command(BaseCommand):
         self.stdout.write("Building client app ...")
         subprocess.check_output([settings.YARN_PATH, "install"], cwd=client_dir)
         subprocess.check_output(
-            [settings.YARN_PATH, "build", "--production"], cwd=client_dir
+            [settings.YARN_PATH, "build", "--production"], cwd=client_dir, env=dict(os.environ, NODE_OPTIONS="--openssl-legacy-provider")
         )
 
         self.stdout.write("Collecting static files ...")
