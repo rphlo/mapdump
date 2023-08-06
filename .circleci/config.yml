@@ -36,26 +36,18 @@ jobs:
     - run: ./dc up -d
     - run: ./dc pipinstall
     - run: ./da migrate
-    - run:
-        name: Install Yarn and add react-scripts
-        # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
-        command: |
-          export NVM_DIR="/opt/circleci/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-          nvm install v20 && nvm use v20 && nvm alias default v20
-          node -v
-          curl -o- -L https://yarnpkg.com/install.sh | bash
-          cd project/frontend/
     - run: ./da build_frontend
     - run: ./dc restart django
     - run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do sleep 5; done' || false
     - run:
         name: Run cypress
-        # https://www.cloudesire.com/how-to-upgrade-node-on-circleci-machine-executor/
         command: |
+          wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
           export NVM_DIR="/opt/circleci/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-          nvm install v20 && nvm use v20 && nvm alias default v20
+          nvm install 20 && nvm use 20 && nvm alias default 20
+          node -v
+          curl -o- -L https://yarnpkg.com/install.sh | bash
           sudo apt-get update
           sudo apt-get install -y libgbm-dev
           node -v
@@ -75,7 +67,7 @@ jobs:
     - run:
         name: Deploy
         command: |
-          ssh rphlo@mapdump.com 'sudo -u apps NODE_OPTIONS=--openssl-legacy-provider /apps/mapdump/bin/deploy'
+          ssh rphlo@mapdump.com 'sudo -u apps /apps/mapdump/bin/deploy'
 
   build-docker:
     machine:

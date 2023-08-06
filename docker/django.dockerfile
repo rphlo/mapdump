@@ -1,4 +1,4 @@
-FROM python:3.11-bullseye
+FROM python:3.11
 
 # Copy in your requirements file
 ADD project/requirements.txt /requirements.txt
@@ -42,9 +42,9 @@ RUN apt-get -y install curl
 # install canvas dependencies
 RUN apt-get -y install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 # get install script and pass it to execute:
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
 # and install node
-RUN apt-get -y install nodejs
+RUN apt-get -y install nodejs npm
 RUN node --version
 RUN npm --version
 RUN npm add yarn -g
