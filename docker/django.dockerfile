@@ -37,8 +37,6 @@ ENV DJANGO_SETTINGS_MODULE=config.settings
 # install node for tools
 # update
 RUN apt-get update
-# install curl
-RUN apt-get -y install curl
 # install canvas dependencies
 RUN apt-get -y install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 # get install script and pass it to execute:
