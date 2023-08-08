@@ -42,7 +42,7 @@ from utils.s3 import s3_object_url
 
 
 def encode_filename(filename):
-    return urllib.parse.quote(filename, safe='')
+    return urllib.parse.quote(filename, safe="")
 
 
 def x_accel_redirect(request, path, filename="", mime="application/force-download"):
