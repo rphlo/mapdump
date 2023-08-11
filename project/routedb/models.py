@@ -20,7 +20,6 @@ from django.urls import reverse
 from django.utils.timezone import now, utc
 from django_s3_storage.storage import S3Storage
 from PIL import Image
-from tagging.models import Tag
 from tagging.registry import register as register_tagged_model
 from utils.helper import country_at_coords, random_key, time_base64, tz_at_coords
 from utils.validators import (

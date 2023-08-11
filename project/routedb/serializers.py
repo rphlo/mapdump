@@ -11,8 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from routedb.models import RasterMap, Route, UserSettings
-from tagging.models import Tag
+from routedb.models import RasterMap, Route, UserSettingsFtag
 from utils.validators import (
     custom_username_validators,
     validate_latitude,
