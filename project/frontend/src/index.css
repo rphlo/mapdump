@@ -67,3 +67,7 @@ body {
   border: 1px solid #000;
   margin-bottom: 5px;
 }
+
+.swal2-container {
+  z-index: 3000 !important;
+}
