@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { printTime } from "../utils/drawHelpers";
 import useGlobalState from "../utils/useGlobalState";
 import logo from "../strava.png";
+import connectWStrava from "../connectWithStrava.png";
 
 const Settings = (props) => {
   const globalState = useGlobalState();
@@ -86,9 +87,9 @@ const Settings = (props) => {
     qp.set("approval_prompt", "auto");
     qp.set("scope", "activity:read_all,activity:write,read");
     return (
-      <a href={`${url}?${qp.toString()}`}>
-        <img height="50px" src={logo} alt="With strava" />
-      </a>
+      <>or <a href={`${url}?${qp.toString()}`}>
+        <img height="50px" src={connectWStrava} alt="With strava" />
+      </a></>
     );
   }
 
