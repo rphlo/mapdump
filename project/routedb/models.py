@@ -394,7 +394,7 @@ class Route(models.Model):
                 ],
                 stderr=subprocess.STDOUT,
                 cwd=os.path.join(settings.BASE_DIR, "jstools"),
-                env=dict(os.environ, NODE_OPTIONS="--openssl-legacy-provider"),
+                env=dict(os.environ),
             )
 
         if data_uri:
