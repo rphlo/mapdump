@@ -29,7 +29,7 @@
     "react-range-slider-input": "^3.0.7",
     "react-router-dom": "^5.1.2",
     "react-router-navigation-prompt": "^1.9.6",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "4",
     "react-tooltip": "^3.11.2",
     "sax": "^1.2.4",
     "strava-v3": "^2.1.0",
