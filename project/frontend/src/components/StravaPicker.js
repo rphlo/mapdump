@@ -87,9 +87,12 @@ const Settings = (props) => {
     qp.set("approval_prompt", "auto");
     qp.set("scope", "activity:read_all,activity:write,read");
     return (
-      <>or <a href={`${url}?${qp.toString()}`}>
-        <img height="50px" src={connectWStrava} alt="With strava" />
-      </a></>
+      <>
+        or{" "}
+        <a href={`${url}?${qp.toString()}`}>
+          <img height="50px" src={connectWStrava} alt="With strava" />
+        </a>
+      </>
     );
   }
 
