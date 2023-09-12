@@ -131,8 +131,12 @@ function App() {
             <Link to="/privacy-policy">Privacy Policy</Link> -{" "}
             <Link to="/tos">Terms of Service</Link>
           </span>
-          <br/>
-          <img alt="Compatible with strava" width="200px" src="/static/compatibleWithStrava.png"></img>
+          <br />
+          <img
+            alt="Compatible with strava"
+            width="200px"
+            src="/static/compatibleWithStrava.png"
+          ></img>
         </footer>
       </Router>
     </GlobalStateProvider>
