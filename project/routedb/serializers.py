@@ -240,6 +240,7 @@ class RouteSerializer(serializers.ModelSerializer):
         super().save()
         instance = self.instance
         instance.prefetch_route_extras()
+        instance.save()
         comment = instance.comment
         instance.tags = ", ".join(
             hashtag_match.group(2).lower()
