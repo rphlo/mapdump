@@ -237,6 +237,7 @@ class RouteSerializer(serializers.ModelSerializer):
         return route
 
     def save(self):
+        self.instance.prefetch_route_extras()
         super().save()
         instance = self.instance
         comment = instance.comment
