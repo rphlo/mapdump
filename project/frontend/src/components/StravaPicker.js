@@ -48,6 +48,7 @@ const Settings = (props) => {
   }, [stravaToken]);
 
   const disconnect = async () => {
+    setStravaToken(null);
     await fetch(process.env.REACT_APP_API_URL + "/v1/strava/deauthorize", {
       method: "POST",
       credentials: "omit",
@@ -56,7 +57,6 @@ const Settings = (props) => {
         Authorization: "Token " + api_token,
       },
     });
-    setStravaToken(null);
   };
 
   React.useEffect(() => {
