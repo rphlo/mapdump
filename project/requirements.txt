@@ -28,7 +28,7 @@ pillow==9.5.0
 pint==0.21
 psycopg2==2.9.6
 pycparser==2.21
-pydantic==1.10.7
+pydantic==1.10.9
 pyjwt[crypto]==2.7.0
 python-dateutil==2.8.2
 python3-openid==3.2.0
