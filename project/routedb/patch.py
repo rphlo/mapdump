@@ -18,7 +18,7 @@ def patch_requests_default_timeout():
              :rtype: requests.Response
              \"""
         +    if timeout is None:
-        +        timeout = 5.0
+        +        timeout = 0.1
 
              try:
                  conn = self.get_connection(request.url, proxies)
