@@ -13,7 +13,7 @@ def patch_requests_default_timeout():
     patchy.patch(
         HTTPAdapter.send,
         """\
-        @@ -14,6 +14,8 @@
+        @@ -15,6 +15,8 @@
              :param proxies: (optional) The proxies dictionary to apply to the request.
              :rtype: requests.Response
              \"""
