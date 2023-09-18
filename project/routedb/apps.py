@@ -5,4 +5,4 @@ class RouteDBConfig(AppConfig):
     name = "routedb"
     
     def ready(self):
-        patch.patch_default_timeout()
+        patch.patch_requests_default_timeout()
