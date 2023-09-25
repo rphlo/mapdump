@@ -243,10 +243,12 @@ const RouteViewing = (props) => {
 
   const cropRoute = () => {
     setCropping(true);
+    setImgLoaded(false);
     resetOrientation(
       props.mapDataURL + (props.isPrivate ? "?auth_token=" + api_token : ""),
       function (imgDataURI, width, height) {
         setMapImage({ width, height });
+        setImgLoaded(true);
         const map = L.map("croppingMap", {
           crs: L.CRS.Simple,
           minZoom: -5,
@@ -471,7 +473,7 @@ const RouteViewing = (props) => {
       </div>
       <div className="container-fluid">
         <div>
-          {cropping && (
+          {cropping && imgLoaded && (
             <div className="container">
               <h3>Crop GPS</h3>
               <button
@@ -511,12 +513,12 @@ const RouteViewing = (props) => {
               />
             </center>
           )}
-          {!cropping && !imgLoaded && (
-            <div>
+          {!imgLoaded && (
+            <center>
               <h3>
                 <i className="fa fa-spin fa-spinner"></i> Loading...
               </h3>
-            </div>
+            </center>
           )}
         </div>
         {shareModalOpen && (
