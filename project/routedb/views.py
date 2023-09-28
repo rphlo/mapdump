@@ -414,14 +414,18 @@ def strava_authorize(request):
     if not code or "activity:read_all" not in scopes or "activity:write" not in scopes:
         return HttpResponseRedirect(settings.URL_FRONT + "/new")
     client = StravaClient()
-    access_token = client.exchange_code_for_token(
-        client_id=settings.MY_STRAVA_CLIENT_ID,
-        client_secret=settings.MY_STRAVA_CLIENT_SECRET,
-        code=code,
-    )
-    user_settings = request.user.settings
-    user_settings.strava_access_token = json.dumps(access_token)
-    user_settings.save()
+    try:
+        access_token = client.exchange_code_for_token(
+            client_id=settings.MY_STRAVA_CLIENT_ID,
+            client_secret=settings.MY_STRAVA_CLIENT_SECRET,
+            code=code,
+        )
+    except Exception:
+        pass
+    else:
+        user_settings = request.user.settings
+        user_settings.strava_access_token = json.dumps(access_token)
+        user_settings.save()
     return HttpResponseRedirect(settings.URL_FRONT + "/new")
 
 
