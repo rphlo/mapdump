@@ -14,29 +14,27 @@ const Settings = (props) => {
   const [stravaToken, setStravaToken] = React.useState();
   const [act, setAct] = React.useState([]);
   const [client, setClient] = React.useState();
-
+  const [loading, setLoading] = React.useState();
   React.useEffect(() => {
     (async () => {
       if (api_token) {
-        try {
-          const res = await fetch(
-            process.env.REACT_APP_API_URL + "/v1/strava/token",
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Token " + api_token,
-              },
-            }
-          );
-          if (res.status === 401) {
-            throw new Error("not logged in");
+        const res = await fetch(
+          process.env.REACT_APP_API_URL + "/v1/strava/token",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Token " + api_token,
+            },
           }
+        );
+        if (res.status === 401) {
+          throw new Error("not logged in");
+        }
+        try {
           const data = await res.json();
           setStravaToken(data.strava_access_token);
-        } catch (e) {
-          globalState.setUser({});
-        }
+        } catch {}
       }
     })();
   }, [globalState, api_token]);
@@ -47,30 +45,18 @@ const Settings = (props) => {
     }
   }, [stravaToken]);
 
-  const disconnect = async () => {
-    setStravaToken(null);
-    await fetch(process.env.REACT_APP_API_URL + "/v1/strava/deauthorize", {
-      method: "POST",
-      credentials: "omit",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Token " + api_token,
-      },
-    });
-  };
-
   React.useEffect(() => {
     (async () => {
       if (client) {
         try {
+          setLoading(true)
           const routes = await client.athlete.listActivities({ per_page: 10 });
+          setLoading(false)
           setAct(routes);
-        } catch (e) {
-          disconnect();
+        } catch {
         }
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client]);
 
   if (!stravaToken) {
@@ -153,9 +139,9 @@ const Settings = (props) => {
         style={{ mixBlendMode: "multiply" }}
         className="mr-5"
       />
-      <button className="btn btn-danger" onClick={disconnect}>
-        disconnect
-      </button>
+      {(!client || loading) ? (
+        <center><h3><i className="fa fa-spin fa-spinner"></i> Loading</h3></center>
+      ) : (
       <table className="table table-striped table-hover">
         <thead className="thead-dark">
           <tr>
@@ -179,6 +165,7 @@ const Settings = (props) => {
           ))}
         </tbody>
       </table>
+      )}
     </>
   );
 };
