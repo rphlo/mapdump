@@ -29,7 +29,7 @@ const Settings = (props) => {
           }
         );
         if (res.status === 401) {
-          throw new Error("not logged in");
+          globalState.setUser({});
         }
         try {
           const data = await res.json();

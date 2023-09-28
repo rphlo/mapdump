@@ -13,21 +13,17 @@ const Login = () => {
   React.useEffect(() => {
     (async () => {
       if (username) {
-        try {
-          const res = await fetch(
-            process.env.REACT_APP_API_URL + "/v1/auth/user/",
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Token " + api_token,
-              },
-            }
-          );
-          if (res.status !== 200) {
-            throw new Error("not logged in");
+        const res = await fetch(
+          process.env.REACT_APP_API_URL + "/v1/auth/user/",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Token " + api_token,
+            },
           }
-        } catch (e) {
+        );
+        if (res.status === 401) {
           globalState.setUser({});
         }
       }
