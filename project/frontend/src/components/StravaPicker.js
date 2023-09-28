@@ -13,11 +13,10 @@ const Settings = (props) => {
   const { api_token } = globalState.user;
   const [stravaToken, setStravaToken] = React.useState();
   const [act, setAct] = React.useState([]);
-  const [client, setClient] = React.useState();
   const [loading, setLoading] = React.useState();
   React.useEffect(() => {
-    (async () => {
-      if (api_token) {
+    if (api_token) {
+      (async () => {
         const res = await fetch(
           process.env.REACT_APP_API_URL + "/v1/strava/token",
           {
@@ -29,35 +28,35 @@ const Settings = (props) => {
           }
         );
         if (res.status === 401) {
+          setStravaToken(null);
           globalState.setUser({});
         }
         try {
           const data = await res.json();
           setStravaToken(data.strava_access_token);
         } catch {}
-      }
-    })();
-  }, [globalState, api_token]);
-
-  React.useEffect(() => {
-    if (stravaToken) {
-      setClient(new strava.client(stravaToken));
+      })();
     }
-  }, [stravaToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api_token]);
+  
+  var client = React.useRef(null);
 
   React.useEffect(() => {
     (async () => {
-      if (client) {
-        try {
-          setLoading(true)
-          const routes = await client.athlete.listActivities({ per_page: 10 });
-          setLoading(false)
+      if (stravaToken) {
+        client.current = new strava.client(stravaToken)
+        setLoading(true)
+        try {  
+          const routes = await client.current.athlete.listActivities({ per_page: 10 });
           setAct(routes);
         } catch {
+          setStravaToken(null);
         }
+        setLoading(false)
       }
     })();
-  }, [client]);
+  }, [stravaToken]);
 
   if (!stravaToken) {
     const url = "https://www.strava.com/oauth/authorize";
@@ -86,8 +85,8 @@ const Settings = (props) => {
     try {
       let times = null;
       let latlngs = null;
-      const act = await client.activities.get({ id: a.id });
-      const data = await client.streams.activity({
+      const act = await client.current.activities.get({ id: a.id });
+      const data = await client.current.streams.activity({
         id: a.id,
         types: ["time", "latlng"],
         key_by_type: true,
@@ -115,7 +114,7 @@ const Settings = (props) => {
         route.push({ time: startTime + ~~times[i] * 1e3, latlng: pos });
       });
       props.onRouteDownloaded(a.name, route, {
-        client,
+        client: client.current,
         id: a.id,
         description: act.description,
       });
@@ -139,7 +138,7 @@ const Settings = (props) => {
         style={{ mixBlendMode: "multiply" }}
         className="mr-5"
       />
-      {(!client || loading) ? (
+      {(stravaToken && loading) ? (
         <center><h3><i className="fa fa-spin fa-spinner"></i> Loading</h3></center>
       ) : (
       <table className="table table-striped table-hover">
