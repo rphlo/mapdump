@@ -393,12 +393,16 @@ const RouteHeader = (props) => {
           </blockquote>
         )}
         {canEdit() && commentEditing && (
-          <textarea
-            className="form-control"
-            ref={commentInputRef}
-            defaultValue={comment}
-            onBlur={saveComment}
-          />
+          <div className="grow-wrap" data-replicated-value={comment}>
+            <textarea
+              className="form-control"
+              ref={commentInputRef}
+              defaultValue={comment}
+              onBlur={saveComment}
+              onInput={(e) => e.target.parentNode.dataset.replicatedValue = e.target.value}
+            >
+            </textarea>
+          </div>
         )}
       </div>
     </div>
