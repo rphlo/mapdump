@@ -275,7 +275,7 @@ const displayDate = (date) => {
     );
   }
   return (
-    capitalizeFirstLetter(date.toRelativeCalendar()) +
+    capitalizeFirstLetter(date.toRelativeCalendar({unit: "days"})) +
     " at " +
     date.toFormat("T")
   );
