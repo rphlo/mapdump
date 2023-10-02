@@ -375,7 +375,7 @@ const RouteHeader = (props) => {
       </div>
       <div style={{ margin: "15px 0" }}>
         {(!canEdit() || !commentEditing) && (
-          <blockquote style={{ whiteSpace: "pre-wrap" }}>
+          <blockquote style={{ whiteSpace: "pre-wrap", lineBreak: "anywhere" }}>
             <p>
               <LinkItUrl>
                 <LinkIt
