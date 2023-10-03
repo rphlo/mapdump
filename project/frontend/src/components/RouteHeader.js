@@ -399,11 +399,12 @@ const RouteHeader = (props) => {
               ref={commentInputRef}
               defaultValue={comment}
               onBlur={saveComment}
-              onInput={(e) => e.target.parentNode.dataset.replicatedValue = e.target.value}
+              onInput={(e) =>
+                (e.target.parentNode.dataset.replicatedValue = e.target.value)
+              }
               col={40}
               row={10}
-            >
-            </textarea>
+            ></textarea>
           </div>
         )}
       </div>
