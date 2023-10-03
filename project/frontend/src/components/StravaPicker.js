@@ -39,21 +39,23 @@ const Settings = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api_token]);
-  
+
   var client = React.useRef(null);
 
   React.useEffect(() => {
     (async () => {
       if (stravaToken) {
-        client.current = new strava.client(stravaToken)
-        setLoading(true)
-        try {  
-          const routes = await client.current.athlete.listActivities({ per_page: 10 });
+        client.current = new strava.client(stravaToken);
+        setLoading(true);
+        try {
+          const routes = await client.current.athlete.listActivities({
+            per_page: 10,
+          });
           setAct(routes);
         } catch {
           setStravaToken(null);
         }
-        setLoading(false)
+        setLoading(false);
       }
     })();
   }, [stravaToken]);
@@ -138,32 +140,36 @@ const Settings = (props) => {
         style={{ mixBlendMode: "multiply" }}
         className="mr-5"
       />
-      {(stravaToken && loading) ? (
-        <center><h3><i className="fa fa-spin fa-spinner"></i> Loading</h3></center>
+      {stravaToken && loading ? (
+        <center>
+          <h3>
+            <i className="fa fa-spin fa-spinner"></i> Loading
+          </h3>
+        </center>
       ) : (
-      <table className="table table-striped table-hover">
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col">Start Date</th>
-            <th scope="col">Name</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Distance</th>
-          </tr>
-        </thead>
-        <tbody style={{ cursor: "pointer" }}>
-          {act.map((a) => (
-            <tr key={a.id} onClick={() => downloadGPX(a)}>
-              <td>{DateTime.fromISO(a.start_date).toFormat("DDDD, T")}</td>
-              <td>{a.name}</td>
-              <td>
-                {printTime(a.elapsed_time * 1e3)}
-                {}
-              </td>
-              <td>{(a.distance / 1000).toFixed(1)}km</td>
+        <table className="table table-striped table-hover">
+          <thead className="thead-dark">
+            <tr>
+              <th scope="col">Start Date</th>
+              <th scope="col">Name</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Distance</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody style={{ cursor: "pointer" }}>
+            {act.map((a) => (
+              <tr key={a.id} onClick={() => downloadGPX(a)}>
+                <td>{DateTime.fromISO(a.start_date).toFormat("DDDD, T")}</td>
+                <td>{a.name}</td>
+                <td>
+                  {printTime(a.elapsed_time * 1e3)}
+                  {}
+                </td>
+                <td>{(a.distance / 1000).toFixed(1)}km</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </>
   );
