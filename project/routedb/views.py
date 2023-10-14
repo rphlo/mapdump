@@ -179,13 +179,19 @@ class RouteCreate(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
 
+class ListRoutesPagination(CursorPagination):
+    page_size = 25
+    ordering = "-start_time"
+
+
 class LatestRoutesList(generics.ListAPIView):
     serializer_class = LatestRouteListSerializer
+    pagination_class = ListRoutesPagination
 
     def get_queryset(self):
         return Route.objects.filter(
-            Q(athlete_id=self.request.user.id) | Q(is_private=False)
-        ).select_related("athlete")[:24]
+            Q(athlete_id=self.request.user.id) | Q(is_private=False) # mine or public ones
+        ).select_related("athlete")
 
 
 class RoutesForTagList(generics.ListAPIView):
