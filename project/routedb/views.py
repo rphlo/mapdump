@@ -197,6 +197,7 @@ class LatestRoutesList(generics.ListAPIView):
 
 class RoutesForTagList(generics.ListAPIView):
     serializer_class = LatestRouteListSerializer
+    pagination_class = ListRoutesPagination
 
     def get_queryset(self):
         qs = Route.objects.filter(

@@ -12,30 +12,63 @@ import {
 } from "../utils";
 
 const LatestRoute = (props) => {
-  const [routes, setRoutes] = React.useState(false);
+  const [routes, setRoutes] = React.useState([]);
+  const [isLoading, setLoading] = React.useState(true);
+  const observerTarget = React.useRef(null);
+  const nextPage = React.useRef(null)
+
 
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
 
   React.useEffect(() => {
-    (async () => {
-      const headers = {};
-      if (api_token) {
-        headers.Authorization = "Token " + api_token;
+    nextPage.current = process.env.REACT_APP_API_URL + (
+      props?.tag
+      ? "/v1/routes-by-tag/" + props.tag
+      : "/v1/latest-routes/"
+    );
+  }, [props.tag]);
+
+  const fetchData = async () => {
+    const headers = {};
+    if (api_token) {
+      headers.Authorization = "Token " + api_token;
+    }
+    setLoading(true)
+    const url = nextPage.current;
+    const res = await fetch(
+      url,
+      {
+        credentials: "omit",
+        headers,
       }
-      const res = await fetch(
-        process.env.REACT_APP_API_URL +
-          (props?.tag
-            ? "/v1/routes-by-tag/" + props.tag
-            : "/v1/latest-routes/"),
-        {
-          credentials: "omit",
-          headers,
+    );
+    setLoading(false)
+    const resp = await res.json()
+    setRoutes(routes => [...routes, ...resp.results]);
+    nextPage.current = resp.next;
+  };
+  
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          fetchData();
         }
-      );
-      setRoutes(await res.json());
-    })();
-  }, [api_token, props.tag]);
+      },
+      { threshold: 1 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget]);
 
   return (
     <>
@@ -58,7 +91,7 @@ const LatestRoute = (props) => {
           </div>
         )}
         {routes &&
-          (!routes.length ? (
+          (!routes.length && !isLoading ? (
             <div style={{ textAlign: "center" }}>
               <span>
                 {props?.tag
@@ -227,6 +260,8 @@ const LatestRoute = (props) => {
               ))}
             </div>
           ))}
+          {isLoading && <div>Loading...</div>}
+          <div ref={observerTarget}>&nbsp;</div>
       </div>
     </>
   );
