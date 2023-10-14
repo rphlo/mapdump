@@ -30,23 +30,29 @@ const LatestRoute = (props) => {
   }, [props.tag]);
 
   const fetchData = async () => {
-    const headers = {};
-    if (api_token) {
-      headers.Authorization = "Token " + api_token;
-    }
     setLoading(true)
-    const url = nextPage.current;
-    const res = await fetch(
-      url,
-      {
-        credentials: "omit",
-        headers,
+    try {
+      const headers = {};
+      if (api_token) {
+        headers.Authorization = "Token " + api_token;
       }
-    );
-    setLoading(false)
-    const resp = await res.json()
-    setRoutes(routes => [...routes, ...resp.results]);
-    nextPage.current = resp.next;
+      const url = nextPage.current;
+      const res = await fetch(
+        url,
+        {
+          credentials: "omit",
+          headers,
+        }
+      );
+      
+      const resp = await res.json()
+      setRoutes(routes => [...routes, ...resp.results]);
+      nextPage.current = resp.next;
+    } catch {
+      // error handling
+    } finally {
+      setLoading(false)
+    }
   };
   
   React.useEffect(() => {
