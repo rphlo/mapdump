@@ -37,17 +37,18 @@ const LatestRoute = (props) => {
         headers.Authorization = "Token " + api_token;
       }
       const url = nextPage.current;
-      const res = await fetch(
-        url,
-        {
-          credentials: "omit",
-          headers,
-        }
-      );
-      
-      const resp = await res.json()
-      setRoutes(routes => [...routes, ...resp.results]);
-      nextPage.current = resp.next;
+      if (url) {
+        const res = await fetch(
+          url,
+          {
+            credentials: "omit",
+            headers,
+          }
+        );
+        const resp = await res.json()
+        setRoutes(routes => [...routes, ...resp.results]);
+        nextPage.current = resp.next;
+      }
     } catch {
       // error handling
     } finally {
