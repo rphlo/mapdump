@@ -15,22 +15,19 @@ const LatestRoute = (props) => {
   const [routes, setRoutes] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
   const observerTarget = React.useRef(null);
-  const nextPage = React.useRef(null)
-
+  const nextPage = React.useRef(null);
 
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
 
   React.useEffect(() => {
-    nextPage.current = process.env.REACT_APP_API_URL + (
-      props?.tag
-      ? "/v1/routes-by-tag/" + props.tag
-      : "/v1/latest-routes/"
-    );
+    nextPage.current =
+      process.env.REACT_APP_API_URL +
+      (props?.tag ? "/v1/routes-by-tag/" + props.tag : "/v1/latest-routes/");
   }, [props.tag]);
 
   const fetchData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const headers = {};
       if (api_token) {
@@ -38,27 +35,24 @@ const LatestRoute = (props) => {
       }
       const url = nextPage.current;
       if (url) {
-        const res = await fetch(
-          url,
-          {
-            credentials: "omit",
-            headers,
-          }
-        );
-        const resp = await res.json()
-        setRoutes(routes => [...routes, ...resp.results]);
+        const res = await fetch(url, {
+          credentials: "omit",
+          headers,
+        });
+        const resp = await res.json();
+        setRoutes((routes) => [...routes, ...resp.results]);
         nextPage.current = resp.next;
       }
     } catch {
       // error handling
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
-  
+
   React.useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         if (entries[0].isIntersecting) {
           fetchData();
         }
@@ -267,8 +261,8 @@ const LatestRoute = (props) => {
               ))}
             </div>
           ))}
-          {isLoading && <div>Loading...</div>}
-          <div ref={observerTarget}>&nbsp;</div>
+        {isLoading && <div>Loading...</div>}
+        <div ref={observerTarget}>&nbsp;</div>
       </div>
     </>
   );
