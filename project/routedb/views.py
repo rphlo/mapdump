@@ -21,9 +21,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from knox.models import AuthToken
 from rest_framework import generics, parsers, status
 from rest_framework.decorators import api_view
+from rest_framework.pagination import CursorPagination
 from rest_framework.permissions import SAFE_METHODS, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.pagination import CursorPagination
 from routedb.models import RasterMap, Route, UserSettings
 from routedb.serializers import (
     AuthTokenSerializer,
@@ -191,7 +191,8 @@ class LatestRoutesList(generics.ListAPIView):
 
     def get_queryset(self):
         return Route.objects.filter(
-            Q(athlete_id=self.request.user.id) | Q(is_private=False) # mine or public ones
+            Q(athlete_id=self.request.user.id)
+            | Q(is_private=False)  # mine or public ones
         ).select_related("athlete")
 
 
