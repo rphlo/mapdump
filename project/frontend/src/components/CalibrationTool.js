@@ -406,7 +406,7 @@ const CalibrationTool = (props) => {
         </div>
         <div className="row">
           <div className="col-md-6">
-            <div id="mapRaster" className="leaflet_map"></div>
+            <div id="mapRaster" className="leaflet_map calibration_map"></div>
             <button
               className="btn btn-danger mb-3"
               onClick={() => {
@@ -420,7 +420,7 @@ const CalibrationTool = (props) => {
             </button>
           </div>
           <div className="col-md-6">
-            <div id="mapWorld" className="leaflet_map"></div>
+            <div id="mapWorld" className="leaflet_map calibration_map"></div>
             <button
               className="btn btn-danger mb-3"
               onClick={() => {

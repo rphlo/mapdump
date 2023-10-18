@@ -68,6 +68,10 @@ body {
   margin-bottom: 5px;
 }
 
+.calibration_map {
+  cursor: crosshair;
+}
+
 .swal2-container {
   z-index: 3000 !important;
 }
