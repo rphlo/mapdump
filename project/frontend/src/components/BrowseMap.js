@@ -78,6 +78,16 @@ const BrowseMap = () => {
         map.addLayer(polygon);
       });
     })();
+
+    (async () => {
+      const locInfoResponse = await fetch("https://api.routechoices.com/check-latlon");
+      const locInfo =  r.json();
+      if (locInfo.status === "success") {
+        map.setView([data.lat, data.lon], 10, {
+          duration: 0,
+        });
+      }
+    })();
     // eslint-disable-next-line
   }, []);
 
