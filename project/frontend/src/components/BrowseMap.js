@@ -59,6 +59,7 @@ const BrowseMap = () => {
     const bounds = [L.latLng(-180, 60), L.latLng(180, -60)];
     map.fitBounds(bounds);
     map.invalidateSize();
+
     (async () => {
       const res = await fetch(process.env.REACT_APP_API_URL + "/v1/maps/");
       const loadedMaps = await res.json();
@@ -79,15 +80,15 @@ const BrowseMap = () => {
       });
     })();
 
-    (async (mymap) => {
+    (async () => {
       const locInfoResponse = await fetch("https://api.routechoices.com/check-latlon");
-      const locInfo =  locInfoResponse.json();
+      const locInfo =  await locInfoResponse.json();
       if (locInfo.status === "success") {
-        mymap.setView([locInfo.lat, locInfo.lon], 10, {
+        map.setView([locInfo.lat, locInfo.lon], 10, {
           duration: 0,
         });
       }
-    })(map);
+    })();
     // eslint-disable-next-line
   }, []);
 
