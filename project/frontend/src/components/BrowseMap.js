@@ -83,7 +83,7 @@ const BrowseMap = () => {
       const locInfoResponse = await fetch("https://api.routechoices.com/check-latlon");
       const locInfo =  locInfoResponse.json();
       if (locInfo.status === "success") {
-        map.setView([data.lat, data.lon], 10, {
+        map.setView([locInfo.lat, locInfo.lon], 10, {
           duration: 0,
         });
       }
