@@ -79,15 +79,15 @@ const BrowseMap = () => {
       });
     })();
 
-    (async () => {
+    (async (mymap) => {
       const locInfoResponse = await fetch("https://api.routechoices.com/check-latlon");
       const locInfo =  locInfoResponse.json();
       if (locInfo.status === "success") {
-        map.setView([locInfo.lat, locInfo.lon], 10, {
+        mymap.setView([locInfo.lat, locInfo.lon], 10, {
           duration: 0,
         });
       }
-    })();
+    })(map);
     // eslint-disable-next-line
   }, []);
 
