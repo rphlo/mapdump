@@ -60,16 +60,16 @@ function App() {
               <span
                 style={{
                   display: "inline-block",
-                  backgroundColor: "#bbb",
+                  backgroundColor: "#f4f4f4",
                   width: "60px",
                   borderRadius: "50%",
                 }}
               >
                 <img
-                  src="/static/logo.svg"
+                  src="/static/logo.svg?v=20231023"
                   alt="logo"
                   height="60px"
-                  style={{ margin: "0" }}
+                  style={{ padding: "5px" }}
                 />
               </span>{" "}
               <small>Mapdump.com</small>
