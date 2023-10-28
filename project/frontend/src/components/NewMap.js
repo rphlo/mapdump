@@ -159,7 +159,7 @@ function NewMap() {
     }
     const gpxFile = acceptedFiles[0];
     const filename = gpxFile.name;
-    setName(filename.slice(0, -4));
+    setName(filename.slice(0, -4).slice(0, 52));
     const fr = new FileReader();
     if (filename.toLowerCase().endsWith(".tcx")) {
       fr.onload = onTCXLoaded;
@@ -405,7 +405,7 @@ function NewMap() {
     const gpxUrl = myUrl.searchParams.get("gpx");
     const title = myUrl.searchParams.get("title");
     if (title) {
-      setName(title);
+      setName(title.slice(0, 52));
     }
     if (kmzUrl) {
       (async () => {
@@ -442,7 +442,7 @@ function NewMap() {
                   <StravaPicker
                     onRouteDownloaded={(name, route, stravaInfo) => {
                       setStravaDetails(stravaInfo);
-                      setName(name);
+                      setName(name.slice(0, 52));
                       onRouteLoaded(route);
                     }}
                   />
