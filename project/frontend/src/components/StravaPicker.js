@@ -1,5 +1,4 @@
 import React from "react";
-import strava from "strava-v3";
 import { DateTime } from "luxon";
 import Swal from "sweetalert2";
 
@@ -45,17 +44,24 @@ const Settings = (props) => {
   React.useEffect(() => {
     (async () => {
       if (stravaToken) {
-        client.current = new strava.client(stravaToken);
         setLoading(true);
         try {
-          const routes = await client.current.athlete.listActivities({
-            per_page: 10,
-          });
+          const routesRaw = await fetch(
+            "https://www.strava.com/api/v3/athlete/activities?per_page=10",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + stravaToken,
+              }
+            }
+          )
+          const routes = await routesRaw.json()
           setAct(routes);
         } catch {
           setStravaToken(null);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       }
     })();
   }, [stravaToken]);
