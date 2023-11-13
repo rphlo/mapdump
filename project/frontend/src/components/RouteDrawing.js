@@ -251,15 +251,24 @@ const RouteDrawing = (props) => {
               });
               return;
             }
-            if (props.stravaDetails.client) {
+            if (!makePrivate && props.stravaDetails.authKey && props.stravaDetails.id) {
               const description = `${props.stravaDetails.description || ""}${
                 props.stravaDetails.description && res.id ? "\r\n\r\n" : ""
               }${res.id ? `https://mapdump.com/routes/${res.id}` : ""}`;
               try {
-                await props.stravaDetails.client.activities.update({
-                  id: props.stravaDetails.id,
-                  description,
-                });
+                await fetch(
+                  "https://www.strava.com/api/v3/activities/" + props.stravaDetails.id,
+                  {
+                    method: "PUT",
+                    body: JSON.stringify({
+                      description: description
+                    }),
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: "Bearer " + props.stravaDetails.authKey,
+                    }
+                  }
+                );
               } catch {}
             }
             setSaving(false);

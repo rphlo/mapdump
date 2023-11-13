@@ -52,7 +52,7 @@ const ImageDropzone = (props) => {
   );
 
   return (
-    <form enctype="multipart/form-data" method="post">
+    <form encType="multipart/form-data" method="post">
       <div data-testid="dropzoneImg" {...getRootProps({ style })}>
         <input {...getInputProps()} multiple={false} />
         {isDragActive ? (

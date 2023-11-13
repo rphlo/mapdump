@@ -39,8 +39,6 @@ const Settings = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api_token]);
 
-  var client = React.useRef(null);
-
   React.useEffect(() => {
     (async () => {
       if (stravaToken) {
@@ -93,20 +91,28 @@ const Settings = (props) => {
     try {
       let times = null;
       let latlngs = null;
-      const act = await client.current.activities.get({ id: a.id });
-      const data = await client.current.streams.activity({
-        id: a.id,
-        types: ["time", "latlng"],
-        key_by_type: true,
-      });
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].type === "time") {
-          times = data[i].data;
+      const actRaw = await fetch(
+        "https://www.strava.com/api/v3/activities/" + a.id,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + stravaToken,
+          }
         }
-        if (data[i].type === "latlng") {
-          latlngs = data[i].data;
+      )
+      const act = await actRaw.json()
+      const dataRaw = await fetch(
+        "https://www.strava.com/api/v3/activities/" + a.id + "/streams?key_by_type=true&keys=time,latlng",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + stravaToken,
+          }
         }
-      }
+      )
+      const data = await dataRaw.json()
+      times = data.time.data;
+      latlngs = data.latlng.data;
       if (latlngs.length === 0) {
         Swal.fire({
           title: "Error!",
@@ -122,7 +128,7 @@ const Settings = (props) => {
         route.push({ time: startTime + ~~times[i] * 1e3, latlng: pos });
       });
       props.onRouteDownloaded(a.name, route, {
-        client: client.current,
+        authKey: stravaToken,
         id: a.id,
         description: act.description,
       });
