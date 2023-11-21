@@ -3,6 +3,7 @@
   "version": "2021062900",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@sentry/react": "^5.27.4",
     "@sentry/tracing": "^5.27.4",
     "@sweetalert2/theme-bootstrap-4": "^5.0.2",
