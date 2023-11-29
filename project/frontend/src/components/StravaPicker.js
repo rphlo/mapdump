@@ -50,10 +50,10 @@ const Settings = (props) => {
               headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + stravaToken,
-              }
+              },
             }
-          )
-          const routes = await routesRaw.json()
+          );
+          const routes = await routesRaw.json();
           setAct(routes);
         } catch {
           setStravaToken(null);
@@ -97,20 +97,22 @@ const Settings = (props) => {
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + stravaToken,
-          }
+          },
         }
-      )
-      const act = await actRaw.json()
+      );
+      const act = await actRaw.json();
       const dataRaw = await fetch(
-        "https://www.strava.com/api/v3/activities/" + a.id + "/streams?key_by_type=true&keys=time,latlng",
+        "https://www.strava.com/api/v3/activities/" +
+          a.id +
+          "/streams?key_by_type=true&keys=time,latlng",
         {
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + stravaToken,
-          }
+          },
         }
-      )
-      const data = await dataRaw.json()
+      );
+      const data = await dataRaw.json();
       times = data.time.data;
       latlngs = data.latlng.data;
       if (latlngs.length === 0) {
