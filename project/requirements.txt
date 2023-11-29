@@ -7,7 +7,7 @@ bs4==0.0.1
 certifi==2023.7.22
 cffi==1.15.1
 charset-normalizer==3.1.0
-cryptography==41.0.4
+cryptography==41.0.6
 defusedxml==0.7.1
 diskcache==5.6.1
 dj-rest-auth[with-social,with_social]==4.0.1
