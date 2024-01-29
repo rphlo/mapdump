@@ -64,9 +64,9 @@ def x_accel_redirect(request, path, filename="", mime="application/force-downloa
         response["Accept-Ranges"] = "bytes"
     response["Content-Type"] = mime
     if filename:
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        response["Content-Disposition"] = (
+            f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        )
     return response
 
 
@@ -89,9 +89,9 @@ def serve_from_s3(
     response["Accept-Ranges"] = "bytes"
     response["Content-Type"] = mime
     if filename:
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        response["Content-Disposition"] = (
+            f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        )
     return response
 
 
@@ -353,17 +353,17 @@ def map_download(request, uid, *args, **kwargs):
         img = route.route_image(show_header, show_route)
         filename = f"{basename}{mime_type[6:]}"
         r = HttpResponse(img, content_type=mime_type)
-        r[
-            "Content-Disposition"
-        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        r["Content-Disposition"] = (
+            f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        )
         return r
     elif out_bounds:
         img = route.route_image(False, False)
         filename = f"{basename}{mime_type[6:]}"
         r = HttpResponse(img, content_type=mime_type)
-        r[
-            "Content-Disposition"
-        ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        r["Content-Disposition"] = (
+            f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+        )
         return r
     file_path = route.raster_map.path
     mime_type = route.raster_map.mime_type
@@ -409,9 +409,9 @@ def gpx_download(request, uid, *args, **kwargs):
     gpx_data = route.gpx
     response = HttpResponse(gpx_data, content_type="application/gpx+xml")
     filename = f"{route.name}.gpx"
-    response[
-        "Content-Disposition"
-    ] = f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+    response["Content-Disposition"] = (
+        f"attachment; filename*=UTF-8''{encode_filename(filename)}"
+    )
     return response
 
 

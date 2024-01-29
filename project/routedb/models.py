@@ -377,7 +377,10 @@ class Route(models.Model):
             return cached
         orig = self.raster_map.data
         data_uri = ""
-        with tempfile.NamedTemporaryFile() as img_file, tempfile.NamedTemporaryFile() as route_file:
+        with (
+            tempfile.NamedTemporaryFile() as img_file,
+            tempfile.NamedTemporaryFile() as route_file,
+        ):
             img_file.write(orig)
             img_file.flush()
             route_file.write(self.route_json.encode("utf-8"))
