@@ -30,14 +30,14 @@ elif [ "$1" = 'pipcompile' ]; then
     echo "Compiling pip env..."
     docker exec -u root -i md_django \
         /venv/bin/pip install --no-cache-dir -U uv && \
-    docker exec -u root -i md_django -e "VIRTUAL_ENV=/venv/" \
-        source /venv/bin/activate; uv pip compile project/requirements.in --upgrade --no-header --no-annotate --output-file -o project/requirements.txt
+    docker exec -i -u root -e "VIRTUAL_ENV=/venv/" md_django \
+        uv pip compile project/requirements.in --upgrade --no-header --no-annotate --output-file -o project/requirements.txt
     exit 0
 elif [ "$1" = 'pipinstall' ]; then
     echo "Updating pip env..."
     docker exec -u root -i md_django \
         /venv/bin/pip install --no-cache-dir -U uv && \
-    docker exec -u root -i md_django -e "VIRTUAL_ENV=/venv/" \
+    docker exec -i -u root -e "VIRTUAL_ENV=/venv/" md_django \
         uv pip install -r project/requirements.txt
     exit
 elif [ "$1" = 'test' ]; then
