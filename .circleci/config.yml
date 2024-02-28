@@ -35,6 +35,7 @@ jobs:
     - run: mkdir -p media/mapdump/
     - run: ./dc up -d
     - run: ./dc pipinstall
+    - run: ./dc up -d
     - run: ./da migrate
     - run: ./da build_frontend
     - run: ./dc restart django
