@@ -10,7 +10,7 @@ source $BASEDIR/env/bin/activate
 NEW_MD5SUM="$(md5sum project/requirements.txt)"
 if [ "$PREV_MD5SUM" != "$NEW_MD5SUM" ]
 then
-  pip install -U -r project/requirements.txt
+  uv pip install -U -r project/requirements.txt
 fi
 project/manage.py migrate --noinput
 project/manage.py build_frontend
