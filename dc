@@ -29,17 +29,17 @@ elif [ "$1" = 'restoredb' ]; then
 elif [ "$1" = 'pipcompile' ]; then
     echo "Compiling pip env..."
     docker exec -u root -i md_django \
-        /venv/bin/pip --no-cache-dir install -U uv && \
+        /venv/bin/pip install --no-cache-dir -U uv && \
     docker exec -u root -i md_django \
         source /venv/bin/activate; uv pip compile project/requirements.in --upgrade --no-header --no-annotate --output-file -o project/requirements.txt
     exit 0
 elif [ "$1" = 'pipinstall' ]; then
     echo "Updating pip env..."
     docker exec -u root -i md_django \
-        /venv/bin/pip install --no-cache-dir install -U uv && \
-     docker exec -u root -i md_django \
-        source /venv/bin/activate; uv pip install -r project/requirements.txt
-    exit 0
+        /venv/bin/pip install --no-cache-dir -U uv && \
+    docker exec -u root -i md_django \
+        VIRTUAL_ENV=/venv/ uv pip install -r project/requirements.txt
+    exit
 elif [ "$1" = 'test' ]; then
     shift
     extra_args="run --rm django pytest"
