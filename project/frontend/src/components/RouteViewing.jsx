@@ -570,8 +570,10 @@ const RouteViewing = (props) => {
       marker.remove();
       trail.remove();
       setAnimating(false);
-      setIncludeRoute(true);
-      setTogglingRoute(true);
+      if (!includeRoute) {
+        setIncludeRoute(true);
+        setTogglingRoute(true);
+      }
     })();
     
   }
