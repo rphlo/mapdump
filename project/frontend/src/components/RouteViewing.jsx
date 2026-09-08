@@ -567,6 +567,8 @@ const RouteViewing = (props) => {
           await new Promise((done) => setTimeout(done, 2));
         }
       };
+      marker.remove();
+      trail.remove();
       setAnimating(false);
       setIncludeRoute(true);
       setTogglingRoute(true);
