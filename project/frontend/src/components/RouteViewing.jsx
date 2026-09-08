@@ -50,6 +50,7 @@ const RouteViewing = (props) => {
   const [route, setRoute] = useState(false);
   const [mapImage, setMapImage] = useState(false);
   const [includeRoute, setIncludeRoute] = useState(true);
+  const [animating, setAnimating] = useState(false);
   const [name, setName] = useState();
   const [isPrivate, setIsPrivate] = useState(props.isPrivate);
   const [togglingRoute, setTogglingRoute] = useState();
@@ -533,6 +534,45 @@ const RouteViewing = (props) => {
   const openComments = () => {
     setCommentsOpen(true)
   }
+
+  const animate = (e) => {
+    e.preventDefault();
+    if (animating) return;
+    setIncludeRoute(false);
+    setTogglingRoute(true);
+    setAnimating(true);
+
+    let marker = L.circleMarker([0,0], {radius: 7, fillColor: "red", color: "black", weight: 2, fillOpacity:1}).addTo(leafletMap);
+    let trail = L.polyline([], {color: "red"}).addTo(leafletMap);
+    (async () => {
+      for (const pos of route) {
+        if (!isNaN(pos.coords.latitude)) {
+          
+          const transform = cornerCalTransform(
+      mapImage.width,
+      mapImage.height - 70,
+      props.mapCornersCoords.top_left,
+      props.mapCornersCoords.top_right,
+      props.mapCornersCoords.bottom_right,
+      props.mapCornersCoords.bottom_left,
+      70
+    );
+          const pt = transform(
+            new LatLng(pos.coords.latitude, pos.coords.longitude)
+          );
+          marker.setLatLng([-pt.y, pt.x]);
+          marker.addTo(leafletMap)
+          trail.addTo(leafletMap)
+          trail.addLatLng([-pt.y, pt.x])
+          await new Promise((done) => setTimeout(done, 2));
+        }
+      };
+      setAnimating(false);
+      setIncludeRoute(true);
+      setTogglingRoute(true);
+    })();
+    
+  }
   return (
     <>
       <div className="container main-container">
@@ -559,41 +599,60 @@ const RouteViewing = (props) => {
                   ></i>{" "}
                   Route
                 </button>
+                <button type="button" className="btn btn-sm border text-nowrap mr-1" onClick={animate} style={{ marginBottom: "5px" }}>
+                  <i
+                    className={"fa fa-" + (animating ? "spinner fa-spin" : "play")}
+                    style={animating ? {} : { color: "#f90" } }
+                  ></i>{" "}
+                  Animate
+                </button>
               </div>
               <div className="text-right">
-                <button
+              <button
                   type="button"
-                  style={{ marginBottom: "5px" }}
-                  className="btn btn-sm btn-success ml-1 text-nowrap"
-                  onClick={downloadMapRoute}
+                  className="btn btn-sm border"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  data-testid="actionMenuBtn"
                 >
-                  <i className="fas fa-download"></i> <span>Map+Route</span>
+                  <i className="fas fa-download"></i> Download
                 </button>
-                <button
-                  type="button"
-                  style={{ marginBottom: "5px" }}
-                  className="btn btn-sm btn-success ml-1"
-                  onClick={downloadMap}
-                >
-                  <i className="fas fa-download"></i> <span>Map</span>
-                </button>
-                <button
-                  type="button"
-                  style={{ marginBottom: "5px" }}
-                  className="btn btn-sm btn-success ml-1"
-                  onClick={downloadKmz}
-                  data-testid="dl-kmz"
-                >
-                  <i className="fas fa-download"></i> <span>KMZ</span>
-                </button>
-                <button
-                  type="button"
-                  style={{ marginBottom: "5px" }}
-                  className="btn btn-sm btn-success ml-1"
-                  onClick={downloadGPX}
-                >
-                  <i className="fas fa-download"></i> <span>GPX</span>
-                </button>
+                <div className="dropdown-menu dropdown-menu-right">
+                  <button
+                    type="button"
+                    style={{ marginBottom: "5px" }}
+                    className="btn text-nowrap dropdown-item"
+                    onClick={downloadMapRoute}
+                  >
+                    <i className="fas fa-download"></i> <span>Map+Route (JPEG)</span>
+                  </button>
+                  <button
+                    type="button"
+                    style={{ marginBottom: "5px" }}
+                    className="btn dropdown-item"
+                    onClick={downloadMap}
+                  >
+                    <i className="fas fa-download"></i> <span>Map (JPEG)</span>
+                  </button>
+                  <button
+                    type="button"
+                    style={{ marginBottom: "5px" }}
+                    className="btn dropdown-item"
+                    onClick={downloadKmz}
+                    data-testid="dl-kmz"
+                  >
+                    <i className="fas fa-download"></i> <span>Map (KMZ)</span>
+                  </button>
+                  <button
+                    type="button"
+                    style={{ marginBottom: "5px" }}
+                    className="btn dropdown-item"
+                    onClick={downloadGPX}
+                  >
+                    <i className="fas fa-download"></i> <span>Route (GPX)</span>
+                  </button>
+                </div>
               </div>
             </div>
           </>
