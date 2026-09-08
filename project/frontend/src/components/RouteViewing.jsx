@@ -541,14 +541,7 @@ const RouteViewing = (props) => {
     setIncludeRoute(false);
     setTogglingRoute(true);
     setAnimating(true);
-
-    let marker = L.circleMarker([0,0], {radius: 7, fillColor: "red", color: "black", weight: 2, fillOpacity:1}).addTo(leafletMap);
-    let trail = L.polyline([], {color: "red"}).addTo(leafletMap);
-    (async () => {
-      for (const pos of route) {
-        if (!isNaN(pos.coords.latitude)) {
-          
-          const transform = cornerCalTransform(
+    const transform = cornerCalTransform(
       mapImage.width,
       mapImage.height - 70,
       props.mapCornersCoords.top_left,
@@ -557,14 +550,27 @@ const RouteViewing = (props) => {
       props.mapCornersCoords.bottom_left,
       70
     );
+    let marker = L.circleMarker([0,0], {radius: 7, fillColor: "red", color: "black", weight: 2, fillOpacity:1}).addTo(leafletMap);
+    let trail = L.polyline([], {color: "red"}).addTo(leafletMap);
+    (async () => {
+      for (const [idx, pos] of route.entries()) {
+        if (!isNaN(pos.coords.latitude)) {
           const pt = transform(
             new LatLng(pos.coords.latitude, pos.coords.longitude)
           );
           marker.setLatLng([-pt.y, pt.x]);
           marker.addTo(leafletMap)
           trail.addTo(leafletMap)
-          trail.addLatLng([-pt.y, pt.x])
-          await new Promise((done) => setTimeout(done, 2));
+          trail.addLatLng([-pt.y, pt.x]);
+          let wait = 0;
+          if (route?.[idx + 1]) {
+            if (route[idx + 1].timestamp && pos.timestamp) {
+              wait = (route[idx + 1].timestamp - pos.timestamp) / 1000;
+            } else {
+              wait = 1;
+            }
+          } 
+          await new Promise((done) => setTimeout(done, wait * 2));
         }
       };
       marker.remove();
