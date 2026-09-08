@@ -541,15 +541,24 @@ const RouteViewing = (props) => {
     setIncludeRoute(false);
     setTogglingRoute(true);
     setAnimating(true);
+    const newCorners = getCorners(
+      props.mapSize,
+      props.mapCornersCoords,
+      props.route,
+      true,
+      includeRoute
+    );
     const transform = cornerCalTransform(
       mapImage.width,
-      mapImage.height - 70,
-      props.mapCornersCoords.top_left,
-      props.mapCornersCoords.top_right,
-      props.mapCornersCoords.bottom_right,
-      props.mapCornersCoords.bottom_left,
-      70
+      mapImage.height,
+      newCorners.top_left,
+      newCorners.top_right,
+      newCorners.bottom_right,
+      newCorners.bottom_left,
+
     );
+    console.log(props.mapSize, newCorners)
+    console.log(mapImage, props.mapCornersCoords)
     let marker = L.circleMarker([0,0], {radius: 7, fillColor: "red", color: "black", weight: 2, fillOpacity:1}).addTo(leafletMap);
     let trail = L.polyline([], {color: "red"}).addTo(leafletMap);
     (async () => {
