@@ -57,4 +57,4 @@ timezonefinder==7.0.1
 types-python-dateutil==2.9.0.20250708
 typing-extensions==4.14.1
 typing-inspection==0.4.1
-urllib3==2.7.0
+urllib3==2.8.0
