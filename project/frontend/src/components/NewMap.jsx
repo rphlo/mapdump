@@ -11,7 +11,6 @@ import PathDrawing from "./PathDrawing";
 import RemoteMapPicker from "./RemoteMapPicker";
 import StravaPicker from "./StravaPicker";
 import CornerCoordsInput from "./CornerCoordsInput";
-import useGlobalState from "../utils/useGlobalState";
 import {
   extractCornersCoordsFromFilename,
   validateCornersCoords,
@@ -25,8 +24,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 function NewMap({history}) {
-  const globalState = useGlobalState();
-  const { username } = globalState.user;
   const [route, _setRoute] = React.useState();
   const [drawRoute, setDrawRoute] = React.useState(false);
   const [mapCornersCoords, setMapCornersCoords] = React.useState();
@@ -440,18 +437,14 @@ function NewMap({history}) {
             <>
               <h1>GPS File</h1>
               <GPXDropzone onDrop={onDropGPX} />
-              {username && (
-                <>
-                  <hr />
-                  <StravaPicker
-                    onRouteDownloaded={(name, route, stravaInfo) => {
-                      setStravaDetails(stravaInfo);
-                      setName(name.slice(0, 52));
-                      onRouteLoaded(route);
-                    }}
-                  />
-                </>
-              )}
+              <hr />
+              <StravaPicker
+                onRouteDownloaded={(name, route, stravaInfo) => {
+                  setStravaDetails(stravaInfo);
+                  setName(name.slice(0, 52));
+                  onRouteLoaded(route);
+                }}
+              />
             </>
           )}
           {(drawRoute || route) && !mapDataURL && (

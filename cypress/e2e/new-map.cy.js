@@ -2,6 +2,9 @@ describe("Create a new map", function () {
   it("successfully create a new map", function () {
     cy.visit("/new");
     cy.contains("GPS File");
+    cy.contains("Import from Strava");
+    cy.contains("Log in");
+    cy.contains("Sign up");
     const fileName = "Jukola_1st_leg.gpx";
     cy.fixture(fileName).then((fileContent) => {
       cy.get('[data-testid="dropzone"]').attachFile(

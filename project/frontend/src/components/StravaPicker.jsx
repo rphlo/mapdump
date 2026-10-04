@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import Swal from "sweetalert2";
 
@@ -7,7 +8,7 @@ import useGlobalState from "../utils/useGlobalState";
 import logo from "../strava.webp";
 import connectWStrava from "../connectWithStrava.webp";
 
-const Settings = (props) => {
+const StravaPicker = (props) => {
   const globalState = useGlobalState();
   const { api_token } = globalState.user;
   const [stravaToken, setStravaToken] = React.useState();
@@ -64,6 +65,32 @@ const Settings = (props) => {
       }
     })();
   }, [stravaToken, page]);
+
+  if (!api_token) {
+    return (
+      <div className="mt-3">
+        <strong className="d-block">Import from Strava</strong>
+        <img
+          height="50px"
+          src={logo}
+          alt="Strava"
+          style={{ mixBlendMode: "multiply" }}
+          className="d-block"
+        />
+        <p className="text-center">
+          Log in or sign up to connect your Strava account and import activities.
+        </p>
+        <div className="text-center">
+          <Link to="/login" className="btn btn-primary mr-2">
+            Log in
+          </Link>
+          <Link to="/sign-up" className="btn btn-outline-primary">
+            Sign up
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!stravaToken) {
     const url = "https://www.strava.com/oauth/authorize";
@@ -206,4 +233,4 @@ const Settings = (props) => {
   );
 };
 
-export default Settings;
+export default StravaPicker;
