@@ -209,7 +209,6 @@ const backgroundMapTitles = {
 	"mapant-fi": "Mapant Finland",
 	"mapant-no": "Mapant Norway",
 	"mapant-es": "Mapant Spain",
-	"mapant-se": "Mapant Sweden",
 	"mapant-ch": "Mapant Switzerland",
 	"topo-fi": "Topo Finland",
 	"topo-fr": "Topo France",

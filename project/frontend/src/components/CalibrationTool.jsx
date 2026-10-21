@@ -151,13 +151,6 @@ var backdropMaps = {
 			className: "wms256",
 		},
 	),
-	"mapant-se": L.tileLayer(
-		"https://tiles.routechoices.com/proxy/se/{z}/{x}/{y}.webp",
-		{
-			attribution: "&copy; gokartor.se",
-			className: "wms256",
-		},
-	),
 	"topo-fr": L.tileLayer(
 		"https://data.geopf.fr/wmts?layer=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&tilematrix={z}&tilecol={x}&tilerow={y}",
 		{
@@ -282,7 +275,6 @@ const backgroundMapTitles = {
 	"mapant-fi": "Mapant Finland",
 	"mapant-no": "Mapant Norway",
 	"mapant-es": "Mapant Spain",
-	"mapant-se": "Mapant Sweden",
 	"mapant-ch": "Mapant Switzerland",
 	"topo-fi": "Topo Finland",
 	"topo-fr": "Topo France",
