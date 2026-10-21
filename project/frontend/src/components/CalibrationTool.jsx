@@ -440,6 +440,7 @@ const CalibrationTool = (props) => {
         maxZoom: 2,
         zoomSnap: 0,
         scrollWheelZoom: true,
+      attributionControl: false,
       });
       setLeafletRMap(tmpMapRaster)
       const boundsRaster = [
@@ -488,8 +489,7 @@ const CalibrationTool = (props) => {
           <div className="col-md-12">
             <div className="alert alert-info" role="alert">
               <span id="help_text">
-                Indicate the location of 4 distincts references points both on
-                your map and on the world map.
+                Indicate the location of at least 3 distincts references points on both your map and the real world map.
               </span>
             </div>
           </div>

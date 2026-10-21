@@ -62,6 +62,7 @@ const RouteReplay = (props) => {
             rotateControl: false,
             touchRotate: true,
             zoomControl: false,
+            attributionControl: false,
           });
           setLeafletMap(map);
           const bounds = [

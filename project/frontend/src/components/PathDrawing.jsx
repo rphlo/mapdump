@@ -17,6 +17,7 @@ const PathDrawing = (props) => {
         maxZoom: 2,
         zoomSnap: 0,
         scrollWheelZoom: true,
+        attributionControl: false,
       });
       setLeafletMap(map);
       const bounds = [map.unproject([0, 0]), map.unproject([width, height])];

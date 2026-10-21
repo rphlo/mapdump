@@ -532,6 +532,7 @@ const RouteViewing = (props) => {
         zoomControl: false,
         attributionControl: false,
         gestureHandling: true,
+        attributionControl: false,
       });
       setLeafletMap(newMap);
     } else {
