@@ -1,6 +1,6 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/OneHertz/mapdump/master.svg)](https://results.pre-commit.ci/latest/github/OneHertz/mapdump/master) [![circleci](https://circleci.com/gh/OneHertz/mapdump.svg?style=shield)](https://circleci.com/gh/OneHertz/mapdump)
 
-# DOMAmoottori
+# MapDump
 
 A Modern Digital Orienteering Map Archive Engine
 
