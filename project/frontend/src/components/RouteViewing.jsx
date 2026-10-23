@@ -530,7 +530,6 @@ const RouteViewing = (props) => {
         rotateControl: false,
         touchRotate: true,
         zoomControl: false,
-        attributionControl: false,
         gestureHandling: true,
         attributionControl: false,
       });

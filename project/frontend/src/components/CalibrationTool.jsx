@@ -440,7 +440,7 @@ const CalibrationTool = (props) => {
         maxZoom: 2,
         zoomSnap: 0,
         scrollWheelZoom: true,
-      attributionControl: false,
+        attributionControl: false,
       });
       setLeafletRMap(tmpMapRaster)
       const boundsRaster = [
